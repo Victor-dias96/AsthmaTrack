@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Activity, TrendingUp, Share2 } from "lucide-react";
 import { PublicAuthLayout } from "@/components/layout/public-auth-layout";
-import { AppButton } from "@/components/ui/app-button";
-import { AppInput } from "@/components/ui/app-input";
-import { FormField } from "@/components/ui/form-field";
+import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const metadata: Metadata = {
   title: "Criar conta",
@@ -33,72 +30,7 @@ export default function CadastroPage() {
         </ul>
       }
     >
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--at-text-primary)]">
-            Criar conta
-          </h1>
-          <p className="mt-1 text-sm text-[var(--at-text-secondary)]">
-            Preencha os dados abaixo para começar
-          </p>
-        </div>
-
-        <form className="space-y-4" noValidate>
-          <FormField label="Nome completo" htmlFor="register-name">
-            <AppInput
-              id="register-name"
-              type="text"
-              placeholder="Seu nome completo"
-              autoComplete="name"
-            />
-          </FormField>
-
-          <FormField label="E-mail" htmlFor="register-email">
-            <AppInput
-              id="register-email"
-              type="email"
-              placeholder="seu@email.com"
-              autoComplete="email"
-            />
-          </FormField>
-
-          <FormField label="Senha" htmlFor="register-password">
-            <AppInput
-              id="register-password"
-              type="password"
-              placeholder="Crie uma senha forte"
-              autoComplete="new-password"
-            />
-          </FormField>
-
-          <FormField label="Confirmar senha" htmlFor="register-password-confirm">
-            <AppInput
-              id="register-password-confirm"
-              type="password"
-              placeholder="Repita a senha"
-              autoComplete="new-password"
-            />
-          </FormField>
-
-          <AppButton type="submit" fullWidth size="lg">
-            Criar conta
-          </AppButton>
-        </form>
-
-        <p className="text-center text-sm text-[var(--at-text-secondary)]">
-          Já tem conta?{" "}
-          <Link
-            href="/login"
-            className="text-[var(--at-blue)] font-medium hover:underline"
-          >
-            Entrar
-          </Link>
-        </p>
-
-        <p className="text-center text-xs text-[var(--at-text-secondary)]">
-          Gratuito para pacientes
-        </p>
-      </div>
+      <RegisterForm />
     </PublicAuthLayout>
   );
 }

@@ -31,7 +31,7 @@ export function PublicAuthLayout({
         </div>
 
         {/* Mobile subtitle */}
-        <div className="lg:hidden px-8 pb-8 text-sm text-[var(--at-navy-muted)]">
+        <div className="lg:hidden px-6 pb-6 text-sm text-[var(--at-navy-muted)]">
           Controle da sua asma, na palma da mão.
         </div>
 
@@ -42,7 +42,7 @@ export function PublicAuthLayout({
       </div>
 
       {/* ── Right / Bottom: white form panel ── */}
-      <div className="flex flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-6 py-10 lg:px-12">
+      <div className="flex flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-5 py-8 sm:px-8 lg:px-12">
         <div className="w-full max-w-md">{children}</div>
       </div>
     </div>
