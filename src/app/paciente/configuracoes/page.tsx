@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PatientShell } from "@/components/layout/patient-shell";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
+import { LogoutButton } from "@/features/auth/components/logout-button";
 
 export const metadata: Metadata = {
   title: "Configurações",
@@ -23,6 +24,12 @@ export default function ConfiguracoesPage() {
           <p className="text-sm text-[var(--at-text-secondary)]">
             As configurações da conta e preferências serão gerenciadas aqui.
           </p>
+        </AppCard>
+
+        {/* Logout — visible on all screen sizes; desktop sidebar also shows it */}
+        <AppCard>
+          <AppCardHeader title="Sessão" />
+          <LogoutButton fullWidth />
         </AppCard>
       </div>
     </PatientShell>

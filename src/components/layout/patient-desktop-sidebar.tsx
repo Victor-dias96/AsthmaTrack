@@ -10,6 +10,7 @@ import {
   Settings,
 } from "lucide-react";
 import { AppLogo } from "@/components/ui/app-logo";
+import { LogoutButton } from "@/features/auth/components/logout-button";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -83,9 +84,13 @@ export function PatientDesktopSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 pb-6 text-[10px] text-[var(--at-navy-muted)]">
-        AsthmaTrack — uso pessoal
+      <div className="px-3 pb-6 space-y-3">
+        <LogoutButton />
+        <p className="px-3 text-[10px] text-[var(--at-navy-muted)]">
+          AsthmaTrack — uso pessoal
+        </p>
       </div>
     </aside>
   );
 }
+
