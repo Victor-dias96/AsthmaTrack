@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AppButton } from "@/components/ui/app-button";
 import { AppInput } from "@/components/ui/app-input";
 import { AppCheckbox } from "@/components/ui/app-checkbox";
 import { FormField } from "@/components/ui/form-field";
+import { AppAlert } from "@/components/ui/app-alert";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { createClient } from "@/lib/supabase/client";
 
 type FormErrors = {
   name?: string;
@@ -16,12 +20,18 @@ type FormErrors = {
 };
 
 export function RegisterForm() {
+  const router = useRouter();
+  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  
   const [errors, setErrors] = useState<FormErrors>({});
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [requireEmailConfirmation, setRequireEmailConfirmation] = useState(false);
 
   function validate() {
     const newErrors: FormErrors = {};
@@ -56,14 +66,85 @@ export function RegisterForm() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const isValid = validate();
+    if (loading) return;
 
-    if (isValid) {
-      // Backend registration integration pending (Supabase in future task).
-      // Do not show fake success message or simulate account creation.
+    setAuthError(null);
+    setRequireEmailConfirmation(false);
+
+    const isValid = validate();
+    if (!isValid) return;
+
+    setLoading(true);
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            full_name: name.trim(),
+          },
+        },
+      });
+
+      if (error) {
+        // Map Supabase errors to concise PT-BR messages
+        let message = "Ocorreu um erro ao criar sua conta. Tente novamente.";
+        
+        if (error.message.includes("already registered") || error.message.includes("already exists")) {
+          message = "Este e-mail já está cadastrado.";
+        } else if (error.message.includes("valid email") || error.status === 422) {
+          message = "O e-mail informado é inválido.";
+        } else if (error.message.includes("weak_password") || error.message.includes("Password should be")) {
+          message = "A senha é muito fraca. Tente uma senha mais segura.";
+        } else if (error.message.includes("Failed to fetch") || error.message.includes("Network")) {
+          message = "Falha na conexão. Verifique sua internet.";
+        } else if (error.message.includes("not configured") || error.message.includes("missing")) {
+          message = "Erro de configuração do servidor.";
+        }
+
+        setAuthError(message);
+        setLoading(false);
+        return;
+      }
+
+      // Check if signup succeeded but requires email confirmation
+      if (data.session === null && data.user) {
+        setRequireEmailConfirmation(true);
+        setLoading(false);
+        return;
+      }
+
+      // Success with active session -> redirect to onboarding
+      router.push("/onboarding");
+    } catch {
+      setAuthError("Erro inesperado. Tente novamente mais tarde.");
+      setLoading(false);
     }
+  }
+
+  if (requireEmailConfirmation) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--at-text-primary)]">
+            Verifique seu e-mail
+          </h1>
+          <p className="mt-1 text-sm text-[var(--at-text-secondary)]">
+            Quase lá!
+          </p>
+        </div>
+        <AppAlert variant="success">
+          Enviamos um link de confirmação para <strong>{email}</strong>. Por favor, verifique sua caixa de entrada para ativar sua conta.
+        </AppAlert>
+        <AppButton variant="outline" fullWidth onClick={() => router.push("/login")}>
+          Voltar para o login
+        </AppButton>
+      </div>
+    );
   }
 
   return (
@@ -76,6 +157,8 @@ export function RegisterForm() {
           Preencha os dados abaixo para começar
         </p>
       </div>
+
+      {authError && <AppAlert variant="warning">{authError}</AppAlert>}
 
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormField
@@ -94,6 +177,7 @@ export function RegisterForm() {
             onChange={(e) => setName(e.target.value)}
             hasError={!!errors.name}
             required
+            disabled={loading}
           />
         </FormField>
 
@@ -113,6 +197,7 @@ export function RegisterForm() {
             onChange={(e) => setEmail(e.target.value)}
             hasError={!!errors.email}
             required
+            disabled={loading}
           />
         </FormField>
 
@@ -132,6 +217,7 @@ export function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             hasError={!!errors.password}
             required
+            disabled={loading}
           />
         </FormField>
 
@@ -151,6 +237,7 @@ export function RegisterForm() {
             onChange={(e) => setPasswordConfirm(e.target.value)}
             hasError={!!errors.passwordConfirm}
             required
+            disabled={loading}
           />
         </FormField>
 
@@ -160,6 +247,7 @@ export function RegisterForm() {
           checked={acceptedTerms}
           onChange={(e) => setAcceptedTerms(e.target.checked)}
           error={errors.terms}
+          disabled={loading}
           label={
             <span>
               Li e aceito os Termos de Uso e a Política de Privacidade
@@ -167,8 +255,15 @@ export function RegisterForm() {
           }
         />
 
-        <AppButton type="submit" fullWidth size="lg">
-          Criar conta
+        <AppButton type="submit" fullWidth size="lg" disabled={loading}>
+          {loading ? (
+            <>
+              <LoadingSpinner size="sm" label="Criando conta" />
+              <span className="ml-2">Criando conta...</span>
+            </>
+          ) : (
+            "Criar conta"
+          )}
         </AppButton>
       </form>
 
