@@ -13,7 +13,7 @@ import { getSupabaseEnv } from "./env";
  */
 export async function updateSupabaseSession(
   request: NextRequest
-): Promise<NextResponse> {
+): Promise<{ supabaseResponse: NextResponse; isAuthenticated: boolean }> {
   // Start with a plain "pass-through" response that preserves the original
   // request headers so RSC and other internal Next.js headers reach the app.
   let supabaseResponse = NextResponse.next({ request });
@@ -50,7 +50,10 @@ export async function updateSupabaseSession(
   // the JWT claims from the access token stored in the session cookie.
   // It also triggers a silent refresh when the token is near expiry.
   // Do NOT use getSession() here — it does not re-validate with the server.
-  await supabase.auth.getClaims();
+  const { data, error } = await supabase.auth.getClaims();
 
-  return supabaseResponse;
+  return {
+    supabaseResponse,
+    isAuthenticated: !error && !!data,
+  };
 }

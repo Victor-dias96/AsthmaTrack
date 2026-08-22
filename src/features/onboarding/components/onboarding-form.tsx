@@ -83,7 +83,7 @@ export function OnboardingForm() {
   return (
     <div className="space-y-4">
       {errorMsg && (
-        <AppAlert variant="warning" role="alert">
+        <AppAlert variant="warning">
           {errorMsg}
         </AppAlert>
       )}

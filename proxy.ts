@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { updateSupabaseSession } from "@/lib/supabase/proxy";
 
 /**
@@ -6,14 +6,41 @@ import { updateSupabaseSession } from "@/lib/supabase/proxy";
  *
  * Responsibilities:
  *   - Refresh Supabase auth cookies on every application request.
+ *   - Protect /paciente routes by redirecting unauthenticated users to /login.
  *   - Return the response that carries the refreshed Set-Cookie headers.
  *
  * Out of scope (to be handled in a later issue):
- *   - Redirecting unauthenticated users away from /paciente routes.
  *   - Redirecting authenticated users away from /login or /cadastro.
  */
 export async function proxy(request: NextRequest) {
-  return updateSupabaseSession(request);
+  const { supabaseResponse, isAuthenticated } = await updateSupabaseSession(
+    request
+  );
+
+  // Protect private patient routes
+  if (
+    !isAuthenticated &&
+    request.nextUrl.pathname.startsWith("/paciente")
+  ) {
+    const loginUrl = new URL("/login", request.url);
+    // Safely preserve the original path and query as a relative URL
+    loginUrl.searchParams.set(
+      "next",
+      request.nextUrl.pathname + request.nextUrl.search
+    );
+
+    // Create a redirect response
+    const redirectResponse = NextResponse.redirect(loginUrl);
+
+    // IMPORTANT: Preserve refreshed cookies from the updateSupabaseSession call
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+
+    return redirectResponse;
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
