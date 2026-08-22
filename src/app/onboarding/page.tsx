@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Activity, Gauge, Share2 } from "lucide-react";
 import { AppLogo } from "@/components/ui/app-logo";
 import { AppAlert } from "@/components/ui/app-alert";
-import { AppButton } from "@/components/ui/app-button";
+import { OnboardingForm } from "@/features/onboarding/components/onboarding-form";
 
 export const metadata: Metadata = {
   title: "Bem-vindo",
@@ -69,9 +69,7 @@ export default function OnboardingPage() {
           e não prescreve medicamentos.
         </AppAlert>
 
-        <AppButton fullWidth size="lg" type="button">
-          Começar agora
-        </AppButton>
+        <OnboardingForm />
 
         <p className="text-center text-xs text-[var(--at-text-secondary)]">
           Passo 1 de 1 · Onboarding
