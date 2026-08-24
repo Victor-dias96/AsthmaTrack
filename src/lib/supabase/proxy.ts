@@ -8,12 +8,11 @@ import { getSupabaseEnv } from "./env";
  * trigger a silent token refresh when the access token is near expiry, and
  * copies any updated Set-Cookie headers onto the returned NextResponse.
  *
- * This function does NOT redirect. Routing decisions belong to a separate
- * issue. Its only responsibility is session synchronisation.
+ * This function does NOT redirect. Routing decisions belong to `src/proxy.ts`.
+ * Its only responsibility is session synchronisation. The same verified client
+ * is returned so the proxy can load the current user's profile once.
  */
-export async function updateSupabaseSession(
-  request: NextRequest
-): Promise<{ supabaseResponse: NextResponse; isAuthenticated: boolean }> {
+export async function updateSupabaseSession(request: NextRequest) {
   // Start with a plain "pass-through" response that preserves the original
   // request headers so RSC and other internal Next.js headers reach the app.
   let supabaseResponse = NextResponse.next({ request });
@@ -55,5 +54,8 @@ export async function updateSupabaseSession(
   return {
     supabaseResponse,
     isAuthenticated: !error && !!data,
+    // Same client that already verified identity — callers can query the
+    // current user's profile without a second getClaims/getUser round-trip.
+    supabase,
   };
 }

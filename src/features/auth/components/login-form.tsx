@@ -8,6 +8,7 @@ import { AppInput } from "@/components/ui/app-input";
 import { AppAlert } from "@/components/ui/app-alert";
 import { FormField } from "@/components/ui/form-field";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { resolveAuthRedirect } from "@/lib/auth/resolve-auth-redirect";
 import { createClient } from "@/lib/supabase/client";
 
 type FormErrors = {
@@ -102,20 +103,16 @@ export function LoginForm() {
         return;
       }
 
-      // Determine destination based on profile data
-      if (!profile.onboarding_completed) {
-        router.replace("/onboarding");
-        return;
-      }
+      const nextParam = new URLSearchParams(window.location.search).get("next");
+      const destination =
+        resolveAuthRedirect({
+          pathname: "/login",
+          next: nextParam,
+          profile,
+        }) ?? "/onboarding";
 
-      if (profile.role === "patient") {
-        router.replace("/paciente/dashboard");
-        return;
-      }
-
-      // Medical role: no dedicated route yet — task remaining
-      // Redirect to onboarding as safe fallback until medical dashboard exists
-      router.replace("/onboarding");
+      router.replace(destination);
+      return;
     } catch {
       setAuthError("Erro inesperado. Tente novamente mais tarde.");
       setLoading(false);
