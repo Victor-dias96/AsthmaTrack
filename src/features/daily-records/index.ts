@@ -1,1 +1,1 @@
-// daily-records feature — placeholder
+export { DailyRecordFormShell } from "./components/daily-record-form-shell";
