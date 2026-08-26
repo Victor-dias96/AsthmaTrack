@@ -10,11 +10,9 @@ export interface User {
   createdAt: ISODateString;
 }
 
-export interface DailyRecord {
-  id: string;
-  userId: UserId;
-  date: ISODateString;
-  pefValue?: number;
-  notes?: string;
-  createdAt: ISODateString;
-}
+export type {
+  DailyRecord,
+  DailyRecordInsert,
+  DailyRecordUpdate,
+  SymptomSeverity,
+} from "./daily-record";
