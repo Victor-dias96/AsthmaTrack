@@ -9,6 +9,8 @@ import { SymptomSeveritySelector } from "./symptom-severity-selector";
 
 const COUGH_SEVERITY_FIELD_ID = "daily-record-cough-severity";
 const WHEEZING_SEVERITY_FIELD_ID = "daily-record-wheezing-severity";
+const SHORTNESS_OF_BREATH_SEVERITY_FIELD_ID =
+  "daily-record-shortness-of-breath-severity";
 
 export function DailyRecordSymptomFields() {
   const [coughSeverity, setCoughSeverity] = useState<SymptomSeverity>(0);
@@ -17,6 +19,11 @@ export function DailyRecordSymptomFields() {
   const [wheezingError, setWheezingError] = useState<string | undefined>(
     undefined
   );
+  const [shortnessOfBreathSeverity, setShortnessOfBreathSeverity] =
+    useState<SymptomSeverity>(0);
+  const [shortnessOfBreathError, setShortnessOfBreathError] = useState<
+    string | undefined
+  >(undefined);
 
   function handleCoughSeverityChange(nextValue: SymptomSeverity) {
     setCoughSeverity(nextValue);
@@ -46,6 +53,22 @@ export function DailyRecordSymptomFields() {
     setWheezingError(undefined);
   }
 
+  function handleShortnessOfBreathSeverityChange(nextValue: SymptomSeverity) {
+    setShortnessOfBreathSeverity(nextValue);
+
+    const result =
+      dailyRecordFormSchema.shape.shortnessOfBreathSeverity.safeParse(
+        nextValue
+      );
+
+    if (!result.success) {
+      setShortnessOfBreathError(result.error.issues[0]?.message);
+      return;
+    }
+
+    setShortnessOfBreathError(undefined);
+  }
+
   return (
     <div className="mt-4 min-w-0 space-y-4">
       <SymptomSeveritySelector
@@ -66,6 +89,15 @@ export function DailyRecordSymptomFields() {
         options={WHEEZING_SEVERITY_OPTIONS}
         hint="Selecione a intensidade do chiado que você observou."
         error={wheezingError}
+      />
+      <SymptomSeveritySelector
+        id={SHORTNESS_OF_BREATH_SEVERITY_FIELD_ID}
+        name="shortnessOfBreathSeverity"
+        label="Falta de ar"
+        value={shortnessOfBreathSeverity}
+        onChange={handleShortnessOfBreathSeverityChange}
+        hint="Selecione a intensidade da falta de ar que você observou."
+        error={shortnessOfBreathError}
       />
     </div>
   );
