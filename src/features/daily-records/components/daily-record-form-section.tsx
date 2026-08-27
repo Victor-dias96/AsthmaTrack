@@ -3,6 +3,7 @@ type DailyRecordFormSectionProps = {
   title: string;
   description: string;
   className?: string;
+  children?: React.ReactNode;
 };
 
 export function DailyRecordFormSection({
@@ -10,6 +11,7 @@ export function DailyRecordFormSection({
   title,
   description,
   className,
+  children,
 }: DailyRecordFormSectionProps) {
   return (
     <section
@@ -27,6 +29,8 @@ export function DailyRecordFormSection({
           {description}
         </p>
       </div>
+
+      {children}
     </section>
   );
 }

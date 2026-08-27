@@ -36,11 +36,20 @@ export function FormField({
       {children}
 
       {hint && !error && (
-        <p className="text-xs text-[var(--at-text-secondary)]">{hint}</p>
+        <p
+          id={`${htmlFor}-hint`}
+          className="text-xs text-[var(--at-text-secondary)]"
+        >
+          {hint}
+        </p>
       )}
 
       {error && (
-        <p role="alert" className="text-xs text-destructive">
+        <p
+          id={`${htmlFor}-error`}
+          role="alert"
+          className="text-xs text-destructive"
+        >
           {error}
         </p>
       )}

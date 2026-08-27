@@ -5,6 +5,7 @@ import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 import { cn } from "@/lib/utils";
 
 import { DailyRecordFormSection } from "./daily-record-form-section";
+import { RecordedAtField } from "./recorded-at-field";
 
 const outlineActionClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
@@ -47,7 +48,9 @@ export function DailyRecordFormShell() {
             id="daily-record-section-datetime"
             title="Data e medição"
             description="Data, hora e valor de PEF medido."
-          />
+          >
+            <RecordedAtField />
+          </DailyRecordFormSection>
 
           <DailyRecordFormSection
             id="daily-record-section-symptoms"

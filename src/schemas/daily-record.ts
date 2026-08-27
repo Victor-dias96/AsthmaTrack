@@ -30,6 +30,25 @@ function isValidDatetimeLocal(value: string): boolean {
   );
 }
 
+function isNotFutureDatetimeLocal(value: string): boolean {
+  const match = DATETIME_LOCAL_PATTERN.exec(value);
+  if (!match) {
+    return true;
+  }
+
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(5, 7));
+  const day = Number(value.slice(8, 10));
+  const hour = Number(value.slice(11, 13));
+  const minute = Number(value.slice(14, 16));
+
+  const selected = new Date(year, month - 1, day, hour, minute, 0, 0);
+  const now = new Date();
+  now.setSeconds(0, 0);
+
+  return selected.getTime() <= now.getTime();
+}
+
 const symptomSeveritySchema = z.coerce
   .number({ error: "Selecione uma intensidade válida" })
   .int({ error: "Selecione uma intensidade válida" })
@@ -49,6 +68,9 @@ export const dailyRecordFormSchema = z.object({
     })
     .refine(isValidDatetimeLocal, {
       error: "Informe uma data e hora válidas",
+    })
+    .refine(isNotFutureDatetimeLocal, {
+      error: "A data e hora não podem ser no futuro",
     }),
   pefValue: z
     .union([z.string(), z.number()])
