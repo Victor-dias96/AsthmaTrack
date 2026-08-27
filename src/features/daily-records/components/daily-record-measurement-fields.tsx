@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { AppInput } from "@/components/ui/app-input";
 import { FormField } from "@/components/ui/form-field";
 import { formatDateToDatetimeLocal } from "@/lib/format-datetime-local";
@@ -9,30 +9,8 @@ import { dailyRecordFormSchema } from "@/schemas/daily-record";
 const RECORDED_AT_FIELD_ID = "daily-record-recorded-at";
 const PEF_FIELD_ID = "daily-record-pef-value";
 
-let clientDatetimeLocalSnapshot: string | null = null;
-
-function subscribeToDatetimeLocal(): () => void {
-  return () => {};
-}
-
-function getClientDatetimeLocalSnapshot(): string {
-  if (clientDatetimeLocalSnapshot === null) {
-    clientDatetimeLocalSnapshot = formatDateToDatetimeLocal(new Date());
-  }
-
-  return clientDatetimeLocalSnapshot;
-}
-
-function getServerDatetimeLocalSnapshot(): string {
-  return "";
-}
-
 export function DailyRecordMeasurementFields() {
-  const initialLocal = useSyncExternalStore(
-    subscribeToDatetimeLocal,
-    getClientDatetimeLocalSnapshot,
-    getServerDatetimeLocalSnapshot
-  );
+  const [initialLocal, setInitialLocal] = useState("");
   const [recordedAtUserValue, setRecordedAtUserValue] = useState<string | null>(
     null
   );
@@ -41,6 +19,16 @@ export function DailyRecordMeasurementFields() {
   );
   const [pefValue, setPefValue] = useState("");
   const [pefError, setPefError] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setInitialLocal(formatDateToDatetimeLocal(new Date()));
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   const recordedAtValue = recordedAtUserValue ?? initialLocal;
   const isRecordedAtReady = initialLocal.length > 0;

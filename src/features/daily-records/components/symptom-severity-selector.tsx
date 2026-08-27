@@ -3,7 +3,10 @@
 import { cn } from "@/lib/utils";
 import type { SymptomSeverity } from "@/types/daily-record";
 
-import { SYMPTOM_SEVERITY_OPTIONS } from "../constants/symptom-severity-options";
+import {
+  SYMPTOM_SEVERITY_OPTIONS,
+  type SymptomSeverityOption,
+} from "../constants/symptom-severity-options";
 
 type SymptomSeveritySelectorProps = {
   id: string;
@@ -11,6 +14,7 @@ type SymptomSeveritySelectorProps = {
   label: string;
   value: SymptomSeverity;
   onChange: (value: SymptomSeverity) => void;
+  options?: ReadonlyArray<SymptomSeverityOption>;
   hint?: string;
   error?: string;
 };
@@ -21,6 +25,7 @@ export function SymptomSeveritySelector({
   label,
   value,
   onChange,
+  options = SYMPTOM_SEVERITY_OPTIONS,
   hint,
   error,
 }: SymptomSeveritySelectorProps) {
@@ -42,7 +47,7 @@ export function SymptomSeveritySelector({
         aria-invalid={!!error}
         className="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4"
       >
-        {SYMPTOM_SEVERITY_OPTIONS.map((option) => {
+        {options.map((option) => {
           const optionId = `${id}-${option.value}`;
           const isSelected = value === option.value;
 
