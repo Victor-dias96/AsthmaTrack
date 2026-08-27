@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { DailyRecordFormSection } from "./daily-record-form-section";
 import { DailyRecordMeasurementFields } from "./daily-record-measurement-fields";
+import { DailyRecordSymptomFields } from "./daily-record-symptom-fields";
 
 const outlineActionClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
@@ -57,7 +58,9 @@ export function DailyRecordFormShell() {
             title="Sintomas"
             description="Intensidade dos sintomas que você observou."
             className="border-t border-[var(--at-border)] pt-8"
-          />
+          >
+            <DailyRecordSymptomFields />
+          </DailyRecordFormSection>
 
           <DailyRecordFormSection
             id="daily-record-section-additional"
