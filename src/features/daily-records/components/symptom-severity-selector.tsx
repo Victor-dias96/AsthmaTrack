@@ -48,16 +48,16 @@ export function SymptomSeveritySelector({
         className="grid min-w-0 grid-cols-2 gap-2 sm:grid-cols-4"
       >
         {options.map((option) => {
-          const optionId = `${id}-${option.value}`;
+          const optionId = `${name}-${option.value}`;
           const isSelected = value === option.value;
 
           return (
-            <div key={option.value} className="min-w-0">
+            <div key={optionId} className="relative min-w-0">
               <input
                 id={optionId}
                 type="radio"
                 name={name}
-                value={option.value}
+                value={String(option.value)}
                 checked={isSelected}
                 onChange={() => onChange(option.value)}
                 className="sr-only peer"
