@@ -19,9 +19,23 @@ import {
   type SymptomFieldName,
 } from "../constants/symptom-severity-options";
 import {
+  classifyDailyRecordInsertError,
+  classifyDailyRecordNetworkError,
+  DAILY_RECORD_AUTH_ERROR_MESSAGE,
+} from "../lib/classify-daily-record-submit-error";
+import {
   buildDailyRecordInsertPayload,
   convertLocalDatetimeToIso,
 } from "../lib/daily-record-payload";
+
+export type DailyRecordSubmissionState =
+  | "idle"
+  | "submitting"
+  | "success"
+  | "error";
+
+const SUCCESS_REDIRECT_DELAY_MS = 1500;
+const AUTH_REDIRECT_DELAY_MS = 2500;
 
 type SeverityValues = Record<SymptomFieldName, SymptomSeverity>;
 type SeverityErrors = Record<SymptomFieldName, string | undefined>;
@@ -40,9 +54,6 @@ type DailyRecordFormRawValues = {
 };
 
 type RawFieldName = keyof DailyRecordFormRawValues;
-
-const GENERIC_SUBMIT_ERROR_MESSAGE =
-  "Não foi possível salvar o registro agora. Tente novamente em alguns instantes.";
 
 /** Render order of fields, used to pick which invalid field to focus first. */
 const FIELD_ORDER: ReadonlyArray<RawFieldName> = [
@@ -133,7 +144,8 @@ export function useDailyRecordForm() {
   const [notesError, setNotesError] = useState<string | undefined>(undefined);
 
   const [formError, setFormError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionState, setSubmissionState] =
+    useState<DailyRecordSubmissionState>("idle");
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -264,7 +276,7 @@ export function useDailyRecordForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (isSubmitting) {
+    if (submissionState === "submitting" || submissionState === "success") {
       return;
     }
 
@@ -313,7 +325,7 @@ export function useDailyRecordForm() {
       return;
     }
 
-    setIsSubmitting(true);
+    setSubmissionState("submitting");
 
     try {
       const supabase = createClient();
@@ -324,7 +336,11 @@ export function useDailyRecordForm() {
       } = await supabase.auth.getUser();
 
       if (authError || !user) {
-        router.replace("/login");
+        setSubmissionState("error");
+        setFormError(DAILY_RECORD_AUTH_ERROR_MESSAGE);
+        window.setTimeout(() => {
+          router.replace("/login");
+        }, AUTH_REDIRECT_DELAY_MS);
         return;
       }
 
@@ -339,16 +355,28 @@ export function useDailyRecordForm() {
         .insert(payload);
 
       if (insertError) {
-        setFormError(GENERIC_SUBMIT_ERROR_MESSAGE);
+        const classified = classifyDailyRecordInsertError(insertError);
+        setSubmissionState("error");
+        setFormError(classified.message);
+
+        if (classified.kind === "auth") {
+          window.setTimeout(() => {
+            router.replace("/login");
+          }, AUTH_REDIRECT_DELAY_MS);
+        }
+
         return;
       }
 
-      router.replace("/paciente/dashboard");
-      router.refresh();
+      setSubmissionState("success");
+      window.setTimeout(() => {
+        router.replace("/paciente/dashboard");
+        router.refresh();
+      }, SUCCESS_REDIRECT_DELAY_MS);
     } catch {
-      setFormError(GENERIC_SUBMIT_ERROR_MESSAGE);
-    } finally {
-      setIsSubmitting(false);
+      const classified = classifyDailyRecordNetworkError();
+      setSubmissionState("error");
+      setFormError(classified.message);
     }
   }
 
@@ -383,7 +411,7 @@ export function useDailyRecordForm() {
     onNotesBlur,
 
     formError,
-    isSubmitting,
+    submissionState,
     handleSubmit,
   };
 }

@@ -8,6 +8,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils";
 
 import { useDailyRecordForm } from "../hooks/use-daily-record-form";
+import { DAILY_RECORD_SUCCESS_MESSAGE } from "../lib/classify-daily-record-submit-error";
 import { DailyRecordAdditionalFields } from "./daily-record-additional-fields";
 import { DailyRecordFormSection } from "./daily-record-form-section";
 import { DailyRecordMeasurementFields } from "./daily-record-measurement-fields";
@@ -24,6 +25,9 @@ const outlineActionClasses = [
 
 export function DailyRecordFormShell() {
   const form = useDailyRecordForm();
+  const isSubmitting = form.submissionState === "submitting";
+  const isSaveDisabled =
+    form.submissionState === "submitting" || form.submissionState === "success";
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -41,18 +45,16 @@ export function DailyRecordFormShell() {
         Este aplicativo não substitui orientação médica profissional.
       </AppAlert>
 
-      <form onSubmit={form.handleSubmit} noValidate>
+      <form
+        onSubmit={form.handleSubmit}
+        noValidate
+        aria-busy={isSubmitting}
+      >
         <AppCard>
           <AppCardHeader
             title="Dados do registro"
             description="Informe quando você mediu o PEF e como se sentiu no período."
           />
-
-          {form.formError && (
-            <AppAlert variant="warning" className="mb-4">
-              {form.formError}
-            </AppAlert>
-          )}
 
           <div
             role="group"
@@ -115,6 +117,20 @@ export function DailyRecordFormShell() {
           </div>
 
           <div className="mt-8 border-t border-[var(--at-border)] pt-6">
+            {form.submissionState === "success" && (
+              <AppAlert variant="success" className="mb-4">
+                {DAILY_RECORD_SUCCESS_MESSAGE}
+              </AppAlert>
+            )}
+
+            {form.formError && (
+              <div id="daily-record-form-error">
+                <AppAlert variant="warning" className="mb-4">
+                  {form.formError}
+                </AppAlert>
+              </div>
+            )}
+
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
               <Link
                 href="/paciente/dashboard"
@@ -125,15 +141,19 @@ export function DailyRecordFormShell() {
 
               <AppButton
                 type="submit"
-                disabled={form.isSubmitting}
-                aria-disabled={form.isSubmitting}
+                disabled={isSaveDisabled}
+                aria-disabled={isSaveDisabled}
+                aria-busy={isSubmitting}
+                aria-describedby={
+                  form.formError ? "daily-record-form-error" : undefined
+                }
                 fullWidth
-                className="sm:w-auto"
+                className="min-w-[10.5rem] sm:w-auto"
               >
-                {form.isSubmitting ? (
+                {isSubmitting ? (
                   <>
                     <LoadingSpinner size="sm" label="Salvando" />
-                    <span className="ml-2">Salvando…</span>
+                    <span className="ml-2">Salvando...</span>
                   </>
                 ) : (
                   "Salvar registro"
