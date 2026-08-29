@@ -1,92 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { AppInput } from "@/components/ui/app-input";
 import { FormField } from "@/components/ui/form-field";
-import { formatDateToDatetimeLocal } from "@/lib/format-datetime-local";
-import { dailyRecordFormSchema } from "@/schemas/daily-record";
 
-const RECORDED_AT_FIELD_ID = "daily-record-recorded-at";
-const PEF_FIELD_ID = "daily-record-pef-value";
+import { PEF_FIELD_ID, RECORDED_AT_FIELD_ID } from "../constants/field-ids";
 
-export function DailyRecordMeasurementFields() {
-  const [initialLocal, setInitialLocal] = useState("");
-  const [recordedAtUserValue, setRecordedAtUserValue] = useState<string | null>(
-    null
-  );
-  const [recordedAtError, setRecordedAtError] = useState<string | undefined>(
-    undefined
-  );
-  const [pefValue, setPefValue] = useState("");
-  const [pefError, setPefError] = useState<string | undefined>(undefined);
+type DailyRecordMeasurementFieldsProps = {
+  recordedAtValue: string;
+  recordedAtError?: string;
+  isRecordedAtReady: boolean;
+  maxRecordedAt?: string;
+  onRecordedAtChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onRecordedAtBlur: () => void;
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setInitialLocal(formatDateToDatetimeLocal(new Date()));
-    }, 0);
+  pefValue: string;
+  pefError?: string;
+  onPefChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPefBlur: () => void;
+};
 
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, []);
-
-  const recordedAtValue = recordedAtUserValue ?? initialLocal;
-  const isRecordedAtReady = initialLocal.length > 0;
-
-  function validateRecordedAt(nextValue: string) {
-    const result = dailyRecordFormSchema.shape.recordedAt.safeParse(nextValue);
-
-    if (!result.success) {
-      setRecordedAtError(result.error.issues[0]?.message);
-      return;
-    }
-
-    setRecordedAtError(undefined);
-  }
-
-  function handleRecordedAtChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const nextValue = event.target.value;
-    setRecordedAtUserValue(nextValue);
-
-    if (nextValue) {
-      validateRecordedAt(nextValue);
-    } else {
-      setRecordedAtError(undefined);
-    }
-  }
-
-  function handleRecordedAtBlur() {
-    if (recordedAtValue) {
-      validateRecordedAt(recordedAtValue);
-    }
-  }
-
-  function validatePef(nextValue: string) {
-    const result = dailyRecordFormSchema.shape.pefValue.safeParse(nextValue);
-
-    if (!result.success) {
-      setPefError(result.error.issues[0]?.message);
-      return;
-    }
-
-    setPefError(undefined);
-  }
-
-  function handlePefChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const nextValue = event.target.value;
-    setPefValue(nextValue);
-
-    if (nextValue) {
-      validatePef(nextValue);
-    } else {
-      setPefError(undefined);
-    }
-  }
-
-  function handlePefBlur() {
-    validatePef(pefValue);
-  }
-
+export function DailyRecordMeasurementFields({
+  recordedAtValue,
+  recordedAtError,
+  isRecordedAtReady,
+  maxRecordedAt,
+  onRecordedAtChange,
+  onRecordedAtBlur,
+  pefValue,
+  pefError,
+  onPefChange,
+  onPefBlur,
+}: DailyRecordMeasurementFieldsProps) {
   const recordedAtDescribedBy = recordedAtError
     ? `${RECORDED_AT_FIELD_ID}-error`
     : `${RECORDED_AT_FIELD_ID}-hint`;
@@ -110,9 +54,9 @@ export function DailyRecordMeasurementFields() {
           name="recordedAt"
           type="datetime-local"
           value={recordedAtValue}
-          onChange={handleRecordedAtChange}
-          onBlur={handleRecordedAtBlur}
-          max={initialLocal || undefined}
+          onChange={onRecordedAtChange}
+          onBlur={onRecordedAtBlur}
+          max={maxRecordedAt}
           hasError={!!recordedAtError}
           aria-invalid={!!recordedAtError}
           aria-describedby={
@@ -141,8 +85,8 @@ export function DailyRecordMeasurementFields() {
             step={1}
             min={1}
             value={pefValue}
-            onChange={handlePefChange}
-            onBlur={handlePefBlur}
+            onChange={onPefChange}
+            onBlur={onPefBlur}
             hasError={!!pefError}
             aria-invalid={!!pefError}
             aria-describedby={pefDescribedBy}

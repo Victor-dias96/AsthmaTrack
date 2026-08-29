@@ -1,86 +1,60 @@
 "use client";
 
-import { useState } from "react";
 import { AppTextarea } from "@/components/ui/app-textarea";
 import { FormField } from "@/components/ui/form-field";
-import { dailyRecordFormSchema } from "@/schemas/daily-record";
 
 import { BooleanChoiceSelector } from "./boolean-choice-selector";
-
-const HAD_ATTACK_GROUP_NAME = "hadAttack";
-const HAD_ATTACK_LABEL_ID = "daily-record-had-attack-label";
+import {
+  HAD_ATTACK_GROUP_NAME,
+  HAD_ATTACK_LABEL_ID,
+  HAD_ATTACK_OPTION_FALSE_ID,
+  HAD_ATTACK_OPTION_TRUE_ID,
+  NOTES_FIELD_ID,
+  USED_RESCUE_MEDICATION_GROUP_NAME,
+  USED_RESCUE_MEDICATION_LABEL_ID,
+  USED_RESCUE_MEDICATION_OPTION_FALSE_ID,
+  USED_RESCUE_MEDICATION_OPTION_TRUE_ID,
+} from "../constants/field-ids";
 
 const HAD_ATTACK_OPTIONS = [
-  { value: false, label: "Não", id: "hadAttack-false" },
-  { value: true, label: "Sim", id: "hadAttack-true" },
+  { value: false, label: "Não", id: HAD_ATTACK_OPTION_FALSE_ID },
+  { value: true, label: "Sim", id: HAD_ATTACK_OPTION_TRUE_ID },
 ] as const;
-
-const USED_RESCUE_MEDICATION_GROUP_NAME = "usedRescueMedication";
-const USED_RESCUE_MEDICATION_LABEL_ID =
-  "daily-record-used-rescue-medication-label";
 
 const USED_RESCUE_MEDICATION_OPTIONS = [
-  { value: false, label: "Não", id: "usedRescueMedication-false" },
-  { value: true, label: "Sim", id: "usedRescueMedication-true" },
+  { value: false, label: "Não", id: USED_RESCUE_MEDICATION_OPTION_FALSE_ID },
+  { value: true, label: "Sim", id: USED_RESCUE_MEDICATION_OPTION_TRUE_ID },
 ] as const;
 
-const NOTES_FIELD_ID = "daily-record-notes";
 const NOTES_MAX_LENGTH = 1000;
 
-export function DailyRecordAdditionalFields() {
-  const [hadAttack, setHadAttack] = useState(false);
-  const [hadAttackError, setHadAttackError] = useState<string | undefined>(
-    undefined
-  );
-  const [usedRescueMedication, setUsedRescueMedication] = useState(false);
-  const [usedRescueMedicationError, setUsedRescueMedicationError] = useState<
-    string | undefined
-  >(undefined);
-  const [notes, setNotes] = useState("");
-  const [notesError, setNotesError] = useState<string | undefined>(undefined);
+type DailyRecordAdditionalFieldsProps = {
+  hadAttack: boolean;
+  hadAttackError?: string;
+  onHadAttackChange: (value: boolean) => void;
 
-  function handleHadAttackChange(nextValue: boolean) {
-    setHadAttack(nextValue);
+  usedRescueMedication: boolean;
+  usedRescueMedicationError?: string;
+  onUsedRescueMedicationChange: (value: boolean) => void;
 
-    const result = dailyRecordFormSchema.shape.hadAttack.safeParse(nextValue);
+  notes: string;
+  notesError?: string;
+  onNotesChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onNotesBlur: () => void;
+};
 
-    setHadAttackError(
-      result.success ? undefined : result.error.issues[0]?.message
-    );
-  }
-
-  function handleUsedRescueMedicationChange(nextValue: boolean) {
-    setUsedRescueMedication(nextValue);
-
-    const result =
-      dailyRecordFormSchema.shape.usedRescueMedication.safeParse(nextValue);
-
-    setUsedRescueMedicationError(
-      result.success ? undefined : result.error.issues[0]?.message
-    );
-  }
-
-  function validateNotes(nextValue: string) {
-    const result = dailyRecordFormSchema.shape.notes.safeParse(nextValue);
-
-    setNotesError(
-      result.success ? undefined : result.error.issues[0]?.message
-    );
-  }
-
-  function handleNotesChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    const nextValue = event.target.value;
-    setNotes(nextValue);
-
-    if (notesError) {
-      validateNotes(nextValue);
-    }
-  }
-
-  function handleNotesBlur() {
-    validateNotes(notes);
-  }
-
+export function DailyRecordAdditionalFields({
+  hadAttack,
+  hadAttackError,
+  onHadAttackChange,
+  usedRescueMedication,
+  usedRescueMedicationError,
+  onUsedRescueMedicationChange,
+  notes,
+  notesError,
+  onNotesChange,
+  onNotesBlur,
+}: DailyRecordAdditionalFieldsProps) {
   const notesDescribedBy = notesError
     ? `${NOTES_FIELD_ID}-error`
     : `${NOTES_FIELD_ID}-hint ${NOTES_FIELD_ID}-counter`;
@@ -92,7 +66,7 @@ export function DailyRecordAdditionalFields() {
         label="Teve uma crise de asma?"
         labelId={HAD_ATTACK_LABEL_ID}
         value={hadAttack}
-        onChange={handleHadAttackChange}
+        onChange={onHadAttackChange}
         options={HAD_ATTACK_OPTIONS}
         hint="Informe se ocorreu uma crise no momento deste registro."
         error={hadAttackError}
@@ -103,7 +77,7 @@ export function DailyRecordAdditionalFields() {
         label="Usou medicação de alívio?"
         labelId={USED_RESCUE_MEDICATION_LABEL_ID}
         value={usedRescueMedication}
-        onChange={handleUsedRescueMedicationChange}
+        onChange={onUsedRescueMedicationChange}
         options={USED_RESCUE_MEDICATION_OPTIONS}
         error={usedRescueMedicationError}
       />
@@ -119,8 +93,8 @@ export function DailyRecordAdditionalFields() {
           id={NOTES_FIELD_ID}
           name="notes"
           value={notes}
-          onChange={handleNotesChange}
-          onBlur={handleNotesBlur}
+          onChange={onNotesChange}
+          onBlur={onNotesBlur}
           rows={4}
           maxLength={NOTES_MAX_LENGTH}
           hasError={!!notesError}
