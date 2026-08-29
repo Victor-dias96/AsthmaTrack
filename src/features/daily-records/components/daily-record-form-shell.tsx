@@ -4,6 +4,7 @@ import { AppButton } from "@/components/ui/app-button";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 import { cn } from "@/lib/utils";
 
+import { DailyRecordAdditionalFields } from "./daily-record-additional-fields";
 import { DailyRecordFormSection } from "./daily-record-form-section";
 import { DailyRecordMeasurementFields } from "./daily-record-measurement-fields";
 import { DailyRecordSymptomFields } from "./daily-record-symptom-fields";
@@ -67,7 +68,9 @@ export function DailyRecordFormShell() {
             title="Informações adicionais"
             description="Crises, uso de medicação de resgate e observações."
             className="border-t border-[var(--at-border)] pt-8"
-          />
+          >
+            <DailyRecordAdditionalFields />
+          </DailyRecordFormSection>
         </div>
 
         <div className="mt-8 border-t border-[var(--at-border)] pt-6">
