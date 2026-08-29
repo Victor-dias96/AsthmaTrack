@@ -3,10 +3,7 @@
 import { cn } from "@/lib/utils";
 import type { SymptomSeverity } from "@/types/daily-record";
 
-import {
-  SYMPTOM_SEVERITY_OPTIONS,
-  type SymptomSeverityOption,
-} from "../constants/symptom-severity-options";
+import type { SymptomSeverityOption } from "../constants/symptom-severity-options";
 
 type SymptomSeveritySelectorProps = {
   id: string;
@@ -14,7 +11,7 @@ type SymptomSeveritySelectorProps = {
   label: string;
   value: SymptomSeverity;
   onChange: (value: SymptomSeverity) => void;
-  options?: ReadonlyArray<SymptomSeverityOption>;
+  options: ReadonlyArray<SymptomSeverityOption>;
   hint?: string;
   error?: string;
 };
@@ -25,7 +22,7 @@ export function SymptomSeveritySelector({
   label,
   value,
   onChange,
-  options = SYMPTOM_SEVERITY_OPTIONS,
+  options,
   hint,
   error,
 }: SymptomSeveritySelectorProps) {

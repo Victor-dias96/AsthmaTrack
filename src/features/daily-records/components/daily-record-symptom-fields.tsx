@@ -4,101 +4,74 @@ import { useState } from "react";
 import { dailyRecordFormSchema } from "@/schemas/daily-record";
 import type { SymptomSeverity } from "@/types/daily-record";
 
-import { WHEEZING_SEVERITY_OPTIONS } from "../constants/symptom-severity-options";
+import {
+  SYMPTOM_FIELDS,
+  type SymptomFieldName,
+} from "../constants/symptom-severity-options";
 import { SymptomSeveritySelector } from "./symptom-severity-selector";
 
-const COUGH_SEVERITY_FIELD_ID = "daily-record-cough-severity";
-const WHEEZING_SEVERITY_FIELD_ID = "daily-record-wheezing-severity";
-const SHORTNESS_OF_BREATH_SEVERITY_FIELD_ID =
-  "daily-record-shortness-of-breath-severity";
+type SeverityValues = Record<SymptomFieldName, SymptomSeverity>;
+type SeverityErrors = Record<SymptomFieldName, string | undefined>;
+
+/** Deterministic initial values: every symptom starts at 0, never undefined. */
+function createInitialSeverityValues(): SeverityValues {
+  return SYMPTOM_FIELDS.reduce((values, field) => {
+    values[field.name] = 0;
+    return values;
+  }, {} as SeverityValues);
+}
+
+function createInitialSeverityErrors(): SeverityErrors {
+  return SYMPTOM_FIELDS.reduce((errors, field) => {
+    errors[field.name] = undefined;
+    return errors;
+  }, {} as SeverityErrors);
+}
+
+/** Deterministic DOM id derived only from the static field name. */
+function toFieldId(name: SymptomFieldName): string {
+  return `daily-record-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`;
+}
 
 export function DailyRecordSymptomFields() {
-  const [coughSeverity, setCoughSeverity] = useState<SymptomSeverity>(0);
-  const [coughError, setCoughError] = useState<string | undefined>(undefined);
-  const [wheezingSeverity, setWheezingSeverity] = useState<SymptomSeverity>(0);
-  const [wheezingError, setWheezingError] = useState<string | undefined>(
-    undefined
+  const [severityValues, setSeverityValues] = useState<SeverityValues>(
+    createInitialSeverityValues
   );
-  const [shortnessOfBreathSeverity, setShortnessOfBreathSeverity] =
-    useState<SymptomSeverity>(0);
-  const [shortnessOfBreathError, setShortnessOfBreathError] = useState<
-    string | undefined
-  >(undefined);
+  const [severityErrors, setSeverityErrors] = useState<SeverityErrors>(
+    createInitialSeverityErrors
+  );
 
-  function handleCoughSeverityChange(nextValue: SymptomSeverity) {
-    setCoughSeverity(nextValue);
+  function handleSeverityChange(
+    fieldName: SymptomFieldName,
+    nextValue: SymptomSeverity
+  ) {
+    setSeverityValues((previous) => ({ ...previous, [fieldName]: nextValue }));
 
-    const result =
-      dailyRecordFormSchema.shape.coughSeverity.safeParse(nextValue);
+    const result = dailyRecordFormSchema.shape[fieldName].safeParse(nextValue);
 
-    if (!result.success) {
-      setCoughError(result.error.issues[0]?.message);
-      return;
-    }
-
-    setCoughError(undefined);
-  }
-
-  function handleWheezingSeverityChange(nextValue: SymptomSeverity) {
-    setWheezingSeverity(nextValue);
-
-    const result =
-      dailyRecordFormSchema.shape.wheezingSeverity.safeParse(nextValue);
-
-    if (!result.success) {
-      setWheezingError(result.error.issues[0]?.message);
-      return;
-    }
-
-    setWheezingError(undefined);
-  }
-
-  function handleShortnessOfBreathSeverityChange(nextValue: SymptomSeverity) {
-    setShortnessOfBreathSeverity(nextValue);
-
-    const result =
-      dailyRecordFormSchema.shape.shortnessOfBreathSeverity.safeParse(
-        nextValue
-      );
-
-    if (!result.success) {
-      setShortnessOfBreathError(result.error.issues[0]?.message);
-      return;
-    }
-
-    setShortnessOfBreathError(undefined);
+    setSeverityErrors((previous) => ({
+      ...previous,
+      [fieldName]: result.success
+        ? undefined
+        : result.error.issues[0]?.message,
+    }));
   }
 
   return (
     <div className="mt-4 min-w-0 space-y-4">
-      <SymptomSeveritySelector
-        id={COUGH_SEVERITY_FIELD_ID}
-        name="coughSeverity"
-        label="Tosse"
-        value={coughSeverity}
-        onChange={handleCoughSeverityChange}
-        hint="Selecione a intensidade da tosse que você observou."
-        error={coughError}
-      />
-      <SymptomSeveritySelector
-        id={WHEEZING_SEVERITY_FIELD_ID}
-        name="wheezingSeverity"
-        label="Chiado"
-        value={wheezingSeverity}
-        onChange={handleWheezingSeverityChange}
-        options={WHEEZING_SEVERITY_OPTIONS}
-        hint="Selecione a intensidade do chiado que você observou."
-        error={wheezingError}
-      />
-      <SymptomSeveritySelector
-        id={SHORTNESS_OF_BREATH_SEVERITY_FIELD_ID}
-        name="shortnessOfBreathSeverity"
-        label="Falta de ar"
-        value={shortnessOfBreathSeverity}
-        onChange={handleShortnessOfBreathSeverityChange}
-        hint="Selecione a intensidade da falta de ar que você observou."
-        error={shortnessOfBreathError}
-      />
+      {SYMPTOM_FIELDS.map((field) => (
+        <SymptomSeveritySelector
+          key={field.name}
+          id={toFieldId(field.name)}
+          name={field.name}
+          label={field.label}
+          value={severityValues[field.name]}
+          onChange={(nextValue) => handleSeverityChange(field.name, nextValue)}
+          options={field.options}
+          hint={field.hint}
+          error={severityErrors[field.name]}
+        />
+      ))}
     </div>
   );
 }
