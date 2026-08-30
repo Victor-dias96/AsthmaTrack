@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
-import { AppAlert } from "@/components/ui/app-alert";
 import {
   HistoryEmptyState,
+  HistoryErrorState,
   HistoryRecordList,
   loadPatientHistory,
 } from "@/features/history";
@@ -33,9 +33,7 @@ export default async function HistoricoPage() {
         </div>
 
         {result.status === "error" ? (
-          <AppAlert variant="warning">
-            Não foi possível carregar o histórico.
-          </AppAlert>
+          <HistoryErrorState />
         ) : result.records.length === 0 ? (
           <HistoryEmptyState />
         ) : (
