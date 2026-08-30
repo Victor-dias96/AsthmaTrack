@@ -4,7 +4,13 @@ export const DAILY_RECORD_AUTH_ERROR_MESSAGE =
   "Sua sessão expirou. Entre novamente para continuar.";
 
 export const DAILY_RECORD_CONNECTION_ERROR_MESSAGE =
-  "Não foi possível salvar o registro. Verifique sua conexão e tente novamente.";
+  "Não foi possível salvar o registro. Seus dados foram mantidos. Verifique sua conexão e tente novamente.";
+
+export const DAILY_RECORD_OFFLINE_INDICATOR_MESSAGE =
+  "Você está sem conexão. Seus dados continuam preenchidos nesta página.";
+
+export const DAILY_RECORD_UNCONFIRMED_SAVE_MESSAGE =
+  "Não foi possível confirmar o salvamento. Verifique seu histórico antes de tentar novamente.";
 
 export const DAILY_RECORD_PERMISSION_ERROR_MESSAGE =
   "Não foi possível salvar o registro. Atualize a página e tente novamente.";
@@ -29,6 +35,12 @@ const CONNECTION_ERROR_CODES = new Set([
 
 const AUTH_ERROR_CODES = new Set(["PGRST301"]);
 
+const RATE_LIMIT_CODES = new Set(["429"]);
+
+const CONNECTION_HTTP_STATUSES = new Set([0, 408, 502, 503, 504]);
+
+const RATE_LIMIT_HTTP_STATUSES = new Set([429]);
+
 const DEFINITIVE_UNAUTHENTICATED_STATUSES = new Set([401, 403]);
 
 const DEFINITIVE_UNAUTHENTICATED_ERROR_NAMES = new Set([
@@ -41,6 +53,8 @@ export type DailyRecordInsertErrorKind =
   | "connection"
   | "permission"
   | "unexpected";
+
+export type DailyRecordNetworkErrorKind = "connection" | "unconfirmed";
 
 export type DailyRecordAuthVerificationResult =
   | { kind: "authenticated"; user: User }
@@ -114,7 +128,8 @@ export function classifyDailyRecordAuthVerification(
 }
 
 export function classifyDailyRecordInsertError(
-  error: PostgrestError
+  error: PostgrestError,
+  httpStatus?: number
 ): { kind: DailyRecordInsertErrorKind; message: string } {
   const code = error.code ?? "";
 
@@ -126,7 +141,14 @@ export function classifyDailyRecordInsertError(
     return { kind: "permission", message: DAILY_RECORD_PERMISSION_ERROR_MESSAGE };
   }
 
-  if (CONNECTION_ERROR_CODES.has(code)) {
+  const isRateLimit =
+    RATE_LIMIT_CODES.has(code) ||
+    (httpStatus !== undefined && RATE_LIMIT_HTTP_STATUSES.has(httpStatus));
+
+  const isConnectionStatus =
+    httpStatus !== undefined && CONNECTION_HTTP_STATUSES.has(httpStatus);
+
+  if (CONNECTION_ERROR_CODES.has(code) || isRateLimit || isConnectionStatus) {
     return { kind: "connection", message: DAILY_RECORD_CONNECTION_ERROR_MESSAGE };
   }
 
@@ -136,10 +158,32 @@ export function classifyDailyRecordInsertError(
   };
 }
 
-export function classifyDailyRecordNetworkError(): {
-  kind: "connection";
+export function classifyDailyRecordUnexpectedResponse(): {
+  kind: "unexpected";
   message: string;
 } {
+  return {
+    kind: "unexpected",
+    message: DAILY_RECORD_UNEXPECTED_ERROR_MESSAGE,
+  };
+}
+
+/**
+ * Thrown fetch failures before the insert is sent are connection errors.
+ * After the insert call starts, a dropped connection cannot prove whether
+ * the row was persisted, so the result is treated as unconfirmed.
+ */
+export function classifyDailyRecordNetworkError(insertAttempted: boolean): {
+  kind: DailyRecordNetworkErrorKind;
+  message: string;
+} {
+  if (insertAttempted) {
+    return {
+      kind: "unconfirmed",
+      message: DAILY_RECORD_UNCONFIRMED_SAVE_MESSAGE,
+    };
+  }
+
   return {
     kind: "connection",
     message: DAILY_RECORD_CONNECTION_ERROR_MESSAGE,

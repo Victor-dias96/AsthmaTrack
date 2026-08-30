@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppAlert } from "@/components/ui/app-alert";
 import { AppButton } from "@/components/ui/app-button";
@@ -8,7 +9,10 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils";
 
 import { useDailyRecordForm } from "../hooks/use-daily-record-form";
-import { DAILY_RECORD_SUCCESS_MESSAGE } from "../lib/classify-daily-record-submit-error";
+import {
+  DAILY_RECORD_OFFLINE_INDICATOR_MESSAGE,
+  DAILY_RECORD_SUCCESS_MESSAGE,
+} from "../lib/classify-daily-record-submit-error";
 import { DailyRecordAdditionalFields } from "./daily-record-additional-fields";
 import { DailyRecordFormSection } from "./daily-record-form-section";
 import { DailyRecordMeasurementFields } from "./daily-record-measurement-fields";
@@ -25,9 +29,35 @@ const outlineActionClasses = [
 
 export function DailyRecordFormShell() {
   const form = useDailyRecordForm();
+  const [isBrowserOffline, setIsBrowserOffline] = useState(false);
   const isSubmitting = form.submissionState === "submitting";
   const isSaveDisabled =
     form.submissionState === "submitting" || form.submissionState === "success";
+  const showOfflineIndicator =
+    isBrowserOffline && form.submissionState !== "success";
+
+  useEffect(() => {
+    function handleOffline() {
+      setIsBrowserOffline(true);
+    }
+
+    function handleOnline() {
+      setIsBrowserOffline(false);
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsBrowserOffline(!window.navigator.onLine);
+    }, 0);
+
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+    };
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -44,6 +74,12 @@ export function DailyRecordFormShell() {
         Preencha as informações com base na sua observação e nas suas medições.
         Este aplicativo não substitui orientação médica profissional.
       </AppAlert>
+
+      {showOfflineIndicator && (
+        <AppAlert variant="warning">
+          {DAILY_RECORD_OFFLINE_INDICATOR_MESSAGE}
+        </AppAlert>
+      )}
 
       <form
         onSubmit={form.handleSubmit}

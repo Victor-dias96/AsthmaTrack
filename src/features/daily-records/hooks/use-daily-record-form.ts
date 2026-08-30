@@ -22,6 +22,7 @@ import {
   classifyDailyRecordAuthVerification,
   classifyDailyRecordInsertError,
   classifyDailyRecordNetworkError,
+  classifyDailyRecordUnexpectedResponse,
 } from "../lib/classify-daily-record-submit-error";
 import {
   buildDailyRecordInsertPayload,
@@ -334,6 +335,7 @@ export function useDailyRecordForm() {
     setSubmissionState("submitting");
 
     let recordSaved = false;
+    let insertAttempted = false;
 
     try {
       const supabase = createClient();
@@ -366,12 +368,16 @@ export function useDailyRecordForm() {
         authResult.user.id
       );
 
-      const { error: insertError } = await supabase
+      insertAttempted = true;
+      const { error: insertError, status: insertStatus } = await supabase
         .from("daily_records")
         .insert(payload);
 
       if (insertError) {
-        const classified = classifyDailyRecordInsertError(insertError);
+        const classified = classifyDailyRecordInsertError(
+          insertError,
+          insertStatus
+        );
         setSubmissionState("error");
         setFormError(classified.message);
 
@@ -384,6 +390,13 @@ export function useDailyRecordForm() {
         return;
       }
 
+      if (insertStatus < 200 || insertStatus >= 300) {
+        const classified = classifyDailyRecordUnexpectedResponse();
+        setSubmissionState("error");
+        setFormError(classified.message);
+        return;
+      }
+
       recordSaved = true;
       setSubmissionState("success");
       window.setTimeout(() => {
@@ -391,7 +404,7 @@ export function useDailyRecordForm() {
         router.refresh();
       }, SUCCESS_REDIRECT_DELAY_MS);
     } catch {
-      const classified = classifyDailyRecordNetworkError();
+      const classified = classifyDailyRecordNetworkError(insertAttempted);
       setSubmissionState("error");
       setFormError(classified.message);
     } finally {
