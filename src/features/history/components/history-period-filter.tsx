@@ -9,6 +9,11 @@ const HISTORY_PERIOD_FILTER_OPTIONS = [
     label: "Últimos 7 dias",
     href: "/paciente/historico?periodo=7",
   },
+  {
+    period: 30,
+    label: "Últimos 30 dias",
+    href: "/paciente/historico?periodo=30",
+  },
 ] as const satisfies ReadonlyArray<{
   period: HistoryPeriod;
   label: string;
