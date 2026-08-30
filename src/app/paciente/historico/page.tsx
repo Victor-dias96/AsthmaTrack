@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
 import { AppAlert } from "@/components/ui/app-alert";
-import { HistoryRecordList, loadPatientHistory } from "@/features/history";
+import {
+  HistoryEmptyState,
+  HistoryRecordList,
+  loadPatientHistory,
+} from "@/features/history";
 
 export const metadata: Metadata = {
   title: "Histórico",
@@ -34,17 +37,7 @@ export default async function HistoricoPage() {
             Não foi possível carregar o histórico.
           </AppAlert>
         ) : result.records.length === 0 ? (
-          <div>
-            <p className="text-sm text-[var(--at-text-secondary)]">
-              Nenhum registro encontrado.
-            </p>
-            <Link
-              href="/paciente/novo-registro"
-              className="mt-2 inline-block text-sm font-medium text-[var(--at-blue)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
-            >
-              Adicionar um registro
-            </Link>
-          </div>
+          <HistoryEmptyState />
         ) : (
           <HistoryRecordList records={result.records} />
         )}
