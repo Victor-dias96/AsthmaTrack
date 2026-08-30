@@ -4,16 +4,24 @@ import { PatientShell } from "@/components/layout/patient-shell";
 import {
   HistoryEmptyState,
   HistoryErrorState,
+  HistoryPeriodFilter,
   HistoryRecordList,
   loadPatientHistory,
+  parseHistoryPeriod,
 } from "@/features/history";
 
 export const metadata: Metadata = {
   title: "Histórico",
 };
 
-export default async function HistoricoPage() {
-  const result = await loadPatientHistory();
+export default async function HistoricoPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const period = parseHistoryPeriod(params.periodo);
+  const result = await loadPatientHistory(period);
 
   if (result.status === "unauthenticated") {
     redirect("/login");
@@ -32,10 +40,12 @@ export default async function HistoricoPage() {
           </p>
         </div>
 
+        <HistoryPeriodFilter period={period} />
+
         {result.status === "error" ? (
           <HistoryErrorState />
         ) : result.records.length === 0 ? (
-          <HistoryEmptyState />
+          <HistoryEmptyState period={period} />
         ) : (
           <HistoryRecordList records={result.records} />
         )}

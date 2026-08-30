@@ -1,12 +1,7 @@
-/**
- * Display timezone for patient-facing timestamps.
- * No product-wide timezone policy exists yet; America/Maceio matches the
- * current Brazilian application context.
- */
-const HISTORY_DISPLAY_TIME_ZONE = "America/Maceio";
+import { HISTORY_TIME_ZONE } from "../constants";
 
 const recordedAtFormatter = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: HISTORY_DISPLAY_TIME_ZONE,
+  timeZone: HISTORY_TIME_ZONE,
   day: "2-digit",
   month: "2-digit",
   year: "numeric",

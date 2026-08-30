@@ -19,6 +19,11 @@ export default function HistoricoLoading() {
           <Skeleton className="mt-0.5 h-4 w-full max-w-md" />
         </div>
 
+        <div aria-hidden="true" className="min-w-0">
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="mt-2 h-8 w-36" />
+        </div>
+
         <ul aria-hidden="true" className="min-w-0 space-y-4">
           {HISTORY_SKELETON_CARD_KEYS.map((key) => (
             <li key={key} className="min-w-0">

@@ -3,6 +3,8 @@ import { ClipboardList } from "lucide-react";
 import { AppCard } from "@/components/ui/app-card";
 import { cn } from "@/lib/utils";
 
+import type { HistoryPeriod } from "../constants";
+
 const primaryActionClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
   "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
@@ -12,7 +14,15 @@ const primaryActionClasses = [
   "active:translate-y-px transition-all duration-150",
 ].join(" ");
 
-export function HistoryEmptyState() {
+const PERIOD_EMPTY_TITLE: Record<HistoryPeriod, string> = {
+  7: "Nenhum registro nos últimos 7 dias",
+};
+
+type HistoryEmptyStateProps = {
+  period: HistoryPeriod;
+};
+
+export function HistoryEmptyState({ period }: HistoryEmptyStateProps) {
   return (
     <AppCard className="min-w-0">
       <div className="flex flex-col items-center text-center">
@@ -27,23 +37,18 @@ export function HistoryEmptyState() {
         </div>
 
         <h2 className="mt-4 text-lg font-semibold text-[var(--at-text-primary)]">
-          Nenhum registro encontrado
+          {PERIOD_EMPTY_TITLE[period]}
         </h2>
 
         <p className="mt-1 max-w-md text-sm leading-relaxed text-[var(--at-text-secondary)]">
-          Você ainda não possui registros. Adicione seu primeiro acompanhamento
-          diário.
-        </p>
-
-        <p className="mt-1 max-w-md text-sm leading-relaxed text-[var(--at-text-secondary)]">
-          Os registros salvos aparecerão neste histórico.
+          Não encontramos registros neste período.
         </p>
 
         <Link
           href="/paciente/novo-registro"
           className={cn("mt-4", primaryActionClasses)}
         >
-          Criar primeiro registro
+          Criar novo registro
         </Link>
       </div>
     </AppCard>
