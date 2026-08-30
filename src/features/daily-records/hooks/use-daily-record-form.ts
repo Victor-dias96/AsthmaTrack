@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatDateToDatetimeLocal } from "@/lib/format-datetime-local";
@@ -19,9 +19,9 @@ import {
   type SymptomFieldName,
 } from "../constants/symptom-severity-options";
 import {
+  classifyDailyRecordAuthVerification,
   classifyDailyRecordInsertError,
   classifyDailyRecordNetworkError,
-  DAILY_RECORD_AUTH_ERROR_MESSAGE,
 } from "../lib/classify-daily-record-submit-error";
 import {
   buildDailyRecordInsertPayload,
@@ -146,6 +146,8 @@ export function useDailyRecordForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [submissionState, setSubmissionState] =
     useState<DailyRecordSubmissionState>("idle");
+  /** Blocks concurrent inserts before React can rerender `submissionState`. */
+  const isInsertInFlightRef = useRef(false);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -276,11 +278,13 @@ export function useDailyRecordForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (submissionState === "submitting" || submissionState === "success") {
+    if (isInsertInFlightRef.current) {
       return;
     }
 
-    setFormError(null);
+    if (submissionState === "submitting" || submissionState === "success") {
+      return;
+    }
 
     const rawValues: DailyRecordFormRawValues = {
       recordedAt: recordedAtValue,
@@ -325,7 +329,11 @@ export function useDailyRecordForm() {
       return;
     }
 
+    isInsertInFlightRef.current = true;
+    setFormError(null);
     setSubmissionState("submitting");
+
+    let recordSaved = false;
 
     try {
       const supabase = createClient();
@@ -335,9 +343,17 @@ export function useDailyRecordForm() {
         error: authError,
       } = await supabase.auth.getUser();
 
-      if (authError || !user) {
+      const authResult = classifyDailyRecordAuthVerification(user, authError);
+
+      if (authResult.kind === "connection") {
         setSubmissionState("error");
-        setFormError(DAILY_RECORD_AUTH_ERROR_MESSAGE);
+        setFormError(authResult.message);
+        return;
+      }
+
+      if (authResult.kind === "unauthenticated") {
+        setSubmissionState("error");
+        setFormError(authResult.message);
         window.setTimeout(() => {
           router.replace("/login");
         }, AUTH_REDIRECT_DELAY_MS);
@@ -347,7 +363,7 @@ export function useDailyRecordForm() {
       const payload = buildDailyRecordInsertPayload(
         result.data,
         recordedAtIso,
-        user.id
+        authResult.user.id
       );
 
       const { error: insertError } = await supabase
@@ -368,6 +384,7 @@ export function useDailyRecordForm() {
         return;
       }
 
+      recordSaved = true;
       setSubmissionState("success");
       window.setTimeout(() => {
         router.replace("/paciente/dashboard");
@@ -377,6 +394,10 @@ export function useDailyRecordForm() {
       const classified = classifyDailyRecordNetworkError();
       setSubmissionState("error");
       setFormError(classified.message);
+    } finally {
+      if (!recordSaved) {
+        isInsertInFlightRef.current = false;
+      }
     }
   }
 
