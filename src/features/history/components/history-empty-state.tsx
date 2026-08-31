@@ -17,6 +17,7 @@ const primaryActionClasses = [
 const PERIOD_EMPTY_TITLE: Record<HistoryPeriod, string> = {
   7: "Nenhum registro nos últimos 7 dias",
   30: "Nenhum registro nos últimos 30 dias",
+  90: "Nenhum registro nos últimos 90 dias",
 };
 
 type HistoryEmptyStateProps = {

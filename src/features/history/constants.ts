@@ -10,7 +10,7 @@ export const HISTORY_TIME_ZONE = "America/Maceio";
 
 export const HISTORY_DEFAULT_PERIOD = 7;
 
-export const HISTORY_PERIODS = [HISTORY_DEFAULT_PERIOD, 30] as const;
+export const HISTORY_PERIODS = [HISTORY_DEFAULT_PERIOD, 30, 90] as const;
 
 export type HistoryPeriod = (typeof HISTORY_PERIODS)[number];
 

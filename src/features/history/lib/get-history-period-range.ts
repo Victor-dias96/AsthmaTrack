@@ -113,7 +113,8 @@ export type HistoryPeriodRange = {
 /**
  * Inclusive start and exclusive end of a fixed local calendar period.
  * `period` 7 is today plus the previous 6 days; 30 is today plus the
- * previous 29 days — both in HISTORY_TIME_ZONE.
+ * previous 29 days; 90 is today plus the previous 89 days — all in
+ * HISTORY_TIME_ZONE.
  */
 export function getHistoryPeriodRange(
   period: HistoryPeriod,
