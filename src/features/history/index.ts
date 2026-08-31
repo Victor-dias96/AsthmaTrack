@@ -4,6 +4,7 @@ export { DailyRecordDetails } from "./components/daily-record-details";
 export { DailyRecordDetailsErrorState } from "./components/daily-record-details-error-state";
 export { DailyRecordDetailsHeader } from "./components/daily-record-details-header";
 export { DailyRecordDetailsSkeleton } from "./components/daily-record-details-skeleton";
+export { DailyRecordNotFoundState } from "./components/daily-record-not-found-state";
 export { HistoryEmptyState } from "./components/history-empty-state";
 export { HistoryErrorState } from "./components/history-error-state";
 export { HistoryPeriodFilter } from "./components/history-period-filter";
@@ -15,7 +16,11 @@ export {
   getHistoryCalendarDate,
   getHistoryPeriodRange,
 } from "./lib/get-history-period-range";
-export { getHistoryHref } from "./lib/get-history-href";
+export {
+  getDailyRecordEditHref,
+  getDailyRecordHref,
+  getHistoryHref,
+} from "./lib/get-history-href";
 export {
   loadPatientHistory,
   verifyPatientHistorySession,

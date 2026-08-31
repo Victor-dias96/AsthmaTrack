@@ -1,7 +1,4 @@
-import {
-  HISTORY_CUSTOM_PERIOD_PARAM,
-  HISTORY_PATH,
-} from "../constants";
+import { HISTORY_CUSTOM_PERIOD_PARAM, HISTORY_PATH } from "../constants";
 import type { HistoryFilter } from "./parse-history-filter";
 
 /**
@@ -33,4 +30,13 @@ export function getDailyRecordDetailsHref(
   const query = queryIndex === -1 ? "" : historyHref.slice(queryIndex);
 
   return `${HISTORY_PATH}/${recordId}${query}`;
+}
+
+/** Canonical details URL without query parameters. */
+export function getDailyRecordHref(recordId: string): string {
+  return `${HISTORY_PATH}/${recordId}`;
+}
+
+export function getDailyRecordEditHref(recordId: string): string {
+  return `${getDailyRecordHref(recordId)}/editar`;
 }

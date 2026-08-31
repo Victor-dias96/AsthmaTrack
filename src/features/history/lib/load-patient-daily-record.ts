@@ -17,35 +17,39 @@ export type LoadPatientDailyRecordResult =
 export async function loadPatientDailyRecord(
   recordId: string
 ): Promise<LoadPatientDailyRecordResult> {
-  const supabase = await createClient();
-  const session = await readPatientHistorySession(supabase);
+  try {
+    const supabase = await createClient();
+    const session = await readPatientHistorySession(supabase);
 
-  if (session.status === "unauthenticated") {
-    return { status: "unauthenticated" };
-  }
+    if (session.status === "unauthenticated") {
+      return { status: "unauthenticated" };
+    }
 
-  const { data, error } = await supabase
-    .from("daily_records")
-    .select(DAILY_RECORD_HISTORY_COLUMNS)
-    .eq("id", recordId)
-    .eq("patient_id", session.userId)
-    .limit(1)
-    .maybeSingle()
-    .overrideTypes<DailyRecordRow, { merge: false }>();
+    const { data, error } = await supabase
+      .from("daily_records")
+      .select(DAILY_RECORD_HISTORY_COLUMNS)
+      .eq("id", recordId)
+      .eq("patient_id", session.userId)
+      .limit(1)
+      .maybeSingle()
+      .overrideTypes<DailyRecordRow, { merge: false }>();
 
-  if (error) {
+    if (error) {
+      return { status: "error" };
+    }
+
+    if (!data) {
+      return { status: "not-found" };
+    }
+
+    const record = mapDailyRecordRow(data);
+
+    if (!record) {
+      return { status: "error" };
+    }
+
+    return { status: "ok", record };
+  } catch {
     return { status: "error" };
   }
-
-  if (!data) {
-    return { status: "not-found" };
-  }
-
-  const record = mapDailyRecordRow(data);
-
-  if (!record) {
-    return { status: "error" };
-  }
-
-  return { status: "ok", record };
 }

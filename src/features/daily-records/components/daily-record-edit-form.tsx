@@ -6,13 +6,15 @@ import { AppAlert } from "@/components/ui/app-alert";
 import { AppButton } from "@/components/ui/app-button";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { DailyRecordNotFoundState } from "@/features/history/components/daily-record-not-found-state";
 import { cn } from "@/lib/utils";
 
-import { useDailyRecordForm } from "../hooks/use-daily-record-form";
+import { useDailyRecordEditForm } from "../hooks/use-daily-record-edit-form";
 import {
   DAILY_RECORD_OFFLINE_INDICATOR_MESSAGE,
-  DAILY_RECORD_SUCCESS_MESSAGE,
+  DAILY_RECORD_UPDATE_SUCCESS_MESSAGE,
 } from "../lib/classify-daily-record-submit-error";
+import type { DailyRecordEditFormInitialValues } from "../lib/map-daily-record-to-edit-form-values";
 import { DailyRecordFormFields } from "./daily-record-form-fields";
 
 const outlineActionClasses = [
@@ -24,12 +26,28 @@ const outlineActionClasses = [
   "active:translate-y-px transition-all duration-150",
 ].join(" ");
 
-export function DailyRecordFormShell() {
-  const form = useDailyRecordForm();
+type DailyRecordEditFormProps = {
+  recordId: string;
+  detailsHref: string;
+  initialValues: DailyRecordEditFormInitialValues;
+};
+
+export function DailyRecordEditForm({
+  recordId,
+  detailsHref,
+  initialValues,
+}: DailyRecordEditFormProps) {
+  const form = useDailyRecordEditForm({
+    recordId,
+    detailsHref,
+    initialValues,
+  });
   const [isBrowserOffline, setIsBrowserOffline] = useState(false);
   const isSubmitting = form.submissionState === "submitting";
   const isSaveDisabled =
-    form.submissionState === "submitting" || form.submissionState === "success";
+    form.submissionState === "submitting" ||
+    form.submissionState === "success" ||
+    form.submissionState === "not-found";
   const showOfflineIndicator =
     isBrowserOffline && form.submissionState !== "success";
 
@@ -56,14 +74,18 @@ export function DailyRecordFormShell() {
     };
   }, []);
 
+  if (form.submissionState === "not-found") {
+    return <DailyRecordNotFoundState />;
+  }
+
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
       <header>
         <h1 className="text-xl font-bold text-[var(--at-text-primary)]">
-          Novo registro
+          Editar registro
         </h1>
         <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
-          Registre sua medição de PEF e os sintomas observados no dia.
+          Atualize os dados deste registro de PEF e sintomas.
         </p>
       </header>
 
@@ -114,12 +136,12 @@ export function DailyRecordFormShell() {
           <div className="mt-8 border-t border-[var(--at-border)] pt-6">
             {form.submissionState === "success" && (
               <AppAlert variant="success" className="mb-4">
-                {DAILY_RECORD_SUCCESS_MESSAGE}
+                {DAILY_RECORD_UPDATE_SUCCESS_MESSAGE}
               </AppAlert>
             )}
 
             {form.formError && (
-              <div id="daily-record-form-error">
+              <div id="daily-record-edit-form-error">
                 <AppAlert variant="warning" className="mb-4">
                   {form.formError}
                 </AppAlert>
@@ -127,10 +149,7 @@ export function DailyRecordFormShell() {
             )}
 
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
-              <Link
-                href="/paciente/dashboard"
-                className={cn(outlineActionClasses)}
-              >
+              <Link href={detailsHref} className={cn(outlineActionClasses)}>
                 Cancelar
               </Link>
 
@@ -140,7 +159,7 @@ export function DailyRecordFormShell() {
                 aria-disabled={isSaveDisabled}
                 aria-busy={isSubmitting}
                 aria-describedby={
-                  form.formError ? "daily-record-form-error" : undefined
+                  form.formError ? "daily-record-edit-form-error" : undefined
                 }
                 fullWidth
                 className="min-w-[10.5rem] sm:w-auto"

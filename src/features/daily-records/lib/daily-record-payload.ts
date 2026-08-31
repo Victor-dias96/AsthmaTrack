@@ -1,12 +1,13 @@
+import { HISTORY_TIME_ZONE } from "@/features/history/constants";
+import { convertDatetimeLocalInTimeZoneToIso } from "@/lib/format-datetime-local";
 import type { DailyRecordFormValues } from "@/schemas/daily-record";
 import type { SymptomSeverity } from "@/types/daily-record";
 
 /** Matches HTML datetime-local values: YYYY-MM-DDTHH:mm or with seconds. */
 const DATETIME_LOCAL_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/;
 
-/** Exactly the ten columns `public.daily_records` accepts on insert. */
-export type DailyRecordInsertPayload = {
-  patient_id: string;
+/** Writable medical columns shared by insert and update payloads. */
+export type DailyRecordWritableColumns = {
   recorded_at: string;
   pef_value: number;
   cough_severity: SymptomSeverity;
@@ -17,6 +18,14 @@ export type DailyRecordInsertPayload = {
   used_rescue_medication: boolean;
   notes: string | null;
 };
+
+/** Exactly the ten columns `public.daily_records` accepts on insert. */
+export type DailyRecordInsertPayload = DailyRecordWritableColumns & {
+  patient_id: string;
+};
+
+/** Exactly the nine columns a patient may update on their own record. */
+export type DailyRecordUpdatePayload = DailyRecordWritableColumns;
 
 /**
  * Converts a `datetime-local` string that has already passed
@@ -50,6 +59,23 @@ export function convertLocalDatetimeToIso(localValue: string): string | null {
   return date.toISOString();
 }
 
+function mapDailyRecordWritableColumns(
+  values: DailyRecordFormValues,
+  recordedAtIso: string
+): DailyRecordWritableColumns {
+  return {
+    recorded_at: recordedAtIso,
+    pef_value: values.pefValue,
+    cough_severity: values.coughSeverity,
+    wheezing_severity: values.wheezingSeverity,
+    shortness_of_breath_severity: values.shortnessOfBreathSeverity,
+    chest_tightness_severity: values.chestTightnessSeverity,
+    had_attack: values.hadAttack,
+    used_rescue_medication: values.usedRescueMedication,
+    notes: values.notes,
+  };
+}
+
 /**
  * Pure mapper from validated form values to the exact snake_case payload
  * `public.daily_records` accepts. Deterministic, makes no Supabase call and
@@ -63,14 +89,26 @@ export function buildDailyRecordInsertPayload(
 ): DailyRecordInsertPayload {
   return {
     patient_id: patientId,
-    recorded_at: recordedAtIso,
-    pef_value: values.pefValue,
-    cough_severity: values.coughSeverity,
-    wheezing_severity: values.wheezingSeverity,
-    shortness_of_breath_severity: values.shortnessOfBreathSeverity,
-    chest_tightness_severity: values.chestTightnessSeverity,
-    had_attack: values.hadAttack,
-    used_rescue_medication: values.usedRescueMedication,
-    notes: values.notes,
+    ...mapDailyRecordWritableColumns(values, recordedAtIso),
   };
+}
+
+/**
+ * Pure mapper from validated edit-form values to the allowed update columns.
+ * Does not read authentication state, browser globals, or call Supabase.
+ * Ownership columns (`id`, `patient_id`) and timestamps are omitted.
+ */
+export function buildDailyRecordUpdatePayload(
+  values: DailyRecordFormValues,
+  recordedAtIso: string
+): DailyRecordUpdatePayload {
+  return mapDailyRecordWritableColumns(values, recordedAtIso);
+}
+
+/**
+ * Converts a validated datetime-local value to ISO using the product
+ * timezone, so an unchanged edit round-trips the stored instant.
+ */
+export function convertEditRecordedAtToIso(localValue: string): string | null {
+  return convertDatetimeLocalInTimeZoneToIso(localValue, HISTORY_TIME_ZONE);
 }

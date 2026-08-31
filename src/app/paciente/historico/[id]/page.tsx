@@ -5,6 +5,7 @@ import {
   DailyRecordDetails,
   DailyRecordDetailsErrorState,
   DailyRecordDetailsHeader,
+  getDailyRecordEditHref,
   getHistoryCalendarDate,
   getHistoryHref,
   loadPatientDailyRecord,
@@ -59,7 +60,10 @@ export default async function DailyRecordDetailsPage({
   return (
     <PatientShell>
       <div className="min-w-0 space-y-6">
-        <DailyRecordDetailsHeader historyHref={historyHref} />
+        <DailyRecordDetailsHeader
+          historyHref={historyHref}
+          editHref={getDailyRecordEditHref(result.record.id)}
+        />
         <DailyRecordDetails record={result.record} />
       </div>
     </PatientShell>

@@ -49,10 +49,7 @@ const DEFINITIVE_UNAUTHENTICATED_ERROR_NAMES = new Set([
 ]);
 
 export type DailyRecordInsertErrorKind =
-  | "auth"
-  | "connection"
-  | "permission"
-  | "unexpected";
+  "auth" | "connection" | "permission" | "unexpected";
 
 export type DailyRecordNetworkErrorKind = "connection" | "unconfirmed";
 
@@ -74,7 +71,12 @@ function isIncompleteAuthVerification(error: AuthError): boolean {
 
   const status = error.status;
 
-  if (status === undefined || status === 0 || status === 408 || status === 429) {
+  if (
+    status === undefined ||
+    status === 0 ||
+    status === 408 ||
+    status === 429
+  ) {
     return true;
   }
 
@@ -138,7 +140,10 @@ export function classifyDailyRecordInsertError(
   }
 
   if (PERMISSION_ERROR_CODES.has(code)) {
-    return { kind: "permission", message: DAILY_RECORD_PERMISSION_ERROR_MESSAGE };
+    return {
+      kind: "permission",
+      message: DAILY_RECORD_PERMISSION_ERROR_MESSAGE,
+    };
   }
 
   const isRateLimit =
@@ -149,7 +154,10 @@ export function classifyDailyRecordInsertError(
     httpStatus !== undefined && CONNECTION_HTTP_STATUSES.has(httpStatus);
 
   if (CONNECTION_ERROR_CODES.has(code) || isRateLimit || isConnectionStatus) {
-    return { kind: "connection", message: DAILY_RECORD_CONNECTION_ERROR_MESSAGE };
+    return {
+      kind: "connection",
+      message: DAILY_RECORD_CONNECTION_ERROR_MESSAGE,
+    };
   }
 
   return {
@@ -187,5 +195,78 @@ export function classifyDailyRecordNetworkError(insertAttempted: boolean): {
   return {
     kind: "connection",
     message: DAILY_RECORD_CONNECTION_ERROR_MESSAGE,
+  };
+}
+
+export const DAILY_RECORD_UPDATE_CONNECTION_ERROR_MESSAGE =
+  "Não foi possível atualizar o registro. Seus dados foram mantidos. Tente novamente.";
+
+export const DAILY_RECORD_UPDATE_UNEXPECTED_ERROR_MESSAGE =
+  "Ocorreu um erro ao atualizar o registro. Tente novamente.";
+
+export const DAILY_RECORD_UPDATE_SUCCESS_MESSAGE =
+  "Registro atualizado com sucesso.";
+
+export type DailyRecordUpdateErrorKind =
+  "auth" | "connection" | "not-found" | "unexpected";
+
+const NOT_FOUND_ERROR_CODES = new Set(["PGRST116"]);
+
+const NOT_FOUND_HTTP_STATUSES = new Set([404]);
+
+export function classifyDailyRecordUpdateError(
+  error: PostgrestError,
+  httpStatus?: number
+): { kind: DailyRecordUpdateErrorKind; message: string } {
+  const code = error.code ?? "";
+
+  if (AUTH_ERROR_CODES.has(code)) {
+    return { kind: "auth", message: DAILY_RECORD_AUTH_ERROR_MESSAGE };
+  }
+
+  if (
+    NOT_FOUND_ERROR_CODES.has(code) ||
+    (httpStatus !== undefined && NOT_FOUND_HTTP_STATUSES.has(httpStatus))
+  ) {
+    return { kind: "not-found", message: "" };
+  }
+
+  const isRateLimit =
+    RATE_LIMIT_CODES.has(code) ||
+    (httpStatus !== undefined && RATE_LIMIT_HTTP_STATUSES.has(httpStatus));
+
+  const isConnectionStatus =
+    httpStatus !== undefined && CONNECTION_HTTP_STATUSES.has(httpStatus);
+
+  if (CONNECTION_ERROR_CODES.has(code) || isRateLimit || isConnectionStatus) {
+    return {
+      kind: "connection",
+      message: DAILY_RECORD_UPDATE_CONNECTION_ERROR_MESSAGE,
+    };
+  }
+
+  return {
+    kind: "unexpected",
+    message: DAILY_RECORD_UPDATE_UNEXPECTED_ERROR_MESSAGE,
+  };
+}
+
+export function classifyDailyRecordUpdateUnexpectedResponse(): {
+  kind: "unexpected";
+  message: string;
+} {
+  return {
+    kind: "unexpected",
+    message: DAILY_RECORD_UPDATE_UNEXPECTED_ERROR_MESSAGE,
+  };
+}
+
+export function classifyDailyRecordUpdateNetworkError(): {
+  kind: "connection";
+  message: string;
+} {
+  return {
+    kind: "connection",
+    message: DAILY_RECORD_UPDATE_CONNECTION_ERROR_MESSAGE,
   };
 }
