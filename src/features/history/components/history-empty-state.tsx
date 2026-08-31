@@ -18,6 +18,14 @@ const PERIOD_EMPTY_TITLE: Record<HistoryPeriod, string> = {
   7: "Nenhum registro nos últimos 7 dias",
   30: "Nenhum registro nos últimos 30 dias",
   90: "Nenhum registro nos últimos 90 dias",
+  custom: "Nenhum registro no período selecionado",
+};
+
+const PERIOD_EMPTY_DESCRIPTION: Record<HistoryPeriod, string> = {
+  7: "Não encontramos registros neste período.",
+  30: "Não encontramos registros neste período.",
+  90: "Não encontramos registros neste período.",
+  custom: "Não encontramos registros entre as datas informadas.",
 };
 
 type HistoryEmptyStateProps = {
@@ -43,7 +51,7 @@ export function HistoryEmptyState({ period }: HistoryEmptyStateProps) {
         </h2>
 
         <p className="mt-1 max-w-md text-sm leading-relaxed text-[var(--at-text-secondary)]">
-          Não encontramos registros neste período.
+          {PERIOD_EMPTY_DESCRIPTION[period]}
         </p>
 
         <Link

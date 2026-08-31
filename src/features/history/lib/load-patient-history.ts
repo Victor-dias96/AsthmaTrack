@@ -8,20 +8,23 @@ import type { DailyRecord } from "@/types/daily-record";
 import {
   DAILY_RECORD_HISTORY_COLUMNS,
   HISTORY_INITIAL_LIMIT,
-  type HistoryPeriod,
 } from "../constants";
-import { getHistoryPeriodRange } from "./get-history-period-range";
+import type { HistoryPeriodRange } from "./get-history-period-range";
 
 export type LoadPatientHistoryResult =
   | { status: "ok"; records: DailyRecord[] }
   | { status: "unauthenticated" }
   | { status: "error" };
 
-export async function loadPatientHistory(
-  period: HistoryPeriod
-): Promise<LoadPatientHistoryResult> {
-  const supabase = await createClient();
+export type PatientHistorySession =
+  | { status: "unauthenticated" }
+  | { status: "authenticated"; userId: string };
 
+type HistorySupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
+async function readPatientHistorySession(
+  supabase: HistorySupabaseClient
+): Promise<PatientHistorySession> {
   const { data: claimsData, error: claimsError } =
     await supabase.auth.getClaims();
 
@@ -38,14 +41,30 @@ export async function loadPatientHistory(
     return { status: "unauthenticated" };
   }
 
-  const { rangeStart, rangeEnd } = getHistoryPeriodRange(period);
+  return { status: "authenticated", userId: user.id };
+}
+
+export async function verifyPatientHistorySession(): Promise<PatientHistorySession> {
+  const supabase = await createClient();
+  return readPatientHistorySession(supabase);
+}
+
+export async function loadPatientHistory(
+  range: HistoryPeriodRange
+): Promise<LoadPatientHistoryResult> {
+  const supabase = await createClient();
+  const session = await readPatientHistorySession(supabase);
+
+  if (session.status === "unauthenticated") {
+    return { status: "unauthenticated" };
+  }
 
   const { data, error } = await supabase
     .from("daily_records")
     .select(DAILY_RECORD_HISTORY_COLUMNS)
-    .eq("patient_id", user.id)
-    .gte("recorded_at", rangeStart)
-    .lt("recorded_at", rangeEnd)
+    .eq("patient_id", session.userId)
+    .gte("recorded_at", range.rangeStart)
+    .lt("recorded_at", range.rangeEnd)
     .order("recorded_at", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(HISTORY_INITIAL_LIMIT)

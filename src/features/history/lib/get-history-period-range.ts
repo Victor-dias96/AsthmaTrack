@@ -1,10 +1,8 @@
-import { HISTORY_TIME_ZONE, type HistoryPeriod } from "../constants";
-
-type CalendarDate = {
-  year: number;
-  month: number;
-  day: number;
-};
+import {
+  HISTORY_TIME_ZONE,
+  type HistoryFixedPeriod,
+} from "../constants";
+import type { CalendarDate } from "./parse-calendar-date";
 
 type ZonedDateTimeParts = CalendarDate & {
   hour: number;
@@ -117,10 +115,10 @@ export type HistoryPeriodRange = {
  * HISTORY_TIME_ZONE.
  */
 export function getHistoryPeriodRange(
-  period: HistoryPeriod,
+  period: HistoryFixedPeriod,
   now: Date = new Date()
 ): HistoryPeriodRange {
-  const today = getZonedDateTimeParts(now, HISTORY_TIME_ZONE);
+  const today = getHistoryCalendarDate(now);
   const startDate = calendarDateFromUtcDay(
     Date.UTC(today.year, today.month - 1, today.day - (period - 1))
   );
@@ -131,5 +129,35 @@ export function getHistoryPeriodRange(
   return {
     rangeStart: zonedStartOfDayToIso(startDate, HISTORY_TIME_ZONE),
     rangeEnd: zonedStartOfDayToIso(endDate, HISTORY_TIME_ZONE),
+  };
+}
+
+/** Today's calendar date in HISTORY_TIME_ZONE. */
+export function getHistoryCalendarDate(instant: Date): CalendarDate {
+  const parts = getZonedDateTimeParts(instant, HISTORY_TIME_ZONE);
+
+  return {
+    year: parts.year,
+    month: parts.month,
+    day: parts.day,
+  };
+}
+
+/**
+ * Inclusive local calendar start through inclusive local calendar end,
+ * converted to [start-of-start, start-of-day-after-end) ISO instants
+ * in HISTORY_TIME_ZONE.
+ */
+export function getCustomHistoryPeriodRange(
+  start: CalendarDate,
+  end: CalendarDate
+): HistoryPeriodRange {
+  const exclusiveEnd = calendarDateFromUtcDay(
+    Date.UTC(end.year, end.month - 1, end.day + 1)
+  );
+
+  return {
+    rangeStart: zonedStartOfDayToIso(start, HISTORY_TIME_ZONE),
+    rangeEnd: zonedStartOfDayToIso(exclusiveEnd, HISTORY_TIME_ZONE),
   };
 }
