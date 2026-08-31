@@ -84,7 +84,7 @@ export default async function HistoricoPage({
           <HistoryEmptyState period={filter.period} />
         ) : (
           <div className="space-y-3">
-            <HistoryRecordList records={result.records} />
+            <HistoryRecordList records={result.records} filter={filter} />
             {result.records.length >= HISTORY_INITIAL_LIMIT ? (
               <HistoryResultLimitNotice />
             ) : null}

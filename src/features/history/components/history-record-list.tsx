@@ -1,12 +1,18 @@
 import type { DailyRecord } from "@/types/daily-record";
 
+import { getDailyRecordDetailsHref } from "../lib/get-history-href";
+import type { HistoryFilter } from "../lib/parse-history-filter";
 import { DailyRecordCard } from "./daily-record-card";
 
 type HistoryRecordListProps = {
   records: DailyRecord[];
+  filter: HistoryFilter;
 };
 
-export function HistoryRecordList({ records }: HistoryRecordListProps) {
+export function HistoryRecordList({
+  records,
+  filter,
+}: HistoryRecordListProps) {
   return (
     <ul
       aria-label="Registros anteriores"
@@ -14,7 +20,10 @@ export function HistoryRecordList({ records }: HistoryRecordListProps) {
     >
       {records.map((record) => (
         <li key={record.id} className="min-w-0">
-          <DailyRecordCard record={record} />
+          <DailyRecordCard
+            record={record}
+            detailsHref={getDailyRecordDetailsHref(record.id, filter)}
+          />
         </li>
       ))}
     </ul>

@@ -1,51 +1,30 @@
+import Link from "next/link";
 import { AppCard } from "@/components/ui/app-card";
-import type { DailyRecord, SymptomSeverity } from "@/types/daily-record";
+import type { DailyRecord } from "@/types/daily-record";
 
+import {
+  formatHistoryBoolean,
+  hasDailyRecordNotes,
+} from "../lib/format-history-display";
 import { formatRecordedAt } from "../lib/format-recorded-at";
 import { formatSymptomSeverityLabel } from "../lib/format-symptom-severity-label";
+import { HISTORY_SYMPTOM_FIELDS } from "../lib/history-symptom-fields";
 
 type DailyRecordCardProps = {
   record: DailyRecord;
+  detailsHref: string;
 };
 
-type HistorySymptomField = {
-  label: string;
-  gender: "masculine" | "feminine";
-  getSeverity: (record: DailyRecord) => SymptomSeverity;
-};
+const detailsActionClasses = [
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
+  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "border border-[var(--at-border-input)] bg-[var(--at-surface)] text-[var(--at-text-primary)] font-medium",
+  "hover:bg-[var(--at-surface-input)]",
+  "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
+  "active:translate-y-px transition-all duration-150",
+].join(" ");
 
-const HISTORY_SYMPTOM_FIELDS: HistorySymptomField[] = [
-  {
-    label: "Tosse",
-    gender: "feminine",
-    getSeverity: (record) => record.coughSeverity,
-  },
-  {
-    label: "Chiado",
-    gender: "masculine",
-    getSeverity: (record) => record.wheezingSeverity,
-  },
-  {
-    label: "Falta de ar",
-    gender: "feminine",
-    getSeverity: (record) => record.shortnessOfBreathSeverity,
-  },
-  {
-    label: "Aperto no peito",
-    gender: "masculine",
-    getSeverity: (record) => record.chestTightnessSeverity,
-  },
-];
-
-function formatBooleanStatus(value: boolean): "Sim" | "Não" {
-  return value ? "Sim" : "Não";
-}
-
-function hasNotes(notes: string | null): notes is string {
-  return notes !== null && notes.trim().length > 0;
-}
-
-export function DailyRecordCard({ record }: DailyRecordCardProps) {
+export function DailyRecordCard({ record, detailsHref }: DailyRecordCardProps) {
   const formattedRecordedAt = formatRecordedAt(record.recordedAt);
 
   return (
@@ -94,15 +73,23 @@ export function DailyRecordCard({ record }: DailyRecordCardProps) {
         </dl>
 
         <div className="grid min-w-0 grid-cols-1 gap-x-4 gap-y-1 border-t border-[var(--at-border)] pt-3 text-sm text-[var(--at-text-secondary)] sm:grid-cols-2">
-          <p>Crise registrada: {formatBooleanStatus(record.hadAttack)}</p>
+          <p>Crise registrada: {formatHistoryBoolean(record.hadAttack)}</p>
           <p>
             Medicação de alívio:{" "}
-            {formatBooleanStatus(record.usedRescueMedication)}
+            {formatHistoryBoolean(record.usedRescueMedication)}
           </p>
-          {hasNotes(record.notes) && (
+          {hasDailyRecordNotes(record.notes) && (
             <p className="sm:col-span-2">Com observação</p>
           )}
         </div>
+
+        <Link
+          href={detailsHref}
+          aria-label={`Ver detalhes do registro de ${formattedRecordedAt}`}
+          className={detailsActionClasses}
+        >
+          Ver detalhes
+        </Link>
       </article>
     </AppCard>
   );

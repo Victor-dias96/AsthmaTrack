@@ -10,44 +10,15 @@ import {
   HISTORY_INITIAL_LIMIT,
 } from "../constants";
 import type { HistoryPeriodRange } from "./get-history-period-range";
+import { readPatientHistorySession } from "./read-patient-history-session";
+
+export type { PatientHistorySession } from "./read-patient-history-session";
+export { verifyPatientHistorySession } from "./read-patient-history-session";
 
 export type LoadPatientHistoryResult =
   | { status: "ok"; records: DailyRecord[] }
   | { status: "unauthenticated" }
   | { status: "error" };
-
-export type PatientHistorySession =
-  | { status: "unauthenticated" }
-  | { status: "authenticated"; userId: string };
-
-type HistorySupabaseClient = Awaited<ReturnType<typeof createClient>>;
-
-async function readPatientHistorySession(
-  supabase: HistorySupabaseClient
-): Promise<PatientHistorySession> {
-  const { data: claimsData, error: claimsError } =
-    await supabase.auth.getClaims();
-
-  if (claimsError || !claimsData || Object.keys(claimsData).length === 0) {
-    return { status: "unauthenticated" };
-  }
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    return { status: "unauthenticated" };
-  }
-
-  return { status: "authenticated", userId: user.id };
-}
-
-export async function verifyPatientHistorySession(): Promise<PatientHistorySession> {
-  const supabase = await createClient();
-  return readPatientHistorySession(supabase);
-}
 
 export async function loadPatientHistory(
   range: HistoryPeriodRange
