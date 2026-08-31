@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DailyRecordDeleteAction } from "./daily-record-delete-action";
+
 const backLinkClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
   "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
@@ -23,11 +25,15 @@ const editLinkClasses = [
 type DailyRecordDetailsHeaderProps = {
   historyHref: string;
   editHref?: string;
+  recordId?: string;
+  deletedHref?: string;
 };
 
 export function DailyRecordDetailsHeader({
   historyHref,
   editHref,
+  recordId,
+  deletedHref,
 }: DailyRecordDetailsHeaderProps) {
   return (
     <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -43,11 +49,17 @@ export function DailyRecordDetailsHeader({
         </p>
       </div>
 
-      <div className="flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+      <div className="flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
         {editHref ? (
           <Link href={editHref} className={editLinkClasses}>
             Editar registro
           </Link>
+        ) : null}
+        {recordId && deletedHref ? (
+          <DailyRecordDeleteAction
+            recordId={recordId}
+            historyHref={deletedHref}
+          />
         ) : null}
         <Link href={historyHref} className={backLinkClasses}>
           Voltar ao histórico

@@ -7,6 +7,7 @@ import {
   DailyRecordDetailsHeader,
   getDailyRecordEditHref,
   getHistoryCalendarDate,
+  getHistoryDeletedHref,
   getHistoryHref,
   loadPatientDailyRecord,
   parseDailyRecordIdParam,
@@ -63,6 +64,8 @@ export default async function DailyRecordDetailsPage({
         <DailyRecordDetailsHeader
           historyHref={historyHref}
           editHref={getDailyRecordEditHref(result.record.id)}
+          recordId={recordId}
+          deletedHref={getHistoryDeletedHref(filter)}
         />
         <DailyRecordDetails record={result.record} />
       </div>

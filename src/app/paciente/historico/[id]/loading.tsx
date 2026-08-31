@@ -16,8 +16,9 @@ export default function DailyRecordDetailsLoading() {
             <Skeleton className="h-7 w-56" />
             <Skeleton className="mt-0.5 h-4 w-full max-w-md" />
           </div>
-          <div className="flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
             <Skeleton className="h-10 w-full sm:w-40" />
+            <Skeleton className="h-10 w-full sm:w-36" />
             <Skeleton className="h-10 w-full sm:w-44" />
           </div>
         </div>

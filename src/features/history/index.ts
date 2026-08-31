@@ -2,6 +2,7 @@ export { DailyRecordCard } from "./components/daily-record-card";
 export { DailyRecordCardSkeleton } from "./components/daily-record-card-skeleton";
 export { DailyRecordDetails } from "./components/daily-record-details";
 export { DailyRecordDetailsErrorState } from "./components/daily-record-details-error-state";
+export { DailyRecordDeleteAction } from "./components/daily-record-delete-action";
 export { DailyRecordDetailsHeader } from "./components/daily-record-details-header";
 export { DailyRecordDetailsSkeleton } from "./components/daily-record-details-skeleton";
 export { DailyRecordNotFoundState } from "./components/daily-record-not-found-state";
@@ -19,8 +20,10 @@ export {
 export {
   getDailyRecordEditHref,
   getDailyRecordHref,
+  getHistoryDeletedHref,
   getHistoryHref,
 } from "./lib/get-history-href";
+export { hasHistoryDeletedNotice } from "./lib/has-history-deleted-notice";
 export {
   loadPatientHistory,
   verifyPatientHistorySession,

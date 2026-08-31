@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
+import { AppAlert } from "@/components/ui/app-alert";
+import { DAILY_RECORD_DELETE_SUCCESS_MESSAGE } from "@/features/daily-records/lib/classify-daily-record-submit-error";
 import {
   HISTORY_INITIAL_LIMIT,
   HistoryEmptyState,
@@ -11,6 +13,7 @@ import {
   getCustomHistoryPeriodRange,
   getHistoryCalendarDate,
   getHistoryPeriodRange,
+  hasHistoryDeletedNotice,
   loadPatientHistory,
   parseHistoryFilter,
   verifyPatientHistorySession,
@@ -28,6 +31,7 @@ export default async function HistoricoPage({
   const params = await searchParams;
   const today = getHistoryCalendarDate(new Date());
   const filter = parseHistoryFilter(params, today);
+  const showDeletedNotice = hasHistoryDeletedNotice(params);
 
   if (filter.status === "custom-pending" || filter.status === "custom-invalid") {
     const session = await verifyPatientHistorySession();
@@ -40,6 +44,11 @@ export default async function HistoricoPage({
       <PatientShell>
         <div className="space-y-6">
           <HistoryPageHeader />
+          {showDeletedNotice ? (
+            <AppAlert variant="success">
+              {DAILY_RECORD_DELETE_SUCCESS_MESSAGE}
+            </AppAlert>
+          ) : null}
           <HistoryPeriodFilter
             period={filter.period}
             startValue={filter.startValue}
@@ -71,6 +80,12 @@ export default async function HistoricoPage({
     <PatientShell>
       <div className="space-y-6">
         <HistoryPageHeader />
+
+        {showDeletedNotice ? (
+          <AppAlert variant="success">
+            {DAILY_RECORD_DELETE_SUCCESS_MESSAGE}
+          </AppAlert>
+        ) : null}
 
         <HistoryPeriodFilter
           period={filter.period}

@@ -3,7 +3,7 @@
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
-type ButtonVariant = "primary" | "ghost" | "link" | "outline";
+type ButtonVariant = "primary" | "ghost" | "link" | "outline" | "destructive";
 type ButtonSize = "sm" | "md" | "lg";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -25,6 +25,14 @@ const variantClasses: Record<ButtonVariant, string> = {
     "border border-[var(--at-border-input)] bg-[var(--at-surface)] text-[var(--at-text-primary)] font-medium",
     "hover:bg-[var(--at-surface-input)]",
     "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
+    "active:translate-y-px",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
+    "transition-all duration-150",
+  ].join(" "),
+  destructive: [
+    "border border-destructive bg-[var(--at-surface)] text-destructive font-medium",
+    "hover:bg-destructive/5",
+    "focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2",
     "active:translate-y-px",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     "transition-all duration-150",

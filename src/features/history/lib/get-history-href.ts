@@ -1,4 +1,9 @@
-import { HISTORY_CUSTOM_PERIOD_PARAM, HISTORY_PATH } from "../constants";
+import {
+  HISTORY_CUSTOM_PERIOD_PARAM,
+  HISTORY_DELETED_NOTICE_PARAM,
+  HISTORY_DELETED_NOTICE_VALUE,
+  HISTORY_PATH,
+} from "../constants";
 import type { HistoryFilter } from "./parse-history-filter";
 
 /**
@@ -39,4 +44,15 @@ export function getDailyRecordHref(recordId: string): string {
 
 export function getDailyRecordEditHref(recordId: string): string {
   return `${getDailyRecordHref(recordId)}/editar`;
+}
+
+/**
+ * History URL for a confirmed deletion, preserving the validated filter
+ * and attaching a fixed non-sensitive success indicator.
+ */
+export function getHistoryDeletedHref(filter: HistoryFilter): string {
+  const historyHref = getHistoryHref(filter);
+  const separator = historyHref.includes("?") ? "&" : "?";
+
+  return `${historyHref}${separator}${HISTORY_DELETED_NOTICE_PARAM}=${HISTORY_DELETED_NOTICE_VALUE}`;
 }

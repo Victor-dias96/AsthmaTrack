@@ -10,6 +10,11 @@ export const HISTORY_TIME_ZONE = "America/Maceio";
 
 export const HISTORY_PATH = "/paciente/historico";
 
+/** Fixed, non-sensitive history notice after a confirmed deletion. */
+export const HISTORY_DELETED_NOTICE_PARAM = "excluido";
+
+export const HISTORY_DELETED_NOTICE_VALUE = "1";
+
 export const HISTORY_DEFAULT_PERIOD = 7;
 
 export const HISTORY_FIXED_PERIODS = [HISTORY_DEFAULT_PERIOD, 30, 90] as const;

@@ -270,3 +270,79 @@ export function classifyDailyRecordUpdateNetworkError(): {
     message: DAILY_RECORD_UPDATE_CONNECTION_ERROR_MESSAGE,
   };
 }
+
+export const DAILY_RECORD_DELETE_CONNECTION_ERROR_MESSAGE =
+  "Não foi possível excluir o registro. Verifique sua conexão e tente novamente.";
+
+export const DAILY_RECORD_DELETE_NOT_FOUND_ERROR_MESSAGE =
+  "Não foi possível encontrar ou excluir este registro.";
+
+export const DAILY_RECORD_DELETE_UNEXPECTED_ERROR_MESSAGE =
+  "Ocorreu um erro ao excluir o registro. Tente novamente.";
+
+export const DAILY_RECORD_DELETE_SUCCESS_MESSAGE =
+  "Registro excluído com sucesso.";
+
+export type DailyRecordDeleteErrorKind =
+  "auth" | "connection" | "not-found" | "unexpected";
+
+export function classifyDailyRecordDeleteError(
+  error: PostgrestError,
+  httpStatus?: number
+): { kind: DailyRecordDeleteErrorKind; message: string } {
+  const code = error.code ?? "";
+
+  if (AUTH_ERROR_CODES.has(code)) {
+    return { kind: "auth", message: DAILY_RECORD_AUTH_ERROR_MESSAGE };
+  }
+
+  if (
+    PERMISSION_ERROR_CODES.has(code) ||
+    NOT_FOUND_ERROR_CODES.has(code) ||
+    (httpStatus !== undefined && NOT_FOUND_HTTP_STATUSES.has(httpStatus))
+  ) {
+    return {
+      kind: "not-found",
+      message: DAILY_RECORD_DELETE_NOT_FOUND_ERROR_MESSAGE,
+    };
+  }
+
+  const isRateLimit =
+    RATE_LIMIT_CODES.has(code) ||
+    (httpStatus !== undefined && RATE_LIMIT_HTTP_STATUSES.has(httpStatus));
+
+  const isConnectionStatus =
+    httpStatus !== undefined && CONNECTION_HTTP_STATUSES.has(httpStatus);
+
+  if (CONNECTION_ERROR_CODES.has(code) || isRateLimit || isConnectionStatus) {
+    return {
+      kind: "connection",
+      message: DAILY_RECORD_DELETE_CONNECTION_ERROR_MESSAGE,
+    };
+  }
+
+  return {
+    kind: "unexpected",
+    message: DAILY_RECORD_DELETE_UNEXPECTED_ERROR_MESSAGE,
+  };
+}
+
+export function classifyDailyRecordDeleteUnexpectedResponse(): {
+  kind: "unexpected";
+  message: string;
+} {
+  return {
+    kind: "unexpected",
+    message: DAILY_RECORD_DELETE_UNEXPECTED_ERROR_MESSAGE,
+  };
+}
+
+export function classifyDailyRecordDeleteNetworkError(): {
+  kind: "connection";
+  message: string;
+} {
+  return {
+    kind: "connection",
+    message: DAILY_RECORD_DELETE_CONNECTION_ERROR_MESSAGE,
+  };
+}
