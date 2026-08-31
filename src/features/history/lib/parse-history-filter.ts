@@ -39,12 +39,15 @@ export type HistoryFilter =
       errors: HistoryFilterCustomErrors;
     };
 
+export type HistoryListFilter = Extract<
+  HistoryFilter,
+  { status: "fixed" } | { status: "custom" }
+>;
+
 type SearchParamValue = string | string[] | undefined;
 
 type SingleSearchParam =
-  | { kind: "missing" }
-  | { kind: "repeated" }
-  | { kind: "value"; value: string };
+  { kind: "missing" } | { kind: "repeated" } | { kind: "value"; value: string };
 
 function readSingleSearchParam(value: SearchParamValue): SingleSearchParam {
   if (value === undefined) {

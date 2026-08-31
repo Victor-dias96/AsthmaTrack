@@ -1,5 +1,9 @@
-/** Initial history page size. Pagination is deferred to a later issue. */
-export const HISTORY_INITIAL_LIMIT = 20;
+/** Fixed history page size. Not accepted from URL parameters. */
+export const HISTORY_PAGE_SIZE = 10;
+
+export const HISTORY_DEFAULT_PAGE = 1;
+
+export const HISTORY_PAGE_PARAM = "pagina";
 
 /**
  * Product timezone for history display and period boundaries.

@@ -4,18 +4,19 @@ import { PatientShell } from "@/components/layout/patient-shell";
 import { AppAlert } from "@/components/ui/app-alert";
 import { DAILY_RECORD_DELETE_SUCCESS_MESSAGE } from "@/features/daily-records/lib/classify-daily-record-submit-error";
 import {
-  HISTORY_INITIAL_LIMIT,
   HistoryEmptyState,
   HistoryErrorState,
+  HistoryPagination,
   HistoryPeriodFilter,
   HistoryRecordList,
-  HistoryResultLimitNotice,
   getCustomHistoryPeriodRange,
   getHistoryCalendarDate,
+  getHistoryHref,
   getHistoryPeriodRange,
   hasHistoryDeletedNotice,
   loadPatientHistory,
   parseHistoryFilter,
+  parseHistoryPage,
   verifyPatientHistorySession,
 } from "@/features/history";
 
@@ -33,7 +34,10 @@ export default async function HistoricoPage({
   const filter = parseHistoryFilter(params, today);
   const showDeletedNotice = hasHistoryDeletedNotice(params);
 
-  if (filter.status === "custom-pending" || filter.status === "custom-invalid") {
+  if (
+    filter.status === "custom-pending" ||
+    filter.status === "custom-invalid"
+  ) {
     const session = await verifyPatientHistorySession();
 
     if (session.status === "unauthenticated") {
@@ -62,12 +66,13 @@ export default async function HistoricoPage({
     );
   }
 
+  const page = parseHistoryPage(params.pagina);
   const range =
     filter.status === "custom"
       ? getCustomHistoryPeriodRange(filter.start, filter.end)
       : getHistoryPeriodRange(filter.period);
 
-  const result = await loadPatientHistory(range);
+  const result = await loadPatientHistory(range, page);
 
   if (result.status === "unauthenticated") {
     redirect("/login");
@@ -75,6 +80,14 @@ export default async function HistoricoPage({
 
   const startValue = filter.status === "custom" ? filter.startValue : "";
   const endValue = filter.status === "custom" ? filter.endValue : "";
+
+  if (
+    result.status === "ok" &&
+    result.totalCount > 0 &&
+    page > result.totalPages
+  ) {
+    redirect(getHistoryHref(filter, result.totalPages));
+  }
 
   return (
     <PatientShell>
@@ -95,14 +108,18 @@ export default async function HistoricoPage({
 
         {result.status === "error" ? (
           <HistoryErrorState />
-        ) : result.records.length === 0 ? (
+        ) : result.totalCount === 0 ? (
           <HistoryEmptyState period={filter.period} />
+        ) : result.records.length === 0 ? (
+          <HistoryErrorState />
         ) : (
           <div className="space-y-3">
             <HistoryRecordList records={result.records} filter={filter} />
-            {result.records.length >= HISTORY_INITIAL_LIMIT ? (
-              <HistoryResultLimitNotice />
-            ) : null}
+            <HistoryPagination
+              currentPage={page}
+              totalPages={result.totalPages}
+              filter={filter}
+            />
           </div>
         )}
       </div>
@@ -117,8 +134,7 @@ function HistoryPageHeader() {
         Histórico
       </h1>
       <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
-        Consulte os registros de PEF e sintomas que você salvou
-        anteriormente.
+        Consulte os registros de PEF e sintomas que você salvou anteriormente.
       </p>
     </div>
   );
