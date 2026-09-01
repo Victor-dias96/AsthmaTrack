@@ -1,8 +1,17 @@
 import { AppCard } from "@/components/ui/app-card";
 
-import { DASHBOARD_SUMMARY_METRIC_LABELS } from "../constants";
+import { DASHBOARD_SUMMARY_PLACEHOLDER_LABELS } from "../constants";
+import { LatestPefCard, type LatestPefCardStatus } from "./latest-pef-card";
 
-export function DashboardSummaryMetrics() {
+type DashboardSummaryMetricsProps = {
+  latestPef: number | null;
+  latestPefStatus?: LatestPefCardStatus;
+};
+
+export function DashboardSummaryMetrics({
+  latestPef,
+  latestPefStatus = "ready",
+}: DashboardSummaryMetricsProps) {
   return (
     <section
       aria-labelledby="dashboard-summary-heading"
@@ -23,7 +32,10 @@ export function DashboardSummaryMetrics() {
       </p>
 
       <ul className="mt-4 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {DASHBOARD_SUMMARY_METRIC_LABELS.map((label) => (
+        <li className="min-w-0">
+          <LatestPefCard pefValue={latestPef} status={latestPefStatus} />
+        </li>
+        {DASHBOARD_SUMMARY_PLACEHOLDER_LABELS.map((label) => (
           <li key={label} className="min-w-0">
             <AppCard padding="sm" className="min-w-0">
               <h3 className="text-sm font-medium text-[var(--at-text-secondary)]">

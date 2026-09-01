@@ -1,5 +1,4 @@
-export const DASHBOARD_SUMMARY_METRIC_LABELS = [
-  "Último PEF",
+export const DASHBOARD_SUMMARY_PLACEHOLDER_LABELS = [
   "Data do último registro",
   "Total de registros",
   "Dias com sintomas",
@@ -7,5 +6,10 @@ export const DASHBOARD_SUMMARY_METRIC_LABELS = [
   "Uso de medicação de alívio",
 ] as const;
 
-export type DashboardSummaryMetricLabel =
-  (typeof DASHBOARD_SUMMARY_METRIC_LABELS)[number];
+export type DashboardSummaryPlaceholderLabel =
+  (typeof DASHBOARD_SUMMARY_PLACEHOLDER_LABELS)[number];
+
+export const DASHBOARD_SUMMARY_METRIC_LABELS =
+  DASHBOARD_SUMMARY_PLACEHOLDER_LABELS;
+
+export type DashboardSummaryMetricLabel = DashboardSummaryPlaceholderLabel;
