@@ -5,10 +5,14 @@ import { DashboardPrimaryAction } from "./dashboard-primary-action";
 import { DashboardRecentRecords } from "./dashboard-recent-records";
 import { DashboardSummaryMetrics } from "./dashboard-summary-metrics";
 
-export function DashboardPageContent() {
+type DashboardPageContentProps = {
+  firstName: string | null;
+};
+
+export function DashboardPageContent({ firstName }: DashboardPageContentProps) {
   return (
     <div className="min-w-0 space-y-6">
-      <DashboardHeader />
+      <DashboardHeader firstName={firstName} />
       <DashboardPrimaryAction />
       <DashboardSummaryMetrics />
       <DashboardPeriodFilter />
