@@ -9,6 +9,11 @@ export type {
   LatestPefCardProps,
   LatestPefCardStatus,
 } from "./components/latest-pef-card";
+export { TotalRecordsCard } from "./components/total-records-card";
+export type {
+  TotalRecordsCardProps,
+  TotalRecordsCardStatus,
+} from "./components/total-records-card";
 export {
   DASHBOARD_SUMMARY_METRIC_LABELS,
   DASHBOARD_SUMMARY_PLACEHOLDER_LABELS,
