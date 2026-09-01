@@ -3,6 +3,7 @@ import type { LatestPefCardStatus } from "./latest-pef-card";
 import type { DaysWithSymptomsCardStatus } from "./days-with-symptoms-card";
 import type { TotalRecordsCardStatus } from "./total-records-card";
 import type { RecordedAttacksCardStatus } from "./recorded-attacks-card";
+import type { RescueMedicationUsageCardStatus } from "./rescue-medication-usage-card";
 import { DashboardHeader } from "./dashboard-header";
 import { DashboardPeriodFilter } from "./dashboard-period-filter";
 import { DashboardPefChart } from "./dashboard-pef-chart";
@@ -22,6 +23,8 @@ type DashboardPageContentProps = {
   daysWithSymptomsStatus?: DaysWithSymptomsCardStatus;
   recordedAttacks?: number | null;
   recordedAttacksStatus?: RecordedAttacksCardStatus;
+  rescueMedicationUsage?: number | null;
+  rescueMedicationUsageStatus?: RescueMedicationUsageCardStatus;
 };
 
 export function DashboardPageContent({
@@ -36,6 +39,8 @@ export function DashboardPageContent({
   daysWithSymptomsStatus,
   recordedAttacks = null,
   recordedAttacksStatus,
+  rescueMedicationUsage = null,
+  rescueMedicationUsageStatus,
 }: DashboardPageContentProps) {
   return (
     <div className="min-w-0 space-y-6">
@@ -52,6 +57,8 @@ export function DashboardPageContent({
         daysWithSymptomsStatus={daysWithSymptomsStatus}
         recordedAttacks={recordedAttacks}
         recordedAttacksStatus={recordedAttacksStatus}
+        rescueMedicationUsage={rescueMedicationUsage}
+        rescueMedicationUsageStatus={rescueMedicationUsageStatus}
       />
       <DashboardPeriodFilter />
       <DashboardPefChart />

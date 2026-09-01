@@ -24,6 +24,11 @@ export type {
   RecordedAttacksCardProps,
   RecordedAttacksCardStatus,
 } from "./components/recorded-attacks-card";
+export { RescueMedicationUsageCard } from "./components/rescue-medication-usage-card";
+export type {
+  RescueMedicationUsageCardProps,
+  RescueMedicationUsageCardStatus,
+} from "./components/rescue-medication-usage-card";
 export {
   DASHBOARD_SUMMARY_METRIC_LABELS,
   DASHBOARD_SUMMARY_PLACEHOLDER_LABELS,

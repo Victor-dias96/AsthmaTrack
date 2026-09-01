@@ -1,6 +1,3 @@
-import { AppCard } from "@/components/ui/app-card";
-
-import { DASHBOARD_SUMMARY_PLACEHOLDER_LABELS } from "../constants";
 import {
   LatestRecordDateCard,
   type LatestRecordDateCardStatus,
@@ -18,6 +15,10 @@ import {
   RecordedAttacksCard,
   type RecordedAttacksCardStatus,
 } from "./recorded-attacks-card";
+import {
+  RescueMedicationUsageCard,
+  type RescueMedicationUsageCardStatus,
+} from "./rescue-medication-usage-card";
 
 type DashboardSummaryMetricsProps = {
   latestPef: number | null;
@@ -30,6 +31,8 @@ type DashboardSummaryMetricsProps = {
   daysWithSymptomsStatus?: DaysWithSymptomsCardStatus;
   recordedAttacks?: number | null;
   recordedAttacksStatus?: RecordedAttacksCardStatus;
+  rescueMedicationUsage?: number | null;
+  rescueMedicationUsageStatus?: RescueMedicationUsageCardStatus;
 };
 
 export function DashboardSummaryMetrics({
@@ -43,6 +46,8 @@ export function DashboardSummaryMetrics({
   daysWithSymptomsStatus = "ready",
   recordedAttacks = null,
   recordedAttacksStatus = "ready",
+  rescueMedicationUsage = null,
+  rescueMedicationUsageStatus = "ready",
 }: DashboardSummaryMetricsProps) {
   return (
     <section
@@ -91,19 +96,12 @@ export function DashboardSummaryMetrics({
             status={recordedAttacksStatus}
           />
         </li>
-        {DASHBOARD_SUMMARY_PLACEHOLDER_LABELS.map((label) => (
-          <li key={label} className="min-w-0">
-            <AppCard padding="sm" className="min-w-0">
-              <h3 className="text-sm font-medium text-[var(--at-text-secondary)]">
-                {label}
-              </h3>
-              <div
-                aria-hidden="true"
-                className="mt-2 h-8 rounded-[var(--at-radius-sm)] bg-[var(--at-surface-input)]"
-              />
-            </AppCard>
-          </li>
-        ))}
+        <li className="min-w-0">
+          <RescueMedicationUsageCard
+            rescueMedicationUsage={rescueMedicationUsage}
+            status={rescueMedicationUsageStatus}
+          />
+        </li>
       </ul>
     </section>
   );

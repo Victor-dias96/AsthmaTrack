@@ -1,6 +1,4 @@
-export const DASHBOARD_SUMMARY_PLACEHOLDER_LABELS = [
-  "Uso de medicação de alívio",
-] as const;
+export const DASHBOARD_SUMMARY_PLACEHOLDER_LABELS = [] as const;
 
 export type DashboardSummaryPlaceholderLabel =
   (typeof DASHBOARD_SUMMARY_PLACEHOLDER_LABELS)[number];
