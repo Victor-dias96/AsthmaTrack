@@ -14,6 +14,10 @@ import {
   TotalRecordsCard,
   type TotalRecordsCardStatus,
 } from "./total-records-card";
+import {
+  RecordedAttacksCard,
+  type RecordedAttacksCardStatus,
+} from "./recorded-attacks-card";
 
 type DashboardSummaryMetricsProps = {
   latestPef: number | null;
@@ -24,6 +28,8 @@ type DashboardSummaryMetricsProps = {
   totalRecordsStatus?: TotalRecordsCardStatus;
   daysWithSymptoms?: number | null;
   daysWithSymptomsStatus?: DaysWithSymptomsCardStatus;
+  recordedAttacks?: number | null;
+  recordedAttacksStatus?: RecordedAttacksCardStatus;
 };
 
 export function DashboardSummaryMetrics({
@@ -35,6 +41,8 @@ export function DashboardSummaryMetrics({
   totalRecordsStatus = "ready",
   daysWithSymptoms = null,
   daysWithSymptomsStatus = "ready",
+  recordedAttacks = null,
+  recordedAttacksStatus = "ready",
 }: DashboardSummaryMetricsProps) {
   return (
     <section
@@ -75,6 +83,12 @@ export function DashboardSummaryMetrics({
           <DaysWithSymptomsCard
             daysWithSymptoms={daysWithSymptoms}
             status={daysWithSymptomsStatus}
+          />
+        </li>
+        <li className="min-w-0">
+          <RecordedAttacksCard
+            recordedAttacks={recordedAttacks}
+            status={recordedAttacksStatus}
           />
         </li>
         {DASHBOARD_SUMMARY_PLACEHOLDER_LABELS.map((label) => (

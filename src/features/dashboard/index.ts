@@ -19,6 +19,11 @@ export type {
   TotalRecordsCardProps,
   TotalRecordsCardStatus,
 } from "./components/total-records-card";
+export { RecordedAttacksCard } from "./components/recorded-attacks-card";
+export type {
+  RecordedAttacksCardProps,
+  RecordedAttacksCardStatus,
+} from "./components/recorded-attacks-card";
 export {
   DASHBOARD_SUMMARY_METRIC_LABELS,
   DASHBOARD_SUMMARY_PLACEHOLDER_LABELS,
