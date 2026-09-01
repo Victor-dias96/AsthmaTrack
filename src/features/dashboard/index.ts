@@ -9,6 +9,11 @@ export type {
   LatestPefCardProps,
   LatestPefCardStatus,
 } from "./components/latest-pef-card";
+export { DaysWithSymptomsCard } from "./components/days-with-symptoms-card";
+export type {
+  DaysWithSymptomsCardProps,
+  DaysWithSymptomsCardStatus,
+} from "./components/days-with-symptoms-card";
 export { TotalRecordsCard } from "./components/total-records-card";
 export type {
   TotalRecordsCardProps,

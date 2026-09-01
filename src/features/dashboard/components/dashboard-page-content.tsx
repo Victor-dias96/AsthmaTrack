@@ -1,5 +1,6 @@
 import type { LatestRecordDateCardStatus } from "./latest-record-date-card";
 import type { LatestPefCardStatus } from "./latest-pef-card";
+import type { DaysWithSymptomsCardStatus } from "./days-with-symptoms-card";
 import type { TotalRecordsCardStatus } from "./total-records-card";
 import { DashboardHeader } from "./dashboard-header";
 import { DashboardPeriodFilter } from "./dashboard-period-filter";
@@ -16,6 +17,8 @@ type DashboardPageContentProps = {
   latestRecordDateStatus?: LatestRecordDateCardStatus;
   totalRecords?: number | null;
   totalRecordsStatus?: TotalRecordsCardStatus;
+  daysWithSymptoms?: number | null;
+  daysWithSymptomsStatus?: DaysWithSymptomsCardStatus;
 };
 
 export function DashboardPageContent({
@@ -26,6 +29,8 @@ export function DashboardPageContent({
   latestRecordDateStatus,
   totalRecords = null,
   totalRecordsStatus,
+  daysWithSymptoms = null,
+  daysWithSymptomsStatus,
 }: DashboardPageContentProps) {
   return (
     <div className="min-w-0 space-y-6">
@@ -38,6 +43,8 @@ export function DashboardPageContent({
         latestRecordDateStatus={latestRecordDateStatus}
         totalRecords={totalRecords}
         totalRecordsStatus={totalRecordsStatus}
+        daysWithSymptoms={daysWithSymptoms}
+        daysWithSymptomsStatus={daysWithSymptomsStatus}
       />
       <DashboardPeriodFilter />
       <DashboardPefChart />
