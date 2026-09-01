@@ -1,4 +1,9 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
+export { LatestRecordDateCard } from "./components/latest-record-date-card";
+export type {
+  LatestRecordDateCardProps,
+  LatestRecordDateCardStatus,
+} from "./components/latest-record-date-card";
 export { LatestPefCard } from "./components/latest-pef-card";
 export type {
   LatestPefCardProps,

@@ -1,16 +1,24 @@
 import { AppCard } from "@/components/ui/app-card";
 
 import { DASHBOARD_SUMMARY_PLACEHOLDER_LABELS } from "../constants";
+import {
+  LatestRecordDateCard,
+  type LatestRecordDateCardStatus,
+} from "./latest-record-date-card";
 import { LatestPefCard, type LatestPefCardStatus } from "./latest-pef-card";
 
 type DashboardSummaryMetricsProps = {
   latestPef: number | null;
   latestPefStatus?: LatestPefCardStatus;
+  latestRecordDate?: string | null;
+  latestRecordDateStatus?: LatestRecordDateCardStatus;
 };
 
 export function DashboardSummaryMetrics({
   latestPef,
   latestPefStatus = "ready",
+  latestRecordDate = null,
+  latestRecordDateStatus = "ready",
 }: DashboardSummaryMetricsProps) {
   return (
     <section
@@ -34,6 +42,12 @@ export function DashboardSummaryMetrics({
       <ul className="mt-4 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <li className="min-w-0">
           <LatestPefCard pefValue={latestPef} status={latestPefStatus} />
+        </li>
+        <li className="min-w-0">
+          <LatestRecordDateCard
+            recordedAt={latestRecordDate}
+            status={latestRecordDateStatus}
+          />
         </li>
         {DASHBOARD_SUMMARY_PLACEHOLDER_LABELS.map((label) => (
           <li key={label} className="min-w-0">

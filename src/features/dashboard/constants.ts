@@ -1,5 +1,4 @@
 export const DASHBOARD_SUMMARY_PLACEHOLDER_LABELS = [
-  "Data do último registro",
   "Total de registros",
   "Dias com sintomas",
   "Crises registradas",
