@@ -1,5 +1,6 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
 export { DashboardEmptyState } from "./components/dashboard-empty-state";
+export { DashboardErrorState } from "./components/dashboard-error-state";
 export type { DashboardContentState } from "./types/dashboard-content-state";
 export { DASHBOARD_DEFAULT_CONTENT_STATE } from "./types/dashboard-content-state";
 export { RecentRecordsSection } from "./components/recent-records-section";
@@ -59,5 +60,10 @@ export type {
 export { getDashboardPeriodHref } from "./lib/get-dashboard-period-href";
 export { loadDashboardGreeting } from "./lib/load-dashboard-greeting";
 export type { LoadDashboardGreetingResult } from "./lib/load-dashboard-greeting";
+export { loadPatientDashboardData } from "./lib/load-patient-dashboard-data";
 export { parseDashboardPeriod } from "./lib/parse-dashboard-period";
 export type { PefChartPoint } from "./types/pef-chart-point";
+export type {
+  DashboardDataResult,
+  PatientDashboardData,
+} from "./types/patient-dashboard-data";

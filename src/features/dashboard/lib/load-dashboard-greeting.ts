@@ -7,7 +7,8 @@ type ProfileFullNameRow = {
 };
 
 export type LoadDashboardGreetingResult =
-  { status: "unauthenticated" } | { status: "ok"; firstName: string | null };
+  | { status: "unauthenticated" }
+  | { status: "ok"; firstName: string | null; userId: string };
 
 export async function loadDashboardGreeting(): Promise<LoadDashboardGreetingResult> {
   const supabase = await createClient();
@@ -38,7 +39,7 @@ export async function loadDashboardGreeting(): Promise<LoadDashboardGreetingResu
       .overrideTypes<ProfileFullNameRow, { merge: false }>();
 
     if (error || !data) {
-      return { status: "ok", firstName: null };
+      return { status: "ok", firstName: null, userId: user.id };
     }
 
     const fullName = typeof data.full_name === "string" ? data.full_name : null;
@@ -46,8 +47,9 @@ export async function loadDashboardGreeting(): Promise<LoadDashboardGreetingResu
     return {
       status: "ok",
       firstName: getFirstDisplayName(fullName),
+      userId: user.id,
     };
   } catch {
-    return { status: "ok", firstName: null };
+    return { status: "ok", firstName: null, userId: user.id };
   }
 }

@@ -1,4 +1,4 @@
-import { AppAlert } from "@/components/ui/app-alert";
+import type { DailyRecord } from "@/types/daily-record";
 
 import type { DashboardPeriod } from "../constants";
 import type { DashboardContentState } from "../types/dashboard-content-state";
@@ -11,6 +11,7 @@ import type { TotalRecordsCardStatus } from "./total-records-card";
 import type { RecordedAttacksCardStatus } from "./recorded-attacks-card";
 import type { RescueMedicationUsageCardStatus } from "./rescue-medication-usage-card";
 import { DashboardEmptyState } from "./dashboard-empty-state";
+import { DashboardErrorState } from "./dashboard-error-state";
 import { DashboardHeader } from "./dashboard-header";
 import { DashboardPeriodSelector } from "./dashboard-period-selector";
 import { DashboardPefChart } from "./dashboard-pef-chart";
@@ -40,16 +41,9 @@ type DashboardPageContentProps = {
   recordedAttacksStatus?: RecordedAttacksCardStatus;
   rescueMedicationUsage?: number | null;
   rescueMedicationUsageStatus?: RescueMedicationUsageCardStatus;
+  recentRecords?: readonly DailyRecord[];
   recentRecordsStatus?: RecentRecordsSectionStatus;
 };
-
-function DashboardUnavailableState() {
-  return (
-    <AppAlert variant="warning">
-      Não foi possível carregar o dashboard.
-    </AppAlert>
-  );
-}
 
 function DashboardIntegratedContent({
   currentPeriod,
@@ -66,6 +60,7 @@ function DashboardIntegratedContent({
   recordedAttacksStatus,
   rescueMedicationUsage = null,
   rescueMedicationUsageStatus,
+  recentRecords,
   recentRecordsStatus,
 }: Omit<DashboardPageContentProps, "firstName" | "contentState"> & {
   pefChartData: readonly PefChartPoint[];
@@ -88,7 +83,7 @@ function DashboardIntegratedContent({
       />
       <DashboardPeriodSelector currentPeriod={currentPeriod} />
       <DashboardPefChart data={pefChartData} />
-      <RecentRecordsSection status={recentRecordsStatus} />
+      <RecentRecordsSection records={recentRecords} status={recentRecordsStatus} />
     </>
   );
 }
@@ -110,6 +105,7 @@ export function DashboardPageContent({
   recordedAttacksStatus,
   rescueMedicationUsage = null,
   rescueMedicationUsageStatus,
+  recentRecords,
   recentRecordsStatus,
 }: DashboardPageContentProps) {
   const integratedContentProps = {
@@ -127,6 +123,7 @@ export function DashboardPageContent({
     recordedAttacksStatus,
     rescueMedicationUsage,
     rescueMedicationUsageStatus,
+    recentRecords,
     recentRecordsStatus,
   };
 
@@ -140,7 +137,7 @@ export function DashboardPageContent({
           <DashboardPeriodSelector currentPeriod={currentPeriod} />
         </>
       ) : contentState === "unavailable" ? (
-        <DashboardUnavailableState />
+        <DashboardErrorState />
       ) : (
         <DashboardIntegratedContent {...integratedContentProps} />
       )}

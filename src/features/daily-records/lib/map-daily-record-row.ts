@@ -20,7 +20,8 @@ export type DailyRecordRow = {
   updated_at: string;
 };
 
-function toSymptomSeverity(value: number): SymptomSeverity | null {
+/** Exported for reuse by other daily-record row mappers (e.g. the dashboard). */
+export function toSymptomSeverity(value: number): SymptomSeverity | null {
   if (value === 0 || value === 1 || value === 2 || value === 3) {
     return value;
   }
