@@ -7,3 +7,13 @@ export const DASHBOARD_SUMMARY_METRIC_LABELS =
   DASHBOARD_SUMMARY_PLACEHOLDER_LABELS;
 
 export type DashboardSummaryMetricLabel = DashboardSummaryPlaceholderLabel;
+
+export const DASHBOARD_PATH = "/paciente/dashboard";
+
+export const DASHBOARD_PERIOD_PARAM = "periodo";
+
+export const DASHBOARD_DEFAULT_PERIOD = 7;
+
+export const DASHBOARD_PERIODS = [DASHBOARD_DEFAULT_PERIOD, 30, 90] as const;
+
+export type DashboardPeriod = (typeof DASHBOARD_PERIODS)[number];

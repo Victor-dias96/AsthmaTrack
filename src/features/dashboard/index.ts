@@ -1,4 +1,5 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
+export { DashboardPeriodSelector } from "./components/dashboard-period-selector";
 export { LatestRecordDateCard } from "./components/latest-record-date-card";
 export type {
   LatestRecordDateCardProps,
@@ -30,12 +31,19 @@ export type {
   RescueMedicationUsageCardStatus,
 } from "./components/rescue-medication-usage-card";
 export {
+  DASHBOARD_DEFAULT_PERIOD,
+  DASHBOARD_PATH,
+  DASHBOARD_PERIODS,
+  DASHBOARD_PERIOD_PARAM,
   DASHBOARD_SUMMARY_METRIC_LABELS,
   DASHBOARD_SUMMARY_PLACEHOLDER_LABELS,
 } from "./constants";
 export type {
+  DashboardPeriod,
   DashboardSummaryMetricLabel,
   DashboardSummaryPlaceholderLabel,
 } from "./constants";
+export { getDashboardPeriodHref } from "./lib/get-dashboard-period-href";
 export { loadDashboardGreeting } from "./lib/load-dashboard-greeting";
 export type { LoadDashboardGreetingResult } from "./lib/load-dashboard-greeting";
+export { parseDashboardPeriod } from "./lib/parse-dashboard-period";
