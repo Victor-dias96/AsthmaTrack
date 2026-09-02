@@ -13,6 +13,13 @@ const HEADER_METADATA_SKELETON_KEYS = [
   "report-header-generated",
 ] as const;
 
+const PEF_METRIC_SKELETON_KEYS = [
+  "report-pef-latest",
+  "report-pef-average",
+  "report-pef-minimum",
+  "report-pef-maximum",
+] as const;
+
 export default function RelatorioLoading() {
   return (
     <PatientShell>
@@ -56,6 +63,22 @@ export default function RelatorioLoading() {
           <Skeleton className="mt-3 h-4 w-32 max-w-full" />
           <Skeleton className="mt-2 h-4 w-full max-w-sm" />
           <Skeleton className="mt-2 h-4 w-44 max-w-full" />
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="min-w-0 rounded-[var(--at-radius-lg)] border border-[var(--at-border)] bg-[var(--at-surface)] p-5"
+        >
+          <Skeleton className="h-6 w-40 max-w-full" />
+          <Skeleton className="mt-1 h-4 w-64 max-w-full" />
+          <div className="mt-4 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PEF_METRIC_SKELETON_KEYS.map((key) => (
+              <div key={key} className="min-w-0">
+                <Skeleton className="h-3 w-24 max-w-full" />
+                <Skeleton className="mt-1 h-8 w-28 max-w-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </PatientShell>

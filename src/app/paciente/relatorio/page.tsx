@@ -7,9 +7,11 @@ import {
   ReportEmptyState,
   ReportHeader,
   ReportPageHeader,
+  ReportPefSummary,
   ReportPeriodSelector,
   ReportPeriodSummary,
   ReportUnavailableState,
+  calculatePefSummary,
   formatReportGeneratedAt,
   getPatientReportData,
   getPatientReportProfile,
@@ -137,12 +139,17 @@ export default async function RelatorioPage({
       {reportResult.status === "empty" ? (
         <ReportEmptyState />
       ) : (
-        <ReportPeriodSummary
-          period={currentPeriod}
-          displayStart={displayStart}
-          displayEnd={displayEnd}
-          recordCount={reportResult.data.recordCount}
-        />
+        <>
+          <ReportPeriodSummary
+            period={currentPeriod}
+            displayStart={displayStart}
+            displayEnd={displayEnd}
+            recordCount={reportResult.data.recordCount}
+          />
+          <ReportPefSummary
+            summary={calculatePefSummary(reportResult.data.records)}
+          />
+        </>
       )}
     </RelatorioPageFrame>
   );

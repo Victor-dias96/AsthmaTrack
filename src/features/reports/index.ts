@@ -2,6 +2,8 @@ export { ReportEmptyState } from "./components/report-empty-state";
 export { ReportHeader } from "./components/report-header";
 export type { ReportHeaderProps } from "./components/report-header";
 export { ReportPageHeader } from "./components/report-page-header";
+export { ReportPefSummary } from "./components/report-pef-summary";
+export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPeriodSelector } from "./components/report-period-selector";
 export { ReportPeriodSummary } from "./components/report-period-summary";
 export { ReportUnavailableState } from "./components/report-unavailable-state";
@@ -15,7 +17,14 @@ export {
   REPORT_PERIOD_PARAM,
 } from "./constants";
 export type { ReportPeriod } from "./constants";
+export { calculatePefSummary } from "./lib/calculate-pef-summary";
+export type { PefSummary } from "./lib/calculate-pef-summary";
 export { formatReportPatientName } from "./lib/format-report-patient-name";
+export {
+  formatReportPefAverage,
+  formatReportPefInteger,
+  formatReportPefMeasurementCount,
+} from "./lib/format-report-pef-value";
 export {
   formatReportCalendarDate,
   formatReportGeneratedAt,
