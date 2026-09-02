@@ -6,6 +6,7 @@ import {
   Line,
   LineChart,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
@@ -19,10 +20,16 @@ import {
   getPefYAxisDomain,
 } from "../lib/get-pef-chart-axis-domains";
 import {
+  getPefChartMeasurementListItem,
+  getPefChartSummary,
+  PEF_CHART_KEYBOARD_INSTRUCTIONS,
+} from "../lib/get-pef-chart-accessibility-text";
+import {
   normalizePefChartPoints,
   type PefChartDatum,
 } from "../lib/normalize-pef-chart-points";
 import type { PefChartPoint } from "../types/pef-chart-point";
+import { PefChartTooltip } from "./pef-chart-tooltip";
 
 export type PefChartShellProps = {
   data: readonly PefChartPoint[];
@@ -30,11 +37,24 @@ export type PefChartShellProps = {
   descriptionId?: string;
 };
 
-const chartRegionClassName =
+const chartRegionSizeClassName =
   "h-48 min-h-48 w-full min-w-0 overflow-hidden sm:h-56 md:h-64";
 
+const chartRegionClassName = [
+  chartRegionSizeClassName,
+  "[&_.recharts-surface]:outline-none",
+  "[&_.recharts-surface:focus-visible]:ring-2",
+  "[&_.recharts-surface:focus-visible]:ring-[var(--at-blue)]",
+  "[&_.recharts-surface:focus-visible]:ring-offset-2",
+].join(" ");
+
+const PEF_CHART_SUMMARY_ID = "dashboard-pef-chart-summary";
+const PEF_CHART_INSTRUCTIONS_ID = "dashboard-pef-chart-instructions";
+const PEF_CHART_MEASUREMENTS_ID = "dashboard-pef-chart-measurements";
+const PEF_CHART_ACCESSIBLE_NAME = "Evolução do PEF";
+
 const emptyRegionClassName = [
-  chartRegionClassName,
+  chartRegionSizeClassName,
   "flex items-center justify-center px-4",
   "rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border)]",
   "bg-[var(--at-surface-input)]/50",
@@ -90,6 +110,32 @@ function formatPefYAxisTick(value: unknown): string {
   return String(Math.round(value));
 }
 
+function joinDescribedBy(
+  ids: readonly (string | undefined)[]
+): string | undefined {
+  const present = ids.filter(
+    (id): id is string => typeof id === "string" && id.length > 0
+  );
+
+  return present.length > 0 ? present.join(" ") : undefined;
+}
+
+function getAccessibleMeasurementItems(points: readonly PefChartDatum[]) {
+  const items: { chartKey: string; text: string }[] = [];
+
+  for (const point of points) {
+    const text = getPefChartMeasurementListItem(point);
+
+    if (text === null) {
+      continue;
+    }
+
+    items.push({ chartKey: point.chartKey, text });
+  }
+
+  return items;
+}
+
 function PefLineChart({ points }: { points: readonly PefChartDatum[] }) {
   const includeYear = useMemo(
     () =>
@@ -113,6 +159,7 @@ function PefLineChart({ points }: { points: readonly PefChartDatum[] }) {
             id="dashboard-pef-evolution-chart"
             data={points}
             accessibilityLayer
+            desc={PEF_CHART_ACCESSIBLE_NAME}
             margin={PEF_CHART_MARGIN}
           >
             <CartesianGrid
@@ -162,6 +209,20 @@ function PefLineChart({ points }: { points: readonly PefChartDatum[] }) {
               tickLine={false}
               axisLine={{ stroke: PEF_CHART_AXIS_LINE }}
               tickFormatter={formatPefYAxisTick}
+            />
+            <Tooltip
+              content={PefChartTooltip}
+              isAnimationActive={false}
+              cursor={{
+                stroke: PEF_CHART_AXIS_LINE,
+                strokeWidth: 1,
+                strokeDasharray: "3 3",
+              }}
+              wrapperStyle={{
+                maxWidth: "16rem",
+                outline: "none",
+              }}
+              allowEscapeViewBox={{ x: false, y: false }}
             />
             <Line
               id="dashboard-pef-series"
@@ -219,19 +280,48 @@ export function PefChartShell({
   }
 
   const isSinglePoint = presentation.points.length === 1;
+  const hasMultiplePoints = presentation.points.length >= 2;
+  const summary = getPefChartSummary(presentation.points);
+  const measurementItems = hasMultiplePoints
+    ? getAccessibleMeasurementItems(presentation.points)
+    : [];
 
   return (
     <div
       aria-labelledby={titleId}
-      aria-describedby={descriptionId}
+      aria-describedby={joinDescribedBy([
+        descriptionId,
+        summary ? PEF_CHART_SUMMARY_ID : undefined,
+        hasMultiplePoints ? PEF_CHART_INSTRUCTIONS_ID : undefined,
+      ])}
       className="min-w-0"
     >
       {isSinglePoint ? (
-        <p className="mb-2 text-sm leading-relaxed text-[var(--at-text-secondary)]">
+        <p
+          aria-hidden="true"
+          className="mb-2 text-sm leading-relaxed text-[var(--at-text-secondary)]"
+        >
           Uma medição disponível.
         </p>
       ) : null}
+      {summary ? (
+        <p id={PEF_CHART_SUMMARY_ID} className="sr-only">
+          {summary}
+        </p>
+      ) : null}
+      {hasMultiplePoints ? (
+        <p id={PEF_CHART_INSTRUCTIONS_ID} className="sr-only">
+          {PEF_CHART_KEYBOARD_INSTRUCTIONS}
+        </p>
+      ) : null}
       <PefLineChart points={presentation.points} />
+      {measurementItems.length > 0 ? (
+        <ol id={PEF_CHART_MEASUREMENTS_ID} className="sr-only">
+          {measurementItems.map((item) => (
+            <li key={item.chartKey}>{item.text}</li>
+          ))}
+        </ol>
+      ) : null}
     </div>
   );
 }
