@@ -8,6 +8,7 @@ export type PefChartDatum = {
   recordedAt: string;
   pefValue: number;
   chartKey: string;
+  recordedTimestamp: number;
 };
 
 export type PefChartPresentation =
@@ -105,6 +106,7 @@ export function normalizePefChartPoints(
       recordedAt: point.recordedAt,
       pefValue: point.pefValue,
       chartKey: `pef-${point.inputIndex}`,
+      recordedTimestamp: point.recordedAtMs,
     })),
   };
 }

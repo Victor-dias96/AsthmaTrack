@@ -1,8 +1,23 @@
 "use client";
 
 import { useMemo } from "react";
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
+import {
+  doesPefChartRangeCrossYears,
+  formatPefChartTickDate,
+} from "../lib/format-pef-chart-tick-date";
+import {
+  getPefXAxisDomain,
+  getPefYAxisDomain,
+} from "../lib/get-pef-chart-axis-domains";
 import {
   normalizePefChartPoints,
   type PefChartDatum,
@@ -26,6 +41,16 @@ const emptyRegionClassName = [
 ].join(" ");
 
 const PEF_CHART_STROKE = "var(--chart-1)";
+const PEF_CHART_GRID_STROKE = "var(--at-border)";
+const PEF_CHART_AXIS_TICK = "var(--at-text-secondary)";
+const PEF_CHART_AXIS_LINE = "var(--at-border)";
+const PEF_CHART_TICK_FONT_SIZE = 12;
+const PEF_CHART_Y_AXIS_WIDTH = 44;
+const PEF_CHART_X_AXIS_HEIGHT = 32;
+const PEF_CHART_X_MIN_TICK_GAP = 24;
+const PEF_CHART_MARGIN = { top: 8, right: 16, bottom: 4, left: 4 } as const;
+const PEF_CHART_X_PADDING = { left: 12, right: 12 } as const;
+const PEF_CHART_Y_PADDING = { top: 8, bottom: 8 } as const;
 
 function ChartStatusMessage({ children }: { children: string }) {
   return (
@@ -57,47 +82,111 @@ function ChartStatusRegion({
   );
 }
 
+function formatPefYAxisTick(value: unknown): string {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return "";
+  }
+
+  return String(Math.round(value));
+}
+
 function PefLineChart({ points }: { points: readonly PefChartDatum[] }) {
+  const includeYear = useMemo(
+    () =>
+      doesPefChartRangeCrossYears(
+        points.map((point) => point.recordedTimestamp)
+      ),
+    [points]
+  );
+
   return (
-    <div className={chartRegionClassName}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-        <LineChart
-          id="dashboard-pef-evolution-chart"
-          data={points}
-          accessibilityLayer
-          margin={{ top: 12, right: 16, bottom: 12, left: 16 }}
-        >
-          <XAxis
-            dataKey="chartKey"
-            type="category"
-            hide
-            height={0}
-            allowDuplicatedCategory
-          />
-          <YAxis hide width={0} />
-          <Line
-            id="dashboard-pef-series"
-            type="linear"
-            dataKey="pefValue"
-            name="PEF"
-            stroke={PEF_CHART_STROKE}
-            strokeWidth={2}
-            dot={{
-              r: 4,
-              fill: PEF_CHART_STROKE,
-              strokeWidth: 0,
-            }}
-            activeDot={{
-              r: 4,
-              fill: PEF_CHART_STROKE,
-              strokeWidth: 0,
-            }}
-            isAnimationActive={false}
-            connectNulls={false}
-            legendType="none"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="min-w-0">
+      <p className="mb-1 text-xs text-[var(--at-text-secondary)]">
+        <span aria-hidden="true">L/min</span>
+        <span className="sr-only">
+          Unidade do eixo vertical: litros por minuto.
+        </span>
+      </p>
+      <div className={chartRegionClassName}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+          <LineChart
+            id="dashboard-pef-evolution-chart"
+            data={points}
+            accessibilityLayer
+            margin={PEF_CHART_MARGIN}
+          >
+            <CartesianGrid
+              aria-hidden
+              vertical={false}
+              stroke={PEF_CHART_GRID_STROKE}
+              strokeDasharray="3 3"
+              syncWithTicks
+            />
+            <XAxis
+              dataKey="recordedTimestamp"
+              type="number"
+              scale="time"
+              domain={getPefXAxisDomain}
+              name="Data da medição"
+              interval="preserveStartEnd"
+              minTickGap={PEF_CHART_X_MIN_TICK_GAP}
+              height={PEF_CHART_X_AXIS_HEIGHT}
+              padding={PEF_CHART_X_PADDING}
+              tickMargin={8}
+              fontSize={PEF_CHART_TICK_FONT_SIZE}
+              tick={{
+                fill: PEF_CHART_AXIS_TICK,
+                fontSize: PEF_CHART_TICK_FONT_SIZE,
+              }}
+              tickLine={false}
+              axisLine={{ stroke: PEF_CHART_AXIS_LINE }}
+              tickFormatter={(value: unknown) =>
+                formatPefChartTickDate(value, includeYear)
+              }
+            />
+            <YAxis
+              dataKey="pefValue"
+              type="number"
+              domain={getPefYAxisDomain}
+              allowDecimals={false}
+              tickCount={5}
+              name="PEF"
+              width={PEF_CHART_Y_AXIS_WIDTH}
+              padding={PEF_CHART_Y_PADDING}
+              tickMargin={6}
+              fontSize={PEF_CHART_TICK_FONT_SIZE}
+              tick={{
+                fill: PEF_CHART_AXIS_TICK,
+                fontSize: PEF_CHART_TICK_FONT_SIZE,
+              }}
+              tickLine={false}
+              axisLine={{ stroke: PEF_CHART_AXIS_LINE }}
+              tickFormatter={formatPefYAxisTick}
+            />
+            <Line
+              id="dashboard-pef-series"
+              type="linear"
+              dataKey="pefValue"
+              name="PEF"
+              stroke={PEF_CHART_STROKE}
+              strokeWidth={2}
+              dot={{
+                r: 4,
+                fill: PEF_CHART_STROKE,
+                strokeWidth: 0,
+              }}
+              activeDot={{
+                r: 4,
+                fill: PEF_CHART_STROKE,
+                strokeWidth: 0,
+              }}
+              isAnimationActive={false}
+              connectNulls={false}
+              legendType="none"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

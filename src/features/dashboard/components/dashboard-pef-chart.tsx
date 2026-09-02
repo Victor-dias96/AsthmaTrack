@@ -16,7 +16,7 @@ export function DashboardPefChart({ data }: DashboardPefChartProps) {
       <AppCard className="min-w-0">
         <AppCardHeader
           title="Evolução do PEF"
-          description="O gráfico das suas medições será exibido aqui."
+          description="Valores em litros por minuto (L/min)."
           titleId={DASHBOARD_PEF_CHART_TITLE_ID}
           descriptionId={DASHBOARD_PEF_CHART_DESCRIPTION_ID}
         />
