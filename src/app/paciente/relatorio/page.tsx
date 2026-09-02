@@ -10,8 +10,10 @@ import {
   ReportPefSummary,
   ReportPeriodSelector,
   ReportPeriodSummary,
+  ReportSymptomSummary,
   ReportUnavailableState,
   calculatePefSummary,
+  calculateSymptomFrequencySummary,
   formatReportGeneratedAt,
   getPatientReportData,
   getPatientReportProfile,
@@ -148,6 +150,11 @@ export default async function RelatorioPage({
           />
           <ReportPefSummary
             summary={calculatePefSummary(reportResult.data.records)}
+          />
+          <ReportSymptomSummary
+            summary={calculateSymptomFrequencySummary(
+              reportResult.data.records
+            )}
           />
         </>
       )}

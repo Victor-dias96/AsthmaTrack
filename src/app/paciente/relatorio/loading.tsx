@@ -20,6 +20,13 @@ const PEF_METRIC_SKELETON_KEYS = [
   "report-pef-maximum",
 ] as const;
 
+const SYMPTOM_FREQUENCY_SKELETON_KEYS = [
+  "report-symptom-cough",
+  "report-symptom-wheezing",
+  "report-symptom-shortness",
+  "report-symptom-chest",
+] as const;
+
 export default function RelatorioLoading() {
   return (
     <PatientShell>
@@ -76,6 +83,23 @@ export default function RelatorioLoading() {
               <div key={key} className="min-w-0">
                 <Skeleton className="h-3 w-24 max-w-full" />
                 <Skeleton className="mt-1 h-8 w-28 max-w-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="min-w-0 rounded-[var(--at-radius-lg)] border border-[var(--at-border)] bg-[var(--at-surface)] p-5"
+        >
+          <Skeleton className="h-6 w-48 max-w-full" />
+          <Skeleton className="mt-1 h-4 w-72 max-w-full" />
+          <div className="mt-4 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {SYMPTOM_FREQUENCY_SKELETON_KEYS.map((key) => (
+              <div key={key} className="min-w-0">
+                <Skeleton className="h-3 w-24 max-w-full" />
+                <Skeleton className="mt-1 h-4 w-32 max-w-full" />
+                <Skeleton className="mt-1 h-8 w-20 max-w-full" />
               </div>
             ))}
           </div>

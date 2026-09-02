@@ -5,6 +5,8 @@ export { ReportPageHeader } from "./components/report-page-header";
 export { ReportPefSummary } from "./components/report-pef-summary";
 export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPeriodSelector } from "./components/report-period-selector";
+export { ReportSymptomSummary } from "./components/report-symptom-summary";
+export type { ReportSymptomSummaryProps } from "./components/report-symptom-summary";
 export { ReportPeriodSummary } from "./components/report-period-summary";
 export { ReportUnavailableState } from "./components/report-unavailable-state";
 export {
@@ -19,12 +21,22 @@ export {
 export type { ReportPeriod } from "./constants";
 export { calculatePefSummary } from "./lib/calculate-pef-summary";
 export type { PefSummary } from "./lib/calculate-pef-summary";
+export { calculateSymptomFrequencySummary } from "./lib/calculate-symptom-frequency-summary";
+export type {
+  SymptomFrequencyId,
+  SymptomFrequencyItem,
+  SymptomFrequencySummary,
+} from "./lib/calculate-symptom-frequency-summary";
 export { formatReportPatientName } from "./lib/format-report-patient-name";
 export {
   formatReportPefAverage,
   formatReportPefInteger,
   formatReportPefMeasurementCount,
 } from "./lib/format-report-pef-value";
+export {
+  formatReportSymptomPercentage,
+  formatReportSymptomRecordPhrase,
+} from "./lib/format-report-symptom-frequency";
 export {
   formatReportCalendarDate,
   formatReportGeneratedAt,
