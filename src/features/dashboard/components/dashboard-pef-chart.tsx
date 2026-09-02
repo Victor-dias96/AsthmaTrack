@@ -1,16 +1,23 @@
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 
+import { PefChartShell } from "./pef-chart-shell";
+
+const DASHBOARD_PEF_CHART_TITLE_ID = "dashboard-pef-chart-title";
+const DASHBOARD_PEF_CHART_DESCRIPTION_ID = "dashboard-pef-chart-description";
+
 export function DashboardPefChart() {
   return (
-    <section>
+    <section aria-labelledby={DASHBOARD_PEF_CHART_TITLE_ID}>
       <AppCard className="min-w-0">
         <AppCardHeader
           title="Evolução do PEF"
           description="O gráfico das suas medições será exibido aqui."
+          titleId={DASHBOARD_PEF_CHART_TITLE_ID}
+          descriptionId={DASHBOARD_PEF_CHART_DESCRIPTION_ID}
         />
-        <div
-          aria-hidden="true"
-          className="min-h-48 rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border)] bg-[var(--at-surface-input)]/50"
+        <PefChartShell
+          titleId={DASHBOARD_PEF_CHART_TITLE_ID}
+          descriptionId={DASHBOARD_PEF_CHART_DESCRIPTION_ID}
         />
       </AppCard>
     </section>

@@ -35,21 +35,31 @@ export function AppCard({
 type AppCardHeaderProps = {
   title: string;
   description?: string;
+  titleId?: string;
+  descriptionId?: string;
   className?: string;
 };
 
 export function AppCardHeader({
   title,
   description,
+  titleId,
+  descriptionId,
   className,
 }: AppCardHeaderProps) {
   return (
     <div className={cn("mb-4", className)}>
-      <h2 className="text-lg font-semibold text-[var(--at-text-primary)]">
+      <h2
+        id={titleId}
+        className="text-lg font-semibold text-[var(--at-text-primary)]"
+      >
         {title}
       </h2>
       {description && (
-        <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
+        <p
+          id={descriptionId}
+          className="mt-0.5 text-sm text-[var(--at-text-secondary)]"
+        >
           {description}
         </p>
       )}

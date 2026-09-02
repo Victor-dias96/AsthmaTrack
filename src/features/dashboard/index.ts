@@ -1,4 +1,6 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
+export { PefChartShell } from "./components/pef-chart-shell";
+export type { PefChartShellProps } from "./components/pef-chart-shell";
 export { DashboardPeriodSelector } from "./components/dashboard-period-selector";
 export { LatestRecordDateCard } from "./components/latest-record-date-card";
 export type {
@@ -47,3 +49,4 @@ export { getDashboardPeriodHref } from "./lib/get-dashboard-period-href";
 export { loadDashboardGreeting } from "./lib/load-dashboard-greeting";
 export type { LoadDashboardGreetingResult } from "./lib/load-dashboard-greeting";
 export { parseDashboardPeriod } from "./lib/parse-dashboard-period";
+export type { PefChartPoint } from "./types/pef-chart-point";
