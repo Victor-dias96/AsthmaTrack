@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   title: "Histórico",
 };
 
+// Patient history is private and per-request; never let it be served from a
+// cached shell after a mutation on another route.
+export const dynamic = "force-dynamic";
+
 export default async function HistoricoPage({
   searchParams,
 }: {

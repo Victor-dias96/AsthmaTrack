@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   title: "Dashboard",
 };
 
+// Patient dashboard data is private and per-request; never let it be served
+// from a cached shell after a mutation on another route.
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage({
   searchParams,
 }: {
