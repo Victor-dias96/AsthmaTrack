@@ -1,29 +1,66 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
-import { AppCard, AppCardHeader } from "@/components/ui/app-card";
+import {
+  REPORT_PERIOD_PARAM,
+  ReportEmptyState,
+  ReportPageHeader,
+  ReportPeriodSelector,
+  ReportPeriodSummary,
+  ReportUnavailableState,
+  getPatientReportData,
+  parseReportPeriod,
+  readPatientReportSession,
+} from "@/features/reports";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Relatório",
 };
 
-export default function RelatorioPage() {
+// Patient report data is private and per-request; never let it be served
+// from a cached shell after a mutation on another route.
+export const dynamic = "force-dynamic";
+
+export default async function RelatorioPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const currentPeriod = parseReportPeriod(params[REPORT_PERIOD_PARAM]);
+
+  const supabase = await createClient();
+  const session = await readPatientReportSession(supabase);
+
+  if (session.status === "unauthenticated") {
+    redirect("/login");
+  }
+
+  const result = await getPatientReportData(
+    supabase,
+    session.userId,
+    currentPeriod
+  );
+
   return (
     <PatientShell>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-xl font-bold text-[var(--at-text-primary)]">
-            Relatório
-          </h1>
-          <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
-            Gere relatórios para compartilhar com seu médico
-          </p>
-        </div>
-        <AppCard>
-          <AppCardHeader title="Gerar relatório" description="Em breve" />
-          <p className="text-sm text-[var(--at-text-secondary)]">
-            Aqui você poderá gerar relatórios dos seus dados para seu médico.
-          </p>
-        </AppCard>
+      <div className="min-w-0 space-y-6">
+        <ReportPageHeader />
+        <ReportPeriodSelector currentPeriod={currentPeriod} />
+
+        {result.status === "unavailable" ? (
+          <ReportUnavailableState />
+        ) : result.status === "empty" ? (
+          <ReportEmptyState />
+        ) : (
+          <ReportPeriodSummary
+            period={currentPeriod}
+            displayStart={result.data.displayStart}
+            displayEnd={result.data.displayEnd}
+            recordCount={result.data.recordCount}
+          />
+        )}
       </div>
     </PatientShell>
   );
