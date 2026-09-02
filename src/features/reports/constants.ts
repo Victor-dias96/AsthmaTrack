@@ -19,6 +19,10 @@ export const REPORT_PERIOD_LABELS = {
   90: "Últimos 90 dias",
 } as const satisfies Record<ReportPeriod, string>;
 
+export const REPORT_DOCUMENT_TITLE = "Relatório de acompanhamento";
+
+export const REPORT_MISSING_PATIENT_NAME = "Nome não informado";
+
 /**
  * Minimum `daily_records` projection for the current summary and later
  * report sections. `id` is selected only as a deterministic secondary sort

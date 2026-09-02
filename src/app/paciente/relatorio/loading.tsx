@@ -7,6 +7,12 @@ const PERIOD_OPTION_SKELETON_KEYS = [
   "report-period-skeleton-3",
 ] as const;
 
+const HEADER_METADATA_SKELETON_KEYS = [
+  "report-header-patient",
+  "report-header-period",
+  "report-header-generated",
+] as const;
+
 export default function RelatorioLoading() {
   return (
     <PatientShell>
@@ -23,6 +29,21 @@ export default function RelatorioLoading() {
           <div className="mt-2 flex min-w-0 flex-wrap gap-2">
             {PERIOD_OPTION_SKELETON_KEYS.map((key) => (
               <Skeleton key={key} className="h-10 w-36 max-w-full" />
+            ))}
+          </div>
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="min-w-0 rounded-[var(--at-radius-lg)] border border-[var(--at-border)] bg-[var(--at-surface)] p-5"
+        >
+          <Skeleton className="h-6 w-64 max-w-full" />
+          <div className="mt-4 grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-3">
+            {HEADER_METADATA_SKELETON_KEYS.map((key) => (
+              <div key={key} className="min-w-0">
+                <Skeleton className="h-3 w-20 max-w-full" />
+                <Skeleton className="mt-1 h-5 w-full max-w-xs" />
+              </div>
             ))}
           </div>
         </div>

@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
+import type { CalendarDate } from "@/features/history/lib/parse-calendar-date";
 import {
   REPORT_PERIOD_PARAM,
   ReportEmptyState,
+  ReportHeader,
   ReportPageHeader,
   ReportPeriodSelector,
   ReportPeriodSummary,
   ReportUnavailableState,
+  formatReportGeneratedAt,
   getPatientReportData,
+  getPatientReportProfile,
+  isUsableReportCalendarDate,
   parseReportPeriod,
   readPatientReportSession,
+  type PatientReportDataResult,
+  type ReportPeriod,
 } from "@/features/reports";
 import { createClient } from "@/lib/supabase/server";
 
@@ -21,6 +28,40 @@ export const metadata: Metadata = {
 // Patient report data is private and per-request; never let it be served
 // from a cached shell after a mutation on another route.
 export const dynamic = "force-dynamic";
+
+function RelatorioPageFrame({
+  currentPeriod,
+  children,
+}: {
+  currentPeriod: ReportPeriod;
+  children: React.ReactNode;
+}) {
+  return (
+    <PatientShell>
+      <div className="min-w-0 space-y-6">
+        <ReportPageHeader />
+        <ReportPeriodSelector currentPeriod={currentPeriod} />
+        {children}
+      </div>
+    </PatientShell>
+  );
+}
+
+function getVisibleReportDates(
+  result: Exclude<PatientReportDataResult, { status: "unavailable" }>
+): { displayStart: CalendarDate; displayEnd: CalendarDate } {
+  if (result.status === "ready") {
+    return {
+      displayStart: result.data.displayStart,
+      displayEnd: result.data.displayEnd,
+    };
+  }
+
+  return {
+    displayStart: result.displayStart,
+    displayEnd: result.displayEnd,
+  };
+}
 
 export default async function RelatorioPage({
   searchParams,
@@ -37,31 +78,72 @@ export default async function RelatorioPage({
     redirect("/login");
   }
 
-  const result = await getPatientReportData(
-    supabase,
-    session.userId,
-    currentPeriod
-  );
+  const generatedAt = new Date();
+  const generated = formatReportGeneratedAt(generatedAt);
+
+  if (generated === null) {
+    return (
+      <RelatorioPageFrame currentPeriod={currentPeriod}>
+        <ReportUnavailableState />
+      </RelatorioPageFrame>
+    );
+  }
+
+  const [profileResult, reportResult] = await Promise.all([
+    getPatientReportProfile(supabase, session.userId),
+    getPatientReportData(
+      supabase,
+      session.userId,
+      currentPeriod,
+      generatedAt
+    ),
+  ]);
+
+  if (
+    profileResult.status === "unavailable" ||
+    reportResult.status === "unavailable"
+  ) {
+    return (
+      <RelatorioPageFrame currentPeriod={currentPeriod}>
+        <ReportUnavailableState />
+      </RelatorioPageFrame>
+    );
+  }
+
+  const { displayStart, displayEnd } = getVisibleReportDates(reportResult);
+
+  if (
+    !isUsableReportCalendarDate(displayStart) ||
+    !isUsableReportCalendarDate(displayEnd)
+  ) {
+    return (
+      <RelatorioPageFrame currentPeriod={currentPeriod}>
+        <ReportUnavailableState />
+      </RelatorioPageFrame>
+    );
+  }
 
   return (
-    <PatientShell>
-      <div className="min-w-0 space-y-6">
-        <ReportPageHeader />
-        <ReportPeriodSelector currentPeriod={currentPeriod} />
+    <RelatorioPageFrame currentPeriod={currentPeriod}>
+      <ReportHeader
+        patientName={profileResult.fullName}
+        period={currentPeriod}
+        displayStart={displayStart}
+        displayEnd={displayEnd}
+        generatedAtIso={generated.iso}
+        generatedAtLabel={generated.label}
+      />
 
-        {result.status === "unavailable" ? (
-          <ReportUnavailableState />
-        ) : result.status === "empty" ? (
-          <ReportEmptyState />
-        ) : (
-          <ReportPeriodSummary
-            period={currentPeriod}
-            displayStart={result.data.displayStart}
-            displayEnd={result.data.displayEnd}
-            recordCount={result.data.recordCount}
-          />
-        )}
-      </div>
-    </PatientShell>
+      {reportResult.status === "empty" ? (
+        <ReportEmptyState />
+      ) : (
+        <ReportPeriodSummary
+          period={currentPeriod}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          recordCount={reportResult.data.recordCount}
+        />
+      )}
+    </RelatorioPageFrame>
   );
 }

@@ -19,16 +19,18 @@ type ReportSupabaseClient = Awaited<ReturnType<typeof createClient>>;
  *   already-verified patient ID; never verifies or accepts an unverified ID.
  * - Performs one `daily_records` query, explicitly filtered by `patient_id`
  *   and bounded by `recorded_at` (inclusive start, exclusive end).
+ * - Uses the caller-provided `now` so query bounds match the report header.
  * - Performs no rendering, no navigation and no medical interpretation.
  * - Never uses `service_role` and never logs record contents.
  */
 export async function getPatientReportData(
   supabase: ReportSupabaseClient,
   patientId: string,
-  period: ReportPeriod
+  period: ReportPeriod,
+  now: Date = new Date()
 ): Promise<PatientReportDataResult> {
   const { rangeStart, rangeEnd, displayStart, displayEnd } =
-    getReportPeriodRange(period);
+    getReportPeriodRange(period, now);
 
   const { data, error } = await supabase
     .from("daily_records")
@@ -47,7 +49,7 @@ export async function getPatientReportData(
   const rows = data ?? [];
 
   if (rows.length === 0) {
-    return { status: "empty" };
+    return { status: "empty", displayStart, displayEnd };
   }
 
   const records: PatientReportRecord[] = [];

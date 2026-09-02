@@ -5,8 +5,9 @@ import { HistoryRetryButton } from "@/features/history/components/history-retry-
 const REPORT_ERROR_STATE_TITLE_ID = "report-error-state-title";
 
 /**
- * Safe unavailable state for a failed report query.
- * Never claims zero records and never exposes raw provider details.
+ * Safe unavailable state for a failed report profile or records query.
+ * Never claims zero records, never fabricates a patient name, and never
+ * exposes raw provider details.
  */
 export function ReportUnavailableState() {
   return (
@@ -31,7 +32,7 @@ export function ReportUnavailableState() {
           </h2>
 
           <p className="mt-1 max-w-md text-sm leading-relaxed text-[var(--at-text-secondary)]">
-            Ocorreu um problema ao buscar seus registros. Tente novamente.
+            Ocorreu um problema ao carregar o relatório. Tente novamente.
           </p>
         </div>
 

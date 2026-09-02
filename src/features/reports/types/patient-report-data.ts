@@ -20,10 +20,16 @@ export type PatientReportData = {
  * Discriminated outcome of loading the authenticated patient's report data.
  *
  * - `ready`: the period query succeeded and at least one row mapped.
- * - `empty`: the period query succeeded with zero rows.
+ * - `empty`: the period query succeeded with zero rows. Inclusive display
+ *   dates are still returned so the report header can show the selected
+ *   period without a second range calculation.
  * - `unavailable`: the query failed, or every returned row failed to map.
  */
 export type PatientReportDataResult =
   | { status: "ready"; data: PatientReportData }
-  | { status: "empty" }
+  | {
+      status: "empty";
+      displayStart: CalendarDate;
+      displayEnd: CalendarDate;
+    }
   | { status: "unavailable" };
