@@ -1,4 +1,7 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
+export { DashboardEmptyState } from "./components/dashboard-empty-state";
+export type { DashboardContentState } from "./types/dashboard-content-state";
+export { DASHBOARD_DEFAULT_CONTENT_STATE } from "./types/dashboard-content-state";
 export { RecentRecordsSection } from "./components/recent-records-section";
 export type {
   RecentRecordsSectionProps,
