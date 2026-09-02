@@ -1,4 +1,5 @@
 import type { DashboardPeriod } from "../constants";
+import type { PefChartPoint } from "../types/pef-chart-point";
 import type { LatestRecordDateCardStatus } from "./latest-record-date-card";
 import type { LatestPefCardStatus } from "./latest-pef-card";
 import type { DaysWithSymptomsCardStatus } from "./days-with-symptoms-card";
@@ -12,9 +13,12 @@ import { DashboardPrimaryAction } from "./dashboard-primary-action";
 import { DashboardRecentRecords } from "./dashboard-recent-records";
 import { DashboardSummaryMetrics } from "./dashboard-summary-metrics";
 
+const EMPTY_PEF_CHART_DATA: readonly PefChartPoint[] = [];
+
 type DashboardPageContentProps = {
   firstName: string | null;
   currentPeriod: DashboardPeriod;
+  pefChartData?: readonly PefChartPoint[];
   latestPef?: number | null;
   latestPefStatus?: LatestPefCardStatus;
   latestRecordDate?: string | null;
@@ -32,6 +36,7 @@ type DashboardPageContentProps = {
 export function DashboardPageContent({
   firstName,
   currentPeriod,
+  pefChartData = EMPTY_PEF_CHART_DATA,
   latestPef = null,
   latestPefStatus,
   latestRecordDate = null,
@@ -64,7 +69,7 @@ export function DashboardPageContent({
         rescueMedicationUsageStatus={rescueMedicationUsageStatus}
       />
       <DashboardPeriodSelector currentPeriod={currentPeriod} />
-      <DashboardPefChart />
+      <DashboardPefChart data={pefChartData} />
       <DashboardRecentRecords />
     </div>
   );
