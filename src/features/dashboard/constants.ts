@@ -17,3 +17,6 @@ export const DASHBOARD_DEFAULT_PERIOD = 7;
 export const DASHBOARD_PERIODS = [DASHBOARD_DEFAULT_PERIOD, 30, 90] as const;
 
 export type DashboardPeriod = (typeof DASHBOARD_PERIODS)[number];
+
+/** Fixed dashboard recent-records display limit. Not accepted from URL parameters. */
+export const RECENT_RECORDS_DISPLAY_LIMIT = 3;

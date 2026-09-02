@@ -1,4 +1,12 @@
 export { DashboardPageContent } from "./components/dashboard-page-content";
+export { RecentRecordsSection } from "./components/recent-records-section";
+export type {
+  RecentRecordsSectionProps,
+  RecentRecordsSectionStatus,
+} from "./components/recent-records-section";
+export { RecentRecordItem } from "./components/recent-record-item";
+export { RecentRecordsSectionSkeleton } from "./components/recent-records-section-skeleton";
+export { RECENT_RECORDS_DISPLAY_LIMIT } from "./constants";
 export { PefChartShell } from "./components/pef-chart-shell";
 export type { PefChartShellProps } from "./components/pef-chart-shell";
 export { DashboardPeriodSelector } from "./components/dashboard-period-selector";

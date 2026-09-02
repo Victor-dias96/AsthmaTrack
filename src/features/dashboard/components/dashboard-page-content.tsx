@@ -10,7 +10,7 @@ import { DashboardHeader } from "./dashboard-header";
 import { DashboardPeriodSelector } from "./dashboard-period-selector";
 import { DashboardPefChart } from "./dashboard-pef-chart";
 import { DashboardPrimaryAction } from "./dashboard-primary-action";
-import { DashboardRecentRecords } from "./dashboard-recent-records";
+import { RecentRecordsSection } from "./recent-records-section";
 import { DashboardSummaryMetrics } from "./dashboard-summary-metrics";
 
 const EMPTY_PEF_CHART_DATA: readonly PefChartPoint[] = [];
@@ -70,7 +70,7 @@ export function DashboardPageContent({
       />
       <DashboardPeriodSelector currentPeriod={currentPeriod} />
       <DashboardPefChart data={pefChartData} />
-      <DashboardRecentRecords />
+      <RecentRecordsSection />
     </div>
   );
 }
