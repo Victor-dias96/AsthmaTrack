@@ -1,5 +1,6 @@
 export { ReportEmptyState } from "./components/report-empty-state";
 export { ReportHeader } from "./components/report-header";
+export { ReportInformationalNotice } from "./components/report-informational-notice";
 export type { ReportHeaderProps } from "./components/report-header";
 export { ReportPageHeader } from "./components/report-page-header";
 export { ReportPefChart } from "./components/report-pef-chart";
@@ -16,6 +17,8 @@ export { ReportUnavailableState } from "./components/report-unavailable-state";
 export {
   REPORT_DEFAULT_PERIOD,
   REPORT_DOCUMENT_TITLE,
+  REPORT_INFORMATIONAL_NOTICE_BODY,
+  REPORT_INFORMATIONAL_NOTICE_TITLE,
   REPORT_MISSING_PATIENT_NAME,
   REPORT_PATH,
   REPORT_PERIODS,

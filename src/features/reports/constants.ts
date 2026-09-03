@@ -23,6 +23,11 @@ export const REPORT_DOCUMENT_TITLE = "Relatório de acompanhamento";
 
 export const REPORT_MISSING_PATIENT_NAME = "Nome não informado";
 
+export const REPORT_INFORMATIONAL_NOTICE_TITLE = "Informação importante";
+
+export const REPORT_INFORMATIONAL_NOTICE_BODY =
+  "Este relatório apresenta um resumo dos dados registrados no AsthmaTrack e não substitui avaliação, diagnóstico ou orientação de um profissional de saúde.";
+
 /**
  * Minimum `daily_records` projection for the current summary and later
  * report sections. `id` is selected only as a deterministic secondary sort

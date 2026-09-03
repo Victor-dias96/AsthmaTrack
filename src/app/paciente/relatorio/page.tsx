@@ -6,6 +6,7 @@ import {
   REPORT_PERIOD_PARAM,
   ReportEmptyState,
   ReportHeader,
+  ReportInformationalNotice,
   ReportPageHeader,
   ReportPefChart,
   ReportPefSummary,
@@ -86,6 +87,7 @@ function ReportReadySections({
       <ReportSymptomSummary summary={symptomSummary} />
       <ReportRecordedAttacksSummary summary={recordedAttacksSummary} />
       <ReportPefChart data={pefChartPoints} />
+      <ReportInformationalNotice />
     </>
   );
 }
@@ -173,7 +175,10 @@ export default async function RelatorioPage({
       />
 
       {reportResult.status === "empty" ? (
-        <ReportEmptyState />
+        <>
+          <ReportEmptyState />
+          <ReportInformationalNotice />
+        </>
       ) : (
         <ReportReadySections
           period={currentPeriod}
