@@ -21,6 +21,17 @@ export const REPORT_PERIOD_LABELS = {
 
 export const REPORT_DOCUMENT_TITLE = "Relatório de acompanhamento";
 
+export const REPORT_PRINT_ACTION_LABEL = "Imprimir relatório";
+
+/**
+ * Deterministic report-chart box for print. 640×280 CSS pixels is about
+ * 169×74 mm at 96 dpi, inside A4 portrait with 14 mm page margins.
+ */
+export const REPORT_PEF_CHART_PRINT_BOX = {
+  width: 640,
+  height: 280,
+} as const;
+
 export const REPORT_MISSING_PATIENT_NAME = "Nome não informado";
 
 export const REPORT_INFORMATIONAL_NOTICE_TITLE = "Informação importante";

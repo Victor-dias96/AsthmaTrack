@@ -51,7 +51,7 @@ export function PatientMobileNavigation() {
   return (
     <nav
       aria-label="Navegação do paciente"
-      className="fixed bottom-0 inset-x-0 z-40 flex items-stretch bg-[var(--at-surface)] border-t border-[var(--at-border)] safe-area-inset-bottom lg:hidden"
+      className="report-print-hidden fixed bottom-0 inset-x-0 z-40 flex items-stretch bg-[var(--at-surface)] border-t border-[var(--at-border)] safe-area-inset-bottom lg:hidden"
     >
       {navItems.map((item) => {
         const isActive = pathname.startsWith(item.href);

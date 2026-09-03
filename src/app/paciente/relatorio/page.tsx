@@ -12,6 +12,7 @@ import {
   ReportPefSummary,
   ReportPeriodSelector,
   ReportPeriodSummary,
+  ReportPrintButton,
   ReportRecordedAttacksSummary,
   ReportSymptomSummary,
   ReportUnavailableState,
@@ -41,16 +42,23 @@ export const dynamic = "force-dynamic";
 
 function RelatorioPageFrame({
   currentPeriod,
+  showPrintAction = false,
   children,
 }: {
   currentPeriod: ReportPeriod;
+  showPrintAction?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <PatientShell>
       <div className="min-w-0 space-y-6">
-        <ReportPageHeader />
-        <ReportPeriodSelector currentPeriod={currentPeriod} />
+        <div className="report-print-hidden space-y-6">
+          <ReportPageHeader />
+          <div className="space-y-3">
+            <ReportPeriodSelector currentPeriod={currentPeriod} />
+            {showPrintAction ? <ReportPrintButton /> : null}
+          </div>
+        </div>
         {children}
       </div>
     </PatientShell>
@@ -164,30 +172,32 @@ export default async function RelatorioPage({
   }
 
   return (
-    <RelatorioPageFrame currentPeriod={currentPeriod}>
-      <ReportHeader
-        patientName={profileResult.fullName}
-        period={currentPeriod}
-        displayStart={displayStart}
-        displayEnd={displayEnd}
-        generatedAtIso={generated.iso}
-        generatedAtLabel={generated.label}
-      />
-
-      {reportResult.status === "empty" ? (
-        <>
-          <ReportEmptyState />
-          <ReportInformationalNotice />
-        </>
-      ) : (
-        <ReportReadySections
+    <RelatorioPageFrame currentPeriod={currentPeriod} showPrintAction>
+      <article className="report-print-root space-y-6">
+        <ReportHeader
+          patientName={profileResult.fullName}
           period={currentPeriod}
           displayStart={displayStart}
           displayEnd={displayEnd}
-          recordCount={reportResult.data.recordCount}
-          records={reportResult.data.records}
+          generatedAtIso={generated.iso}
+          generatedAtLabel={generated.label}
         />
-      )}
+
+        {reportResult.status === "empty" ? (
+          <>
+            <ReportEmptyState />
+            <ReportInformationalNotice />
+          </>
+        ) : (
+          <ReportReadySections
+            period={currentPeriod}
+            displayStart={displayStart}
+            displayEnd={displayEnd}
+            recordCount={reportResult.data.recordCount}
+            records={reportResult.data.records}
+          />
+        )}
+      </article>
     </RelatorioPageFrame>
   );
 }

@@ -26,11 +26,14 @@ const secondaryActionClasses = [
 
 export function ReportEmptyState() {
   return (
-    <section aria-labelledby={REPORT_EMPTY_STATE_TITLE_ID}>
+    <section
+      aria-labelledby={REPORT_EMPTY_STATE_TITLE_ID}
+      className="report-print-section"
+    >
       <AppCard className="min-w-0">
         <div className="flex flex-col items-center text-center">
           <div
-            className="flex size-12 items-center justify-center rounded-full bg-[var(--at-surface-input)]"
+            className="report-print-hidden flex size-12 items-center justify-center rounded-full bg-[var(--at-surface-input)]"
             aria-hidden="true"
           >
             <ClipboardList
@@ -53,7 +56,7 @@ export function ReportEmptyState() {
             Não encontramos registros para gerar o resumo deste período.
           </p>
 
-          <div className="mt-4 flex w-full flex-col items-stretch justify-center gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <div className="report-print-hidden mt-4 flex w-full flex-col items-stretch justify-center gap-2 sm:w-auto sm:flex-row sm:items-center">
             <Link
               href="/paciente/novo-registro"
               className={cn(primaryActionClasses)}

@@ -35,7 +35,7 @@ function ReportRecordedAttackDateItem({
 
 function ReportRecordedAttacksSummaryUnavailable() {
   return (
-    <>
+    <div className="report-print-section">
       <h2
         id={REPORT_RECORDED_ATTACKS_SUMMARY_HEADING_ID}
         className="text-lg font-semibold text-[var(--at-text-primary)]"
@@ -45,7 +45,7 @@ function ReportRecordedAttacksSummaryUnavailable() {
       <p className="mt-1 text-sm leading-relaxed text-[var(--at-text-secondary)]">
         Não foi possível calcular as crises registradas neste período.
       </p>
-    </>
+    </div>
   );
 }
 
@@ -63,7 +63,7 @@ function ReportRecordedAttacksList({
   summary: RecordedAttacksSummary;
 }) {
   return (
-    <div className="mt-4 min-w-0 border-t border-[var(--at-border)] pt-4">
+    <div className="report-print-attacks-list mt-4 min-w-0 border-t border-[var(--at-border)] pt-4">
       <p
         id={REPORT_RECORDED_ATTACKS_DATES_LABEL_ID}
         className="text-xs font-medium uppercase tracking-wide text-[var(--at-text-secondary)]"
@@ -94,23 +94,23 @@ function ReportRecordedAttacksSummaryReady({
 
   return (
     <>
-      <h2
-        id={REPORT_RECORDED_ATTACKS_SUMMARY_HEADING_ID}
-        className="text-lg font-semibold text-[var(--at-text-primary)]"
-      >
-        Resumo das crises
-      </h2>
-      <p
-        id={REPORT_RECORDED_ATTACKS_SUMMARY_DESCRIPTION_ID}
-        className="mt-0.5 text-sm text-[var(--at-text-secondary)]"
-      >
-        Crises informadas nos registros do período selecionado.
-      </p>
+      <div className="report-print-section">
+        <h2
+          id={REPORT_RECORDED_ATTACKS_SUMMARY_HEADING_ID}
+          className="text-lg font-semibold text-[var(--at-text-primary)]"
+        >
+          Resumo das crises
+        </h2>
+        <p
+          id={REPORT_RECORDED_ATTACKS_SUMMARY_DESCRIPTION_ID}
+          className="mt-0.5 text-sm text-[var(--at-text-secondary)]"
+        >
+          Crises informadas nos registros do período selecionado.
+        </p>
 
-      {summary.count === 0 ? (
-        <ReportRecordedAttacksZeroState />
-      ) : (
-        <>
+        {summary.count === 0 ? (
+          <ReportRecordedAttacksZeroState />
+        ) : (
           <p className="mt-4 min-w-0 break-words text-[var(--at-text-primary)]">
             <span className="text-2xl font-bold tabular-nums">
               {countParts.formattedCount}
@@ -119,9 +119,11 @@ function ReportRecordedAttacksSummaryReady({
               {countParts.phrase}
             </span>
           </p>
-          <ReportRecordedAttacksList summary={summary} />
-        </>
-      )}
+        )}
+      </div>
+      {summary.count > 0 ? (
+        <ReportRecordedAttacksList summary={summary} />
+      ) : null}
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   CartesianGrid,
   Line,
@@ -31,6 +32,11 @@ import {
 import type { PefChartPoint } from "../types/pef-chart-point";
 import { PefChartTooltip } from "./pef-chart-tooltip";
 
+export type PefChartPrintBox = {
+  width: number;
+  height: number;
+};
+
 export type PefEvolutionChartProps = {
   data: readonly PefChartPoint[];
   emptyMessage: string;
@@ -38,6 +44,18 @@ export type PefEvolutionChartProps = {
   accessibleLabel: string;
   titleId: string;
   descriptionId?: string;
+  /**
+   * When set, print media uses these fixed pixel dimensions so Recharts
+   * does not unmount the SVG after a zero-size print measurement.
+   */
+  printBox?: PefChartPrintBox;
+};
+
+type PefChartBoxSize = PefChartPrintBox | { width: "100%"; height: "100%" };
+
+const SCREEN_CHART_BOX: PefChartBoxSize = {
+  width: "100%",
+  height: "100%",
 };
 
 const chartRegionSizeClassName =
@@ -139,11 +157,13 @@ function PefLineChart({
   accessibleLabel,
   chartId,
   seriesId,
+  boxSize,
 }: {
   points: readonly PefChartDatum[];
   accessibleLabel: string;
   chartId: string;
   seriesId: string;
+  boxSize: PefChartBoxSize;
 }) {
   const includeYear = useMemo(
     () =>
@@ -152,6 +172,7 @@ function PefLineChart({
       ),
     [points]
   );
+  const isFixedBox = typeof boxSize.width === "number";
 
   return (
     <div className="min-w-0">
@@ -161,8 +182,23 @@ function PefLineChart({
           Unidade do eixo vertical: litros por minuto.
         </span>
       </p>
-      <div className={chartRegionClassName}>
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <div
+        className={chartRegionClassName}
+        style={
+          isFixedBox
+            ? {
+                width: boxSize.width,
+                height: boxSize.height,
+                overflow: "visible",
+              }
+            : undefined
+        }
+      >
+        <ResponsiveContainer
+          width={boxSize.width}
+          height={boxSize.height}
+          minWidth={0}
+        >
           <LineChart
             id={chartId}
             data={points}
@@ -267,13 +303,54 @@ export function PefEvolutionChart({
   accessibleLabel,
   titleId,
   descriptionId,
+  printBox,
 }: PefEvolutionChartProps) {
   const summaryId = `${titleId}-summary`;
   const instructionsId = `${titleId}-instructions`;
   const measurementsId = `${titleId}-measurements`;
   const chartId = `${titleId}-chart`;
   const seriesId = `${titleId}-series`;
+  const [isPrintLayout, setIsPrintLayout] = useState(false);
   const presentation = useMemo(() => normalizePefChartPoints(data), [data]);
+  const boxSize: PefChartBoxSize =
+    isPrintLayout && printBox !== undefined ? printBox : SCREEN_CHART_BOX;
+
+  useEffect(() => {
+    if (printBox === undefined) {
+      return;
+    }
+
+    function enterPrintLayout() {
+      flushSync(() => {
+        setIsPrintLayout(true);
+      });
+    }
+
+    function exitPrintLayout() {
+      flushSync(() => {
+        setIsPrintLayout(false);
+      });
+    }
+
+    function handlePrintMediaChange(event: MediaQueryListEvent) {
+      if (event.matches) {
+        enterPrintLayout();
+      } else {
+        exitPrintLayout();
+      }
+    }
+
+    const printMedia = window.matchMedia("print");
+    printMedia.addEventListener("change", handlePrintMediaChange);
+    window.addEventListener("beforeprint", enterPrintLayout);
+    window.addEventListener("afterprint", exitPrintLayout);
+
+    return () => {
+      printMedia.removeEventListener("change", handlePrintMediaChange);
+      window.removeEventListener("beforeprint", enterPrintLayout);
+      window.removeEventListener("afterprint", exitPrintLayout);
+    };
+  }, [printBox]);
 
   if (presentation.status === "empty") {
     return (
@@ -335,6 +412,7 @@ export function PefEvolutionChart({
         accessibleLabel={accessibleLabel}
         chartId={chartId}
         seriesId={seriesId}
+        boxSize={boxSize}
       />
       {measurementItems.length > 0 ? (
         <ol id={measurementsId} className="sr-only">

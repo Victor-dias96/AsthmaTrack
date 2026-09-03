@@ -115,7 +115,7 @@ export function ReportPefSummary({ summary }: ReportPefSummaryProps) {
   return (
     <section
       aria-labelledby={REPORT_PEF_SUMMARY_HEADING_ID}
-      className="min-w-0"
+      className="report-print-section min-w-0"
     >
       <AppCard className="min-w-0">
         {summary === null ? (

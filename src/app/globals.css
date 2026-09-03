@@ -148,3 +148,202 @@
     @apply font-sans;
   }
 }
+
+/* ─── Patient report print ─────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff;
+    color: #111827;
+    height: auto;
+    min-height: 0;
+  }
+
+  .report-print-hidden {
+    display: none !important;
+  }
+
+  .report-print-shell {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .report-print-shell > main {
+    display: block;
+    background: #fff;
+    height: auto;
+    min-height: 0;
+  }
+
+  .report-print-shell-content {
+    padding: 0;
+  }
+
+  .report-print-root {
+    background: #fff;
+    color: #111827;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    overflow: visible;
+    max-width: 100%;
+  }
+
+  .report-print-root > * + * {
+    margin-top: 10pt;
+  }
+
+  .report-print-root h2 {
+    color: #111827;
+    font-size: 13pt;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .report-print-root p,
+  .report-print-root dd,
+  .report-print-root li,
+  .report-print-root time {
+    color: inherit;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .report-print-root dt {
+    color: #374151;
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .report-print-root dd {
+    color: #111827;
+  }
+
+  .report-print-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .report-print-root > section > div,
+  .report-print-root > aside {
+    background: #fff;
+    border: 1px solid #94a3b8;
+    box-shadow: none;
+  }
+
+  .report-print-root > aside {
+    color: #111827;
+  }
+
+  .report-print-root > aside h2,
+  .report-print-root > aside p {
+    color: #111827;
+  }
+
+  .report-print-root dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1rem;
+  }
+
+  .report-print-root dl > div {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .report-print-root *:focus,
+  .report-print-root *:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .report-print-root .sr-only:not(#report-pef-chart-heading-summary) {
+    display: none !important;
+  }
+
+  .report-print-root #report-pef-chart-heading-summary {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 0 0.5rem;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: normal;
+    color: #374151;
+    font-size: 9.5pt;
+    line-height: 1.45;
+  }
+
+  .report-print-root #report-pef-chart-heading-instructions,
+  .report-print-root #report-pef-chart-heading-measurements {
+    display: none !important;
+  }
+
+  .report-print-root #report-recorded-attacks-summary-heading,
+  .report-print-root #report-recorded-attacks-summary-description,
+  .report-print-root #report-recorded-attacks-dates-label {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .report-print-attacks-list {
+    break-inside: auto;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .report-print-attacks-list li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .report-print-chart {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    width: 169mm;
+    max-width: 100%;
+    height: 74mm;
+    overflow: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .report-print-chart .recharts-wrapper,
+  .report-print-chart .recharts-surface {
+    overflow: visible;
+  }
+
+  .report-print-chart .recharts-cartesian-grid line {
+    stroke: #94a3b8;
+  }
+
+  .report-print-chart .recharts-line-curve {
+    stroke: #1e4ee8;
+  }
+
+  .report-print-chart .recharts-dot {
+    fill: #1e4ee8;
+    stroke: #1e4ee8;
+  }
+
+  .report-print-chart text {
+    fill: #111827;
+  }
+
+  .report-print-root .recharts-tooltip-wrapper {
+    display: none !important;
+  }
+
+  .report-print-root a[href]::after {
+    content: none;
+  }
+}

@@ -15,7 +15,7 @@ export function ReportInformationalNotice() {
   return (
     <aside
       aria-labelledby={REPORT_INFORMATIONAL_NOTICE_TITLE_ID}
-      className="min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-blue-light)] px-4 py-3"
+      className="report-print-section min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-blue-light)] px-4 py-3"
     >
       <div className="flex items-start gap-2.5">
         <Info

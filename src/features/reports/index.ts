@@ -8,6 +8,7 @@ export type { ReportPefChartProps } from "./components/report-pef-chart";
 export { ReportPefSummary } from "./components/report-pef-summary";
 export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPeriodSelector } from "./components/report-period-selector";
+export { ReportPrintButton } from "./components/report-print-button";
 export { ReportRecordedAttacksSummary } from "./components/report-recorded-attacks-summary";
 export type { ReportRecordedAttacksSummaryProps } from "./components/report-recorded-attacks-summary";
 export { ReportSymptomSummary } from "./components/report-symptom-summary";
@@ -19,6 +20,8 @@ export {
   REPORT_DOCUMENT_TITLE,
   REPORT_INFORMATIONAL_NOTICE_BODY,
   REPORT_INFORMATIONAL_NOTICE_TITLE,
+  REPORT_PRINT_ACTION_LABEL,
+  REPORT_PEF_CHART_PRINT_BOX,
   REPORT_MISSING_PATIENT_NAME,
   REPORT_PATH,
   REPORT_PERIODS,

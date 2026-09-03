@@ -2,6 +2,8 @@ import { AppCard } from "@/components/ui/app-card";
 import { PefEvolutionChart } from "@/features/daily-records/components/pef-evolution-chart";
 import type { PefChartPoint } from "@/features/daily-records/types/pef-chart-point";
 
+import { REPORT_PEF_CHART_PRINT_BOX } from "../constants";
+
 const REPORT_PEF_CHART_HEADING_ID = "report-pef-chart-heading";
 const REPORT_PEF_CHART_DESCRIPTION_ID = "report-pef-chart-description";
 
@@ -43,7 +45,7 @@ function ReportPefChartReady({ data }: { data: readonly PefChartPoint[] }) {
           PEF em litros por minuto (L/min)
         </p>
       </div>
-      <div className="mt-4 min-w-0">
+      <div className="report-print-chart mt-4 min-w-0">
         <PefEvolutionChart
           data={data}
           titleId={REPORT_PEF_CHART_HEADING_ID}
@@ -51,6 +53,7 @@ function ReportPefChartReady({ data }: { data: readonly PefChartPoint[] }) {
           accessibleLabel="Evolução do PEF"
           emptyMessage="Não foi possível exibir as medições de PEF deste período."
           unavailableMessage="Não foi possível exibir as medições de PEF deste período."
+          printBox={REPORT_PEF_CHART_PRINT_BOX}
         />
       </div>
     </>
@@ -66,7 +69,10 @@ export function ReportPefChart({ data, state }: ReportPefChartProps) {
   const isUnavailable = state === "unavailable" || data.length === 0;
 
   return (
-    <section aria-labelledby={REPORT_PEF_CHART_HEADING_ID} className="min-w-0">
+    <section
+      aria-labelledby={REPORT_PEF_CHART_HEADING_ID}
+      className="report-print-section min-w-0"
+    >
       <AppCard className="min-w-0">
         {isUnavailable ? (
           <ReportPefChartUnavailable />

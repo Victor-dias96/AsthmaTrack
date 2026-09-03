@@ -26,7 +26,7 @@ export function ReportPeriodSummary({
   return (
     <section
       aria-labelledby={REPORT_PERIOD_SUMMARY_HEADING_ID}
-      className="min-w-0"
+      className="report-print-section min-w-0"
     >
       <AppCard className="min-w-0">
         <h2
