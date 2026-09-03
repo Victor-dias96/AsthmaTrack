@@ -33,6 +33,40 @@ function isDisguisedNonPdf(contentType: string, blobType: string): boolean {
 }
 
 /**
+ * Confirms a Blob/File already in memory is a non-empty PDF, not an HTML
+ * or JSON error body. Used before sharing or downloading a prepared file.
+ */
+export function isValidReportPdfBlob(blob: Blob): boolean {
+  if (blob.size === 0) {
+    return false;
+  }
+
+  return !isDisguisedNonPdf("", blob.type) && isPdfContentType(blob.type);
+}
+
+/**
+ * Triggers exactly one temporary-anchor download for an already-validated
+ * PDF Blob. Always removes the anchor and revokes the object URL. Call
+ * only from an explicit user action; never from render or an effect.
+ */
+export function downloadReportPdfBlob(blob: Blob, filename: string): void {
+  const objectUrl = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+
+  anchor.href = objectUrl;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  // Revoke on the next tick so the browser has started the download.
+  window.setTimeout(() => {
+    URL.revokeObjectURL(objectUrl);
+  }, 0);
+}
+
+/**
  * Same-origin authenticated PDF request used by download and share.
  * Validates status, Content-Type, and non-empty PDF bytes. Never logs the
  * body. Network failures propagate to the caller.

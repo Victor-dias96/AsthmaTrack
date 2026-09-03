@@ -7,6 +7,7 @@ import { AppButton } from "@/components/ui/app-button";
 import type { ReportPeriod } from "../constants";
 import {
   buildReportPdfFilename,
+  downloadReportPdfBlob,
   requestReportPdfBlob,
 } from "../lib/request-report-pdf";
 
@@ -15,23 +16,6 @@ const GENERIC_ERROR_MESSAGE = "Não foi possível gerar o PDF. Tente novamente."
 export type ReportPdfDownloadButtonProps = {
   period: ReportPeriod;
 };
-
-function triggerBlobDownload(blob: Blob, filename: string) {
-  const objectUrl = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-
-  anchor.href = objectUrl;
-  anchor.download = filename;
-  anchor.rel = "noopener";
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
-
-  // Revoke on the next tick so the browser has started the download.
-  window.setTimeout(() => {
-    URL.revokeObjectURL(objectUrl);
-  }, 0);
-}
 
 /**
  * Explicit "Baixar PDF" action (Issue 98). Smallest Client Component
@@ -67,7 +51,7 @@ export function ReportPdfDownloadButton({ period }: ReportPdfDownloadButtonProps
         return;
       }
 
-      triggerBlobDownload(result.blob, buildReportPdfFilename(period));
+      downloadReportPdfBlob(result.blob, buildReportPdfFilename(period));
     } catch {
       setErrorMessage(GENERIC_ERROR_MESSAGE);
     } finally {
