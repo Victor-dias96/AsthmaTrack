@@ -8,6 +8,7 @@ import {
   ReportHeader,
   ReportInformationalNotice,
   ReportPageHeader,
+  ReportPdfDownloadButton,
   ReportPefChart,
   ReportPefSummary,
   ReportPeriodSelector,
@@ -42,11 +43,11 @@ export const dynamic = "force-dynamic";
 
 function RelatorioPageFrame({
   currentPeriod,
-  showPrintAction = false,
+  showReportActions = false,
   children,
 }: {
   currentPeriod: ReportPeriod;
-  showPrintAction?: boolean;
+  showReportActions?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -56,7 +57,12 @@ function RelatorioPageFrame({
           <ReportPageHeader />
           <div className="space-y-3">
             <ReportPeriodSelector currentPeriod={currentPeriod} />
-            {showPrintAction ? <ReportPrintButton /> : null}
+            {showReportActions ? (
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                <ReportPrintButton />
+                <ReportPdfDownloadButton period={currentPeriod} />
+              </div>
+            ) : null}
           </div>
         </div>
         {children}
@@ -172,7 +178,7 @@ export default async function RelatorioPage({
   }
 
   return (
-    <RelatorioPageFrame currentPeriod={currentPeriod} showPrintAction>
+    <RelatorioPageFrame currentPeriod={currentPeriod} showReportActions>
       <article className="report-print-root space-y-6">
         <ReportHeader
           patientName={profileResult.fullName}

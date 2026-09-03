@@ -1,7 +1,6 @@
 import { AppCard } from "@/components/ui/app-card";
 
 import type {
-  SymptomFrequencyId,
   SymptomFrequencyItem,
   SymptomFrequencySummary,
 } from "../lib/calculate-symptom-frequency-summary";
@@ -9,17 +8,11 @@ import {
   formatReportSymptomPercentage,
   formatReportSymptomRecordPhrase,
 } from "../lib/format-report-symptom-frequency";
+import { REPORT_SYMPTOM_FREQUENCY_LABELS } from "../lib/report-symptom-frequency-labels";
 
 const REPORT_SYMPTOM_SUMMARY_HEADING_ID = "report-symptom-summary-heading";
 const REPORT_SYMPTOM_SUMMARY_DESCRIPTION_ID =
   "report-symptom-summary-description";
-
-const REPORT_SYMPTOM_FREQUENCY_LABELS = {
-  cough: "Tosse",
-  wheezing: "Chiado",
-  shortnessOfBreath: "Falta de ar",
-  chestTightness: "Aperto no peito",
-} as const satisfies Record<SymptomFrequencyId, string>;
 
 export type ReportSymptomSummaryProps = {
   summary: SymptomFrequencySummary | null;
