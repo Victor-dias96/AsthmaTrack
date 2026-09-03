@@ -15,6 +15,7 @@ import {
   ReportPeriodSummary,
   ReportPrintButton,
   ReportRecordedAttacksSummary,
+  ReportShareButton,
   ReportSymptomSummary,
   ReportUnavailableState,
   calculatePefSummary,
@@ -61,6 +62,7 @@ function RelatorioPageFrame({
               <div className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
                 <ReportPrintButton />
                 <ReportPdfDownloadButton period={currentPeriod} />
+                <ReportShareButton key={currentPeriod} period={currentPeriod} />
               </div>
             ) : null}
           </div>

@@ -9,6 +9,8 @@ export { ReportPefSummary } from "./components/report-pef-summary";
 export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPdfDownloadButton } from "./components/report-pdf-download-button";
 export type { ReportPdfDownloadButtonProps } from "./components/report-pdf-download-button";
+export { ReportShareButton } from "./components/report-share-button";
+export type { ReportShareButtonProps } from "./components/report-share-button";
 export { ReportPeriodSelector } from "./components/report-period-selector";
 export { ReportPrintButton } from "./components/report-print-button";
 export { ReportRecordedAttacksSummary } from "./components/report-recorded-attacks-summary";
