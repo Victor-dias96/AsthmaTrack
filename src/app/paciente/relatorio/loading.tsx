@@ -27,6 +27,12 @@ const SYMPTOM_FREQUENCY_SKELETON_KEYS = [
   "report-symptom-chest",
 ] as const;
 
+const ATTACK_DATE_SKELETON_KEYS = [
+  "report-attack-date-1",
+  "report-attack-date-2",
+  "report-attack-date-3",
+] as const;
+
 export default function RelatorioLoading() {
   return (
     <PatientShell>
@@ -102,6 +108,24 @@ export default function RelatorioLoading() {
                 <Skeleton className="mt-1 h-8 w-20 max-w-full" />
               </div>
             ))}
+          </div>
+        </div>
+
+        <div
+          aria-hidden="true"
+          className="min-w-0 rounded-[var(--at-radius-lg)] border border-[var(--at-border)] bg-[var(--at-surface)] p-5"
+        >
+          <Skeleton className="h-6 w-44 max-w-full" />
+          <Skeleton className="mt-1 h-4 w-72 max-w-full" />
+          <Skeleton className="mt-4 h-8 w-20 max-w-full" />
+          <Skeleton className="mt-2 h-4 w-56 max-w-full" />
+          <div className="mt-4 border-t border-[var(--at-border)] pt-4">
+            <Skeleton className="h-3 w-48 max-w-full" />
+            <div className="mt-2 space-y-2 pl-5">
+              {ATTACK_DATE_SKELETON_KEYS.map((key) => (
+                <Skeleton key={key} className="h-4 w-52 max-w-full" />
+              ))}
+            </div>
           </div>
         </div>
       </div>

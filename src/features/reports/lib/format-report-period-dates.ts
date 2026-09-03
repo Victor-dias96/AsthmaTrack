@@ -18,6 +18,8 @@ const reportGeneratedTimeFormatter = new Intl.DateTimeFormat("pt-BR", {
   hour12: false,
 });
 
+const ISO_TIMESTAMP_PREFIX = /^\d{4}-\d{2}-\d{2}T/;
+
 export type ReportFormattedDate = {
   isoDate: string;
   label: string;
@@ -95,4 +97,21 @@ export function formatReportGeneratedAt(
     iso: instant.toISOString(),
     label: `${dateLabel}, ${timeLabel}`,
   };
+}
+
+/**
+ * Formats one stored recordedAt instant in pt-BR using the product timezone.
+ * Returns null for an invalid timestamp instead of substituting now.
+ */
+export function formatReportRecordedAt(
+  isoTimestamp: string
+): ReportFormattedInstant | null {
+  if (
+    typeof isoTimestamp !== "string" ||
+    !ISO_TIMESTAMP_PREFIX.test(isoTimestamp)
+  ) {
+    return null;
+  }
+
+  return formatReportGeneratedAt(new Date(isoTimestamp));
 }

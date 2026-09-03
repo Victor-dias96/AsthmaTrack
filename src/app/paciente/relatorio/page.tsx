@@ -10,9 +10,11 @@ import {
   ReportPefSummary,
   ReportPeriodSelector,
   ReportPeriodSummary,
+  ReportRecordedAttacksSummary,
   ReportSymptomSummary,
   ReportUnavailableState,
   calculatePefSummary,
+  calculateRecordedAttacksSummary,
   calculateSymptomFrequencySummary,
   formatReportGeneratedAt,
   getPatientReportData,
@@ -20,6 +22,7 @@ import {
   isUsableReportCalendarDate,
   parseReportPeriod,
   readPatientReportSession,
+  type PatientReportData,
   type PatientReportDataResult,
   type ReportPeriod,
 } from "@/features/reports";
@@ -48,6 +51,38 @@ function RelatorioPageFrame({
         {children}
       </div>
     </PatientShell>
+  );
+}
+
+function ReportReadySections({
+  period,
+  displayStart,
+  displayEnd,
+  recordCount,
+  records,
+}: {
+  period: ReportPeriod;
+  displayStart: CalendarDate;
+  displayEnd: CalendarDate;
+  recordCount: number;
+  records: PatientReportData["records"];
+}) {
+  const pefSummary = calculatePefSummary(records);
+  const symptomSummary = calculateSymptomFrequencySummary(records);
+  const recordedAttacksSummary = calculateRecordedAttacksSummary(records);
+
+  return (
+    <>
+      <ReportPeriodSummary
+        period={period}
+        displayStart={displayStart}
+        displayEnd={displayEnd}
+        recordCount={recordCount}
+      />
+      <ReportPefSummary summary={pefSummary} />
+      <ReportSymptomSummary summary={symptomSummary} />
+      <ReportRecordedAttacksSummary summary={recordedAttacksSummary} />
+    </>
   );
 }
 
@@ -141,22 +176,13 @@ export default async function RelatorioPage({
       {reportResult.status === "empty" ? (
         <ReportEmptyState />
       ) : (
-        <>
-          <ReportPeriodSummary
-            period={currentPeriod}
-            displayStart={displayStart}
-            displayEnd={displayEnd}
-            recordCount={reportResult.data.recordCount}
-          />
-          <ReportPefSummary
-            summary={calculatePefSummary(reportResult.data.records)}
-          />
-          <ReportSymptomSummary
-            summary={calculateSymptomFrequencySummary(
-              reportResult.data.records
-            )}
-          />
-        </>
+        <ReportReadySections
+          period={currentPeriod}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          recordCount={reportResult.data.recordCount}
+          records={reportResult.data.records}
+        />
       )}
     </RelatorioPageFrame>
   );

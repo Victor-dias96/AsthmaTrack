@@ -5,6 +5,8 @@ export { ReportPageHeader } from "./components/report-page-header";
 export { ReportPefSummary } from "./components/report-pef-summary";
 export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPeriodSelector } from "./components/report-period-selector";
+export { ReportRecordedAttacksSummary } from "./components/report-recorded-attacks-summary";
+export type { ReportRecordedAttacksSummaryProps } from "./components/report-recorded-attacks-summary";
 export { ReportSymptomSummary } from "./components/report-symptom-summary";
 export type { ReportSymptomSummaryProps } from "./components/report-symptom-summary";
 export { ReportPeriodSummary } from "./components/report-period-summary";
@@ -21,6 +23,11 @@ export {
 export type { ReportPeriod } from "./constants";
 export { calculatePefSummary } from "./lib/calculate-pef-summary";
 export type { PefSummary } from "./lib/calculate-pef-summary";
+export { calculateRecordedAttacksSummary } from "./lib/calculate-recorded-attacks-summary";
+export type {
+  RecordedAttackItem,
+  RecordedAttacksSummary,
+} from "./lib/calculate-recorded-attacks-summary";
 export { calculateSymptomFrequencySummary } from "./lib/calculate-symptom-frequency-summary";
 export type {
   SymptomFrequencyId,
@@ -40,8 +47,13 @@ export {
 export {
   formatReportCalendarDate,
   formatReportGeneratedAt,
+  formatReportRecordedAt,
   isUsableReportCalendarDate,
 } from "./lib/format-report-period-dates";
+export {
+  formatReportRecordedAttackCount,
+  formatReportRecordedAttackCountParts,
+} from "./lib/format-report-recorded-attack";
 export type {
   ReportFormattedDate,
   ReportFormattedInstant,
