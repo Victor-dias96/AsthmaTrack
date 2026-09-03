@@ -1,4 +1,1 @@
-export type PefChartPoint = {
-  recordedAt: string;
-  pefValue: number;
-};
+export type { PefChartPoint } from "@/features/daily-records/types/pef-chart-point";

@@ -1,7 +1,6 @@
 import type { TooltipContentProps } from "recharts";
 
 import { formatPefChartDateTimeFromIso } from "../lib/format-pef-chart-datetime";
-import { parseLatestRecordRecordedAt } from "../lib/format-latest-record-date";
 import { isDisplayablePefValue } from "../lib/is-displayable-pef-value";
 
 export type PefChartTooltipProps = Pick<
@@ -16,6 +15,16 @@ type ValidTooltipPoint = {
 
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseTooltipRecordedAt(isoTimestamp: string): Date | null {
+  const date = new Date(isoTimestamp);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
 }
 
 /**
@@ -52,7 +61,7 @@ function readActivePefPoint(
     return null;
   }
 
-  if (parseLatestRecordRecordedAt(recordedAt) === null) {
+  if (parseTooltipRecordedAt(recordedAt) === null) {
     return null;
   }
 

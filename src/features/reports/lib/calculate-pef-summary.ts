@@ -1,6 +1,8 @@
 import type { PatientReportRecord } from "./map-patient-report-record-row";
-
-const ISO_TIMESTAMP_PREFIX = /^\d{4}-\d{2}-\d{2}T/;
+import {
+  getValidReportRecordedAtMs,
+  isValidReportPefValue,
+} from "./is-valid-report-pef-measurement";
 
 export type PefSummary = {
   latest: number;
@@ -9,40 +11,6 @@ export type PefSummary = {
   maximum: number;
   measurementCount: number;
 };
-
-/**
- * True when a mapped PEF value is a finite positive integer. Defensive
- * read-boundary check; does not clamp, round or replace invalid values.
- */
-function isValidReportPefValue(value: number): boolean {
-  return (
-    typeof value === "number" &&
-    Number.isFinite(value) &&
-    Number.isInteger(value) &&
-    value > 0
-  );
-}
-
-/**
- * Parses an ISO-compatible recordedAt instant to milliseconds. Comparison
- * uses the parsed timestamp, never locale strings or the current time.
- */
-function getValidRecordedAtMs(recordedAt: string): number | null {
-  if (
-    typeof recordedAt !== "string" ||
-    !ISO_TIMESTAMP_PREFIX.test(recordedAt)
-  ) {
-    return null;
-  }
-
-  const recordedAtMs = new Date(recordedAt).getTime();
-
-  if (!Number.isFinite(recordedAtMs)) {
-    return null;
-  }
-
-  return recordedAtMs;
-}
 
 /**
  * Descriptive PEF statistics for already-authorized selected-period records.
@@ -66,7 +34,7 @@ export function calculatePefSummary(
       continue;
     }
 
-    const recordedAtMs = getValidRecordedAtMs(record.recordedAt);
+    const recordedAtMs = getValidReportRecordedAtMs(record.recordedAt);
 
     if (recordedAtMs === null) {
       continue;
@@ -85,10 +53,7 @@ export function calculatePefSummary(
 
     // Equal timestamps keep the later mapped record (database order:
     // recorded_at ascending, id ascending).
-    if (
-      latestRecordedAtMs === null ||
-      recordedAtMs >= latestRecordedAtMs
-    ) {
+    if (latestRecordedAtMs === null || recordedAtMs >= latestRecordedAtMs) {
       latestRecordedAtMs = recordedAtMs;
       latest = record.pefValue;
     }

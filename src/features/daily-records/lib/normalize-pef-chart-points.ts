@@ -1,4 +1,3 @@
-import { parseLatestRecordRecordedAt } from "./format-latest-record-date";
 import { isDisplayablePefValue } from "./is-displayable-pef-value";
 import type { PefChartPoint } from "../types/pef-chart-point";
 
@@ -35,13 +34,7 @@ function getValidRecordedAtMs(recordedAt: string): number | null {
     return null;
   }
 
-  const parsed = parseLatestRecordRecordedAt(recordedAt);
-
-  if (parsed === null) {
-    return null;
-  }
-
-  const recordedAtMs = parsed.getTime();
+  const recordedAtMs = new Date(recordedAt).getTime();
 
   if (!Number.isFinite(recordedAtMs)) {
     return null;

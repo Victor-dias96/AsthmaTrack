@@ -2,6 +2,8 @@ export { ReportEmptyState } from "./components/report-empty-state";
 export { ReportHeader } from "./components/report-header";
 export type { ReportHeaderProps } from "./components/report-header";
 export { ReportPageHeader } from "./components/report-page-header";
+export { ReportPefChart } from "./components/report-pef-chart";
+export type { ReportPefChartProps } from "./components/report-pef-chart";
 export { ReportPefSummary } from "./components/report-pef-summary";
 export type { ReportPefSummaryProps } from "./components/report-pef-summary";
 export { ReportPeriodSelector } from "./components/report-period-selector";
@@ -23,6 +25,7 @@ export {
 export type { ReportPeriod } from "./constants";
 export { calculatePefSummary } from "./lib/calculate-pef-summary";
 export type { PefSummary } from "./lib/calculate-pef-summary";
+export { mapReportRecordsToPefChartPoints } from "./lib/map-report-records-to-pef-chart-points";
 export { calculateRecordedAttacksSummary } from "./lib/calculate-recorded-attacks-summary";
 export type {
   RecordedAttackItem,

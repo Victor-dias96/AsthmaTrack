@@ -7,6 +7,7 @@ import {
   ReportEmptyState,
   ReportHeader,
   ReportPageHeader,
+  ReportPefChart,
   ReportPefSummary,
   ReportPeriodSelector,
   ReportPeriodSummary,
@@ -20,6 +21,7 @@ import {
   getPatientReportData,
   getPatientReportProfile,
   isUsableReportCalendarDate,
+  mapReportRecordsToPefChartPoints,
   parseReportPeriod,
   readPatientReportSession,
   type PatientReportData,
@@ -70,6 +72,7 @@ function ReportReadySections({
   const pefSummary = calculatePefSummary(records);
   const symptomSummary = calculateSymptomFrequencySummary(records);
   const recordedAttacksSummary = calculateRecordedAttacksSummary(records);
+  const pefChartPoints = mapReportRecordsToPefChartPoints(records);
 
   return (
     <>
@@ -82,6 +85,7 @@ function ReportReadySections({
       <ReportPefSummary summary={pefSummary} />
       <ReportSymptomSummary summary={symptomSummary} />
       <ReportRecordedAttacksSummary summary={recordedAttacksSummary} />
+      <ReportPefChart data={pefChartPoints} />
     </>
   );
 }
@@ -130,12 +134,7 @@ export default async function RelatorioPage({
 
   const [profileResult, reportResult] = await Promise.all([
     getPatientReportProfile(supabase, session.userId),
-    getPatientReportData(
-      supabase,
-      session.userId,
-      currentPeriod,
-      generatedAt
-    ),
+    getPatientReportData(supabase, session.userId, currentPeriod, generatedAt),
   ]);
 
   if (

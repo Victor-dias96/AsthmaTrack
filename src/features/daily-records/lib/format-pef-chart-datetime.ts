@@ -1,7 +1,5 @@
 import { HISTORY_TIME_ZONE } from "@/features/history/constants";
 
-import { parseLatestRecordRecordedAt } from "./format-latest-record-date";
-
 const pefChartDateFormatter = new Intl.DateTimeFormat("pt-BR", {
   timeZone: HISTORY_TIME_ZONE,
   day: "numeric",
@@ -20,6 +18,16 @@ export type PefChartDateTimeParts = {
   date: string;
   time: string;
 };
+
+function parsePefChartRecordedAt(isoTimestamp: string): Date | null {
+  const date = new Date(isoTimestamp);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
+}
 
 /**
  * Formats a valid Date as Brazilian Portuguese date and time parts
@@ -45,7 +53,7 @@ export function formatPefChartDateTime(
 export function formatPefChartDateTimeFromIso(
   isoTimestamp: string
 ): PefChartDateTimeParts | null {
-  const date = parseLatestRecordRecordedAt(isoTimestamp);
+  const date = parsePefChartRecordedAt(isoTimestamp);
 
   if (date === null) {
     return null;
