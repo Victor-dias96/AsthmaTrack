@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { PatientShell } from "@/components/layout/patient-shell";
 import { AppAlert } from "@/components/ui/app-alert";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
-import { AuthorizeMedicalTeamMemberForm } from "@/features/access-authorizations";
+import {
+  ActiveAccessSection,
+  AuthorizeMedicalTeamMemberForm,
+  getPatientActiveAccessAuthorizations,
+  readPatientAccessSession,
+} from "@/features/access-authorizations";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Acesso da equipe médica",
@@ -12,7 +19,19 @@ export const metadata: Metadata = {
 // it from a cached shell after a previous authorization elsewhere.
 export const dynamic = "force-dynamic";
 
-export default function AcessosPage() {
+export default async function AcessosPage() {
+  const supabase = await createClient();
+  const session = await readPatientAccessSession(supabase);
+
+  if (session.status === "unauthenticated") {
+    redirect("/login");
+  }
+
+  const activeAccessResult = await getPatientActiveAccessAuthorizations(
+    supabase,
+    session.userId
+  );
+
   return (
     <PatientShell>
       <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -21,7 +40,7 @@ export default function AcessosPage() {
             Acesso da equipe médica
           </h1>
           <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
-            Autorize um integrante da equipe médica a consultar seus dados no
+            Autorize e acompanhe quem pode consultar seus dados no
             AsthmaTrack.
           </p>
         </header>
@@ -38,6 +57,8 @@ export default function AcessosPage() {
           />
           <AuthorizeMedicalTeamMemberForm />
         </AppCard>
+
+        <ActiveAccessSection {...activeAccessResult} />
       </div>
     </PatientShell>
   );
