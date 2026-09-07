@@ -18,3 +18,7 @@ export {
 export type { GetPatientActiveAccessAuthorizationsResult } from "./server/get-patient-active-access-authorizations";
 export { readPatientAccessSession } from "./server/read-patient-access-session";
 export type { PatientAccessSession } from "./server/read-patient-access-session";
+
+export { RevokeAccessAuthorizationAction } from "./components/revoke-access-authorization-action";
+export { hasAccessAuthorizationRevokedNotice } from "./lib/has-access-authorization-revoked-notice";
+export { AUTHORIZATION_REVOKE_SUCCESS_MESSAGE } from "./lib/classify-authorization-revoke-error";

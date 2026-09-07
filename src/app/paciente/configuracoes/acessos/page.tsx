@@ -5,8 +5,10 @@ import { AppAlert } from "@/components/ui/app-alert";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 import {
   ActiveAccessSection,
+  AUTHORIZATION_REVOKE_SUCCESS_MESSAGE,
   AuthorizeMedicalTeamMemberForm,
   getPatientActiveAccessAuthorizations,
+  hasAccessAuthorizationRevokedNotice,
   readPatientAccessSession,
 } from "@/features/access-authorizations";
 import { createClient } from "@/lib/supabase/server";
@@ -19,7 +21,14 @@ export const metadata: Metadata = {
 // it from a cached shell after a previous authorization elsewhere.
 export const dynamic = "force-dynamic";
 
-export default async function AcessosPage() {
+export default async function AcessosPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const showRevokedNotice = hasAccessAuthorizationRevokedNotice(params);
+
   const supabase = await createClient();
   const session = await readPatientAccessSession(supabase);
 
@@ -44,6 +53,12 @@ export default async function AcessosPage() {
             AsthmaTrack.
           </p>
         </header>
+
+        {showRevokedNotice ? (
+          <AppAlert variant="success">
+            {AUTHORIZATION_REVOKE_SUCCESS_MESSAGE}
+          </AppAlert>
+        ) : null}
 
         <AppAlert variant="info">
           Este acesso será somente para consulta. Você poderá revogar o acesso
