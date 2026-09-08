@@ -20,15 +20,17 @@ export const metadata: Metadata = {
   title: "Pacientes",
 };
 
-// Authorized-patient relationships are private, per-professional data that
-// change whenever a patient grants or revokes access elsewhere; never
-// serve this list from a cached shell (mirrors the established convention
-// in src/app/paciente/configuracoes/acessos/page.tsx).
+// Authorized-patient relationships and latest-record summaries are
+// private, per-professional data that change whenever a patient grants or
+// revokes access elsewhere; never serve this list from a cached shell
+// (mirrors the established convention in
+// src/app/paciente/configuracoes/acessos/page.tsx).
 export const dynamic = "force-dynamic";
 
 /**
  * Server-rendered authorized-patient list for the authenticated
- * medical-team member (Issue 107), with optional name search (Issue 108).
+ * medical-team member (Issue 107), with optional name search (Issue 108)
+ * and each card's latest PEF plus latest record date (Issue 109).
  *
  * The /equipe-medica layout (src/app/equipe-medica/layout.tsx) already
  * verifies authentication and the persisted medical role before this page
@@ -45,7 +47,8 @@ export const dynamic = "force-dynamic";
  * getMedicalAuthorizedPatients. Queries only active (revoked_at is null)
  * authorizations directed to the caller's own verified identity via
  * `public.get_medical_authorized_patients` -- never a broader patient
- * directory, and never public.daily_records or any other health data.
+ * directory. That RPC also returns each authorized patient's latest PEF
+ * and latest recorded_at (Issue 109) and no other health fields.
  */
 export default async function EquipeMedicaPacientesPage({
   searchParams,

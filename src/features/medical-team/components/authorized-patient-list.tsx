@@ -11,7 +11,8 @@ type AuthorizedPatientListProps = {
  * minimal, already-validated, serializable display data and never mutates
  * it. The authorization id is used solely as the stable React key, never
  * rendered. One column on mobile, up to two columns on wider screens.
- * Mirrors
+ * Latest PEF and latest-record date are already resolved on each patient;
+ * this list never fetches health data itself. Mirrors
  * src/features/access-authorizations/components/active-access-list.tsx.
  */
 export function AuthorizedPatientList({ patients }: AuthorizedPatientListProps) {

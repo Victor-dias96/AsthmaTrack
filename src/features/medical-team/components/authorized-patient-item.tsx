@@ -1,28 +1,95 @@
 import { ShieldCheck } from "lucide-react";
 
 import { formatAuthorizedAt } from "../lib/format-authorized-at";
-import type { MedicalAuthorizedPatient } from "../types/medical-authorized-patient";
+import { formatLatestRecordedAt } from "../lib/format-latest-recorded-at";
+import type {
+  MedicalAuthorizedLatestRecord,
+  MedicalAuthorizedPatient,
+} from "../types/medical-authorized-patient";
 
 type AuthorizedPatientItemProps = {
   patient: MedicalAuthorizedPatient;
 };
 
+function LatestPefValue({ pefValue }: { pefValue: number }) {
+  return (
+    <span className="whitespace-nowrap tabular-nums">
+      {pefValue} L/min
+    </span>
+  );
+}
+
+function LatestRecordTime({ recordedAt }: { recordedAt: string }) {
+  const formatted = formatLatestRecordedAt(recordedAt);
+
+  if (formatted === null) {
+    return "Dados do último registro indisponíveis";
+  }
+
+  return <time dateTime={recordedAt}>{formatted}</time>;
+}
+
+function AuthorizedPatientLatestRecord({
+  latestRecord,
+}: {
+  latestRecord: MedicalAuthorizedLatestRecord;
+}) {
+  if (latestRecord.kind === "unavailable") {
+    return (
+      <p className="mt-3 break-words text-sm text-[var(--at-text-secondary)]">
+        Dados do último registro indisponíveis
+      </p>
+    );
+  }
+
+  const pefContent =
+    latestRecord.kind === "ready" ? (
+      <LatestPefValue pefValue={latestRecord.pefValue} />
+    ) : (
+      "Sem registros"
+    );
+
+  const recordedAtContent =
+    latestRecord.kind === "ready" ? (
+      <LatestRecordTime recordedAt={latestRecord.recordedAt} />
+    ) : (
+      "Sem registros"
+    );
+
+  return (
+    <dl className="mt-3 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="min-w-0">
+        <dt className="text-sm text-[var(--at-text-secondary)]">Último PEF</dt>
+        <dd className="mt-0.5 min-w-0 break-words text-sm font-medium text-[var(--at-text-primary)]">
+          {pefContent}
+        </dd>
+      </div>
+      <div className="min-w-0">
+        <dt className="text-sm text-[var(--at-text-secondary)]">
+          Último registro
+        </dt>
+        <dd className="mt-0.5 min-w-0 break-words text-sm font-medium text-[var(--at-text-primary)]">
+          {recordedAtContent}
+        </dd>
+      </div>
+    </dl>
+  );
+}
+
 /**
  * One patient linked through an active authorization directed to the
- * authenticated medical-team professional (Issue 107). Presentational
- * only -- no Supabase query, no authentication, no mutation, no clickable
- * card, and no patient or authorization identifier is ever rendered.
- * Mirrors
- * src/features/access-authorizations/components/active-access-item.tsx,
- * without its patient-only revoke action (medical-team users cannot
- * create, update or revoke authorizations) and without any clinical data
- * (Issue 109 owns latest PEF and latest record date).
+ * authenticated medical-team professional (Issues 107 and 109).
+ * Presentational only -- no Supabase query, no authentication, no
+ * mutation, no clickable card, and no patient, authorization or record
+ * identifier is ever rendered. Displays the latest PEF and latest record
+ * date as factual recorded values only -- no clinical interpretation,
+ * charts, notes, symptoms or write actions.
  */
 export function AuthorizedPatientItem({ patient }: AuthorizedPatientItemProps) {
   const formattedAuthorizedAt = formatAuthorizedAt(patient.authorizedAt);
 
   return (
-    <li className="min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-surface)] p-4">
+    <li className="min-w-0 overflow-hidden rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-surface)] p-4">
       <p className="min-w-0 break-words text-sm font-semibold text-[var(--at-text-primary)]">
         {patient.patientName}
       </p>
@@ -44,6 +111,8 @@ export function AuthorizedPatientItem({ patient }: AuthorizedPatientItemProps) {
           "data indisponível"
         )}
       </p>
+
+      <AuthorizedPatientLatestRecord latestRecord={patient.latestRecord} />
     </li>
   );
 }

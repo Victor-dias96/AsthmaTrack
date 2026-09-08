@@ -9,11 +9,14 @@ export { AuthorizedPatientList } from "./components/authorized-patient-list";
 export { AuthorizedPatientItem } from "./components/authorized-patient-item";
 export { AuthorizedPatientsEmptyState } from "./components/authorized-patients-empty-state";
 export { AuthorizedPatientsUnavailableState } from "./components/authorized-patients-unavailable-state";
-export type { MedicalAuthorizedPatient } from "./types/medical-authorized-patient";
+export type {
+  MedicalAuthorizedLatestRecord,
+  MedicalAuthorizedPatient,
+  MedicalAuthorizedPatientsResult,
+} from "./types/medical-authorized-patient";
 export {
   getMedicalAuthorizedPatients,
 } from "./server/get-medical-authorized-patients";
-export type { MedicalAuthorizedPatientsResult } from "./server/get-medical-authorized-patients";
 export { readMedicalTeamSession } from "./server/read-medical-team-session";
 export type { MedicalTeamSession } from "./server/read-medical-team-session";
 export { formatAuthorizedPatientCount } from "./lib/format-authorized-patient-count";
