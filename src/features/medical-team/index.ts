@@ -31,3 +31,28 @@ export {
   AUTHORIZED_PATIENT_SEARCH_PARAM,
   AUTHORIZED_PATIENT_SEARCH_MAX_LENGTH,
 } from "./constants/authorized-patients";
+
+// Issue 110: read-only medical dashboard for one actively authorized patient.
+export { MedicalPatientDashboardPageContent } from "./components/medical-patient-dashboard-page-content";
+export { MedicalPatientDashboardHeader } from "./components/medical-patient-dashboard-header";
+export { MedicalDashboardPeriodSelector } from "./components/medical-dashboard-period-selector";
+export { MedicalPatientDashboardPefChart } from "./components/medical-patient-dashboard-pef-chart";
+export { MedicalRecentRecordsSection } from "./components/medical-recent-records-section";
+export { MedicalRecentRecordItem } from "./components/medical-recent-record-item";
+export { MedicalPatientEmptyState } from "./components/medical-patient-empty-state";
+export { MedicalPatientDashboardUnavailableState } from "./components/medical-patient-dashboard-unavailable-state";
+export { MedicalPatientNotFoundState } from "./components/medical-patient-not-found-state";
+export { parseMedicalPatientId } from "./lib/parse-medical-patient-id";
+export { getMedicalPatientDashboardPeriodHref } from "./lib/get-medical-patient-dashboard-period-href";
+export {
+  normalizeMedicalDashboardRpcRows,
+  parseMedicalPatientLatestRecordsRows,
+  parseMedicalPatientPeriodRecordsRows,
+} from "./lib/map-medical-patient-dashboard-record-row";
+export { formatMedicalRecordSymptomIndication } from "./lib/format-medical-record-symptom-indication";
+export { getMedicalAuthorizedPatientDashboardData } from "./server/get-medical-authorized-patient-dashboard-data";
+export type {
+  MedicalPatientDashboardData,
+  MedicalPatientDashboardRecord,
+  MedicalPatientDashboardResult,
+} from "./types/medical-patient-dashboard";

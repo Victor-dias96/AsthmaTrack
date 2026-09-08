@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 
 import { formatAuthorizedAt } from "../lib/format-authorized-at";
@@ -6,6 +7,13 @@ import type {
   MedicalAuthorizedLatestRecord,
   MedicalAuthorizedPatient,
 } from "../types/medical-authorized-patient";
+
+const dashboardLinkClasses = [
+  "mt-3 inline-flex items-center text-sm font-medium text-[var(--at-blue)]",
+  "rounded-[var(--at-radius-sm)] underline-offset-4 outline-none",
+  "hover:underline",
+  "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
+].join(" ");
 
 type AuthorizedPatientItemProps = {
   patient: MedicalAuthorizedPatient;
@@ -78,12 +86,15 @@ function AuthorizedPatientLatestRecord({
 
 /**
  * One patient linked through an active authorization directed to the
- * authenticated medical-team professional (Issues 107 and 109).
+ * authenticated medical-team professional (Issues 107, 109 and 110).
  * Presentational only -- no Supabase query, no authentication, no
- * mutation, no clickable card, and no patient, authorization or record
- * identifier is ever rendered. Displays the latest PEF and latest record
- * date as factual recorded values only -- no clinical interpretation,
- * charts, notes, symptoms or write actions.
+ * mutation, and no authorization or record identifier is ever rendered.
+ * Displays the latest PEF and latest record date as factual recorded
+ * values only -- no clinical interpretation, charts, notes, symptoms or
+ * write actions. The card itself stays non-interactive; only the "Ver
+ * dashboard" link navigates, to the same patient's own secure dynamic
+ * route, which independently re-verifies authorization on arrival (the
+ * card's presence never substitutes for that check).
  */
 export function AuthorizedPatientItem({ patient }: AuthorizedPatientItemProps) {
   const formattedAuthorizedAt = formatAuthorizedAt(patient.authorizedAt);
@@ -113,6 +124,13 @@ export function AuthorizedPatientItem({ patient }: AuthorizedPatientItemProps) {
       </p>
 
       <AuthorizedPatientLatestRecord latestRecord={patient.latestRecord} />
+
+      <Link
+        href={`/equipe-medica/pacientes/${patient.patientId}`}
+        className={dashboardLinkClasses}
+      >
+        Ver dashboard
+      </Link>
     </li>
   );
 }
