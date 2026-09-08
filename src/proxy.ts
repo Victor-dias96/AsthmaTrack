@@ -10,18 +10,27 @@ import { updateSupabaseSession } from "@/lib/supabase/proxy";
  *
  * Responsibilities:
  *   - Refresh Supabase auth cookies on every application request.
- *   - Protect /paciente routes by redirecting unauthenticated users to /login.
+ *   - Protect /paciente and /equipe-medica routes by redirecting
+ *     unauthenticated users to /login.
  *   - Redirect authenticated users away from /login, /cadastro, and (when
  *     onboarding is complete) /onboarding.
  *   - Return the response that carries the refreshed Set-Cookie headers.
+ *
+ * Persisted-role authorization (patient vs. medical) is NOT decided here —
+ * it is enforced in each protected route's server layout, which remains
+ * required even though this proxy already redirects unauthenticated
+ * requests away from both subtrees.
  */
 export async function proxy(request: NextRequest) {
   const { supabaseResponse, isAuthenticated, supabase } =
     await updateSupabaseSession(request);
   const pathname = request.nextUrl.pathname;
 
-  // Protect private patient routes
-  if (!isAuthenticated && pathname.startsWith("/paciente")) {
+  // Protect private patient and medical-team routes
+  if (
+    !isAuthenticated &&
+    (pathname.startsWith("/paciente") || pathname.startsWith("/equipe-medica"))
+  ) {
     const loginUrl = new URL("/login", request.url);
     // Safely preserve the original path and query as a relative URL
     loginUrl.searchParams.set(

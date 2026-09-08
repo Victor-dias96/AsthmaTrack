@@ -1,16 +1,23 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { loadVerifiedProfileRole } from "@/lib/auth/load-verified-profile-role";
 
 export default async function PacienteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
+  const result = await loadVerifiedProfileRole();
 
-  if (error || !data || Object.keys(data).length === 0) {
+  if (result.status === "unauthenticated") {
     redirect("/login");
+  }
+
+  // Confirmed gap fix: a medical-team profile must not use patient-only
+  // pages (e.g. novo-registro) under its own identity. Any other status
+  // (missing profile, query failure, or role "patient") falls through
+  // unchanged so legitimate patient access is never blocked here.
+  if (result.status === "ok" && result.role === "medical") {
+    redirect("/equipe-medica");
   }
 
   return <>{children}</>;

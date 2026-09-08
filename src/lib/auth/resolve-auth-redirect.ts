@@ -19,8 +19,9 @@ export function isAuthenticatedAuthRoute(pathname: string): boolean {
 
 /**
  * Destination for an already-authenticated visitor.
- * Returns null when the current path should stay as-is (missing profile, medical
- * routing pending, or an allowed page such as incomplete-patient onboarding).
+ * Returns null when the current path should stay as-is (missing profile,
+ * an unsupported/unknown persisted role, or an allowed page such as
+ * incomplete onboarding).
  */
 export function resolveAuthRedirect({
   pathname,
@@ -39,8 +40,8 @@ export function resolveAuthRedirect({
   const onCadastro = matchesRoute(pathname, "/cadastro");
   const onOnboarding = matchesRoute(pathname, "/onboarding");
 
-  if (profile.role !== "patient") {
-    // Medical dashboard routing is pending — keep a safe existing fallback.
+  if (profile.role !== "patient" && profile.role !== "medical") {
+    // Unsupported/unknown persisted role — keep the existing safe fallback.
     if (onLogin || onCadastro) {
       return "/onboarding";
     }
@@ -54,15 +55,15 @@ export function resolveAuthRedirect({
     return null;
   }
 
+  const homeRoute =
+    profile.role === "medical" ? "/equipe-medica" : "/paciente/dashboard";
+
   if (onLogin) {
-    return (
-      getSafeNextPath(next, { onboardingCompleted: true }) ??
-      "/paciente/dashboard"
-    );
+    return getSafeNextPath(next, { onboardingCompleted: true }) ?? homeRoute;
   }
 
   if (onCadastro || onOnboarding) {
-    return "/paciente/dashboard";
+    return homeRoute;
   }
 
   return null;
