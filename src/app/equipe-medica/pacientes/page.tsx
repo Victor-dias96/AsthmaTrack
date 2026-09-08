@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AppAlert } from "@/components/ui/app-alert";
 import {
+  AUTHORIZED_PATIENT_SEARCH_PARAM,
   AuthorizedPatientList,
+  AuthorizedPatientSearch,
   AuthorizedPatientsEmptyState,
+  AuthorizedPatientsNoResultsState,
   AuthorizedPatientsUnavailableState,
   formatAuthorizedPatientCount,
+  formatAuthorizedPatientSearchCount,
   getMedicalAuthorizedPatients,
+  parseAuthorizedPatientSearch,
   readMedicalTeamSession,
 } from "@/features/medical-team";
 import { createClient } from "@/lib/supabase/server";
@@ -23,7 +28,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Server-rendered authorized-patient list for the authenticated
- * medical-team member (Issue 107).
+ * medical-team member (Issue 107), with optional name search (Issue 108).
  *
  * The /equipe-medica layout (src/app/equipe-medica/layout.tsx) already
  * verifies authentication and the persisted medical role before this page
@@ -35,12 +40,23 @@ export const dynamic = "force-dynamic";
  * boundary re-verifies identity rather than trusting data implicitly
  * passed down from an ancestor layout).
  *
- * Queries only active (revoked_at is null) authorizations directed to the
- * caller's own verified identity via
+ * Reads `q` from searchParams, validates it with
+ * parseAuthorizedPatientSearch, and passes only the normalized term to
+ * getMedicalAuthorizedPatients. Queries only active (revoked_at is null)
+ * authorizations directed to the caller's own verified identity via
  * `public.get_medical_authorized_patients` -- never a broader patient
  * directory, and never public.daily_records or any other health data.
  */
-export default async function EquipeMedicaPacientesPage() {
+export default async function EquipeMedicaPacientesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = await searchParams;
+  const searchTerm = parseAuthorizedPatientSearch(
+    params[AUTHORIZED_PATIENT_SEARCH_PARAM]
+  );
+
   const supabase = await createClient();
   const session = await readMedicalTeamSession(supabase);
 
@@ -48,7 +64,7 @@ export default async function EquipeMedicaPacientesPage() {
     redirect("/login");
   }
 
-  const result = await getMedicalAuthorizedPatients(supabase);
+  const result = await getMedicalAuthorizedPatients(supabase, searchTerm);
 
   return (
     <div className="min-w-0 space-y-6">
@@ -64,6 +80,8 @@ export default async function EquipeMedicaPacientesPage() {
         </p>
       </div>
 
+      <AuthorizedPatientSearch key={searchTerm} searchTerm={searchTerm} />
+
       <AppAlert variant="info">
         O paciente autorizou o acesso em modo somente leitura.
       </AppAlert>
@@ -74,11 +92,26 @@ export default async function EquipeMedicaPacientesPage() {
 
       {result.status === "empty" && <AuthorizedPatientsEmptyState />}
 
+      {result.status === "no-results" && (
+        <AuthorizedPatientsNoResultsState />
+      )}
+
       {result.status === "ready" && (
         <>
-          <p className="text-sm text-[var(--at-text-secondary)]">
-            {formatAuthorizedPatientCount(result.patients.length)}
-          </p>
+          {searchTerm.length > 0 ? (
+            <div className="min-w-0">
+              <h2 className="break-words text-sm font-medium text-[var(--at-text-primary)]">
+                Resultados para “{searchTerm}”
+              </h2>
+              <p className="mt-0.5 text-sm text-[var(--at-text-secondary)]">
+                {formatAuthorizedPatientSearchCount(result.patients.length)}
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--at-text-secondary)]">
+              {formatAuthorizedPatientCount(result.patients.length)}
+            </p>
+          )}
           <AuthorizedPatientList patients={result.patients} />
         </>
       )}

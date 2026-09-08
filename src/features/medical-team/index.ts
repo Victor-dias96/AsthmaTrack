@@ -17,3 +17,14 @@ export type { MedicalAuthorizedPatientsResult } from "./server/get-medical-autho
 export { readMedicalTeamSession } from "./server/read-medical-team-session";
 export type { MedicalTeamSession } from "./server/read-medical-team-session";
 export { formatAuthorizedPatientCount } from "./lib/format-authorized-patient-count";
+
+// Issue 108: name search over the already-authorized patient list.
+export { AuthorizedPatientSearch } from "./components/authorized-patient-search";
+export { AuthorizedPatientsNoResultsState } from "./components/authorized-patients-no-results-state";
+export { parseAuthorizedPatientSearch } from "./lib/parse-authorized-patient-search";
+export { formatAuthorizedPatientSearchCount } from "./lib/format-authorized-patient-search-count";
+export {
+  AUTHORIZED_PATIENTS_PATH,
+  AUTHORIZED_PATIENT_SEARCH_PARAM,
+  AUTHORIZED_PATIENT_SEARCH_MAX_LENGTH,
+} from "./constants/authorized-patients";
