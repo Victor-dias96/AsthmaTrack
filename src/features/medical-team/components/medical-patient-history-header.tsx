@@ -1,17 +1,10 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 
-import { AUTHORIZED_PATIENTS_PATH } from "../constants/authorized-patients";
-import { getMedicalPatientHistoryPath } from "../lib/get-medical-patient-history-href";
+import { getMedicalPatientDashboardPath } from "../lib/get-medical-patient-history-href";
 
-type MedicalPatientDashboardHeaderProps = {
+type MedicalPatientHistoryHeaderProps = {
   patientId: string;
-  /**
-   * Already-normalized patient display name, or null when identity
-   * resolution did not succeed (the unavailable state) -- never rendered
-   * as "Nome não informado" in that case, since that fallback is reserved
-   * for a successfully-resolved profile with an empty name.
-   */
   patientName: string | null;
 };
 
@@ -23,20 +16,18 @@ const backLinkClasses = [
 ].join(" ");
 
 /**
- * Page header for the medical patient dashboard (Issue 110). The only h1
- * on the page. Never displays the patient's email, patient ID or
- * authorization ID, and never claims clinical review -- see the
- * requirements in the Issue 110 task description.
+ * Page header for the medical patient history (Issue 111). The only h1
+ * on the page. Links back only to this patient's medical dashboard.
  */
-export function MedicalPatientDashboardHeader({
+export function MedicalPatientHistoryHeader({
   patientId,
   patientName,
-}: MedicalPatientDashboardHeaderProps) {
+}: MedicalPatientHistoryHeaderProps) {
   return (
     <header className="min-w-0 space-y-2">
       <div className="min-w-0">
         <h1 className="text-xl font-bold break-words text-[var(--at-text-primary)]">
-          Dashboard do paciente
+          Histórico do paciente
         </h1>
         {patientName !== null ? (
           <p className="mt-0.5 min-w-0 break-words text-sm text-[var(--at-text-secondary)]">
@@ -57,13 +48,10 @@ export function MedicalPatientDashboardHeader({
           Somente leitura
         </span>
         <Link
-          href={getMedicalPatientHistoryPath(patientId)}
+          href={getMedicalPatientDashboardPath(patientId)}
           className={backLinkClasses}
         >
-          Ver histórico
-        </Link>
-        <Link href={AUTHORIZED_PATIENTS_PATH} className={backLinkClasses}>
-          Voltar para pacientes
+          Voltar para o dashboard
         </Link>
       </div>
     </header>

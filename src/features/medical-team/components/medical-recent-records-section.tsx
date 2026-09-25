@@ -14,9 +14,8 @@ type MedicalRecentRecordsSectionProps = {
 /**
  * Read-only "Registros recentes" section for the medical dashboard (Issue
  * 110), displaying the patient's latest three overall records newest
- * first. Never renders a record ID, notes, or an edit/delete/duplicate/
- * "Ver histórico" action -- Issue 111 will introduce the secure medical
- * history destination.
+ * first. Never renders a record ID, notes, or an edit, delete or detail
+ * action. The history link lives on the page header.
  */
 export function MedicalRecentRecordsSection({
   records,

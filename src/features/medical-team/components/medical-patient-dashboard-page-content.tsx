@@ -46,7 +46,7 @@ export function MedicalPatientDashboardPageContent({
   if (result.status === "unavailable") {
     return (
       <div className="min-w-0 space-y-6">
-        <MedicalPatientDashboardHeader patientName={null} />
+        <MedicalPatientDashboardHeader patientId={patientId} patientName={null} />
         <MedicalPatientDashboardUnavailableState />
       </div>
     );
@@ -55,7 +55,10 @@ export function MedicalPatientDashboardPageContent({
   if (result.status === "empty") {
     return (
       <div className="min-w-0 space-y-6">
-        <MedicalPatientDashboardHeader patientName={result.patientName} />
+        <MedicalPatientDashboardHeader
+          patientId={patientId}
+          patientName={result.patientName}
+        />
         <MedicalPatientEmptyState />
       </div>
     );
@@ -65,7 +68,10 @@ export function MedicalPatientDashboardPageContent({
 
   return (
     <div className="min-w-0 space-y-6">
-      <MedicalPatientDashboardHeader patientName={data.patientName} />
+      <MedicalPatientDashboardHeader
+        patientId={patientId}
+        patientName={data.patientName}
+      />
 
       <section
         aria-labelledby="medical-dashboard-summary-heading"

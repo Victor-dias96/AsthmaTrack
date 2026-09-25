@@ -56,3 +56,16 @@ export type {
   MedicalPatientDashboardRecord,
   MedicalPatientDashboardResult,
 } from "./types/medical-patient-dashboard";
+
+// Issue 111: read-only medical history for one actively authorized patient.
+export { MedicalPatientHistoryPageContent } from "./components/medical-patient-history-page-content";
+export { getMedicalAuthorizedPatientHistory } from "./server/get-medical-authorized-patient-history";
+export {
+  getMedicalPatientDashboardPath,
+  getMedicalPatientHistoryHref,
+  getMedicalPatientHistoryPath,
+} from "./lib/get-medical-patient-history-href";
+export type {
+  MedicalPatientHistoryRecord,
+  MedicalPatientHistoryResult,
+} from "./types/medical-patient-history";
