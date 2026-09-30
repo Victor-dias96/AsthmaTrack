@@ -3,10 +3,10 @@ import { type NextRequest } from "next/server";
 
 import { REPORT_PERIOD_PARAM } from "@/features/reports/constants";
 import { getPatientReportPdfData } from "@/features/reports/server/get-patient-report-pdf-data";
-import { readPatientReportSession } from "@/features/reports/server/read-patient-report-session";
 import { parseReportPeriod } from "@/features/reports/lib/parse-report-period";
 import { PatientReportPdfDocument } from "@/features/reports/pdf/patient-report-pdf-document";
 import { REPORT_PDF_FILENAME_PREFIX } from "@/features/reports/pdf/constants";
+import { loadVerifiedProfileRole } from "@/lib/auth/load-verified-profile-role";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -21,6 +21,14 @@ export const dynamic = "force-dynamic";
 
 const UNAUTHORIZED_RESPONSE_INIT = {
   status: 401,
+  headers: {
+    "Cache-Control": "private, no-store",
+    "X-Content-Type-Options": "nosniff",
+  },
+} as const;
+
+const FORBIDDEN_RESPONSE_INIT = {
+  status: 403,
   headers: {
     "Cache-Control": "private, no-store",
     "X-Content-Type-Options": "nosniff",
@@ -61,6 +69,14 @@ function readPeriodParam(request: NextRequest): string | string[] | undefined {
  * - Verifies the request-bound authenticated patient with the established
  *   getClaims-then-getUser pattern; never trusts a browser-supplied
  *   identity and never accepts a patientId from the request.
+ * - Route Handlers are not wrapped by `src/app/paciente/layout.tsx`, so the
+ *   persisted-role check that layout performs cannot protect this endpoint.
+ *   The caller's persisted `public.profiles` role is therefore re-verified
+ *   here through the same shared `loadVerifiedProfileRole` helper both
+ *   protected layouts use: only the exact role "patient" may download a
+ *   patient-owned report. A medical-team account gets an empty 403 — it can
+ *   never reach this patient-only document endpoint, and no separate
+ *   medical file-delivery endpoint exists.
  * - Resolves the report period only from the existing allowlist parser;
  *   invalid or repeated values fall back to the established default.
  * - Reuses the same Issue 90 report-data architecture as the browser report
@@ -71,18 +87,30 @@ function readPeriodParam(request: NextRequest): string | string[] | undefined {
  *   never an HTML error page under an `application/pdf` content type.
  */
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
-  const session = await readPatientReportSession(supabase);
+  const caller = await loadVerifiedProfileRole();
 
-  if (session.status === "unauthenticated") {
+  if (caller.status === "unauthenticated") {
     return new Response(null, UNAUTHORIZED_RESPONSE_INIT);
+  }
+
+  // A profile-query failure is never treated as an authorized role.
+  if (caller.status === "error") {
+    return new Response(null, UNAVAILABLE_RESPONSE_INIT);
+  }
+
+  // No persisted patient role confirmed (missing profile, or any role other
+  // than "patient" -- including "medical").
+  if (caller.status === "missing_profile" || caller.role !== "patient") {
+    return new Response(null, FORBIDDEN_RESPONSE_INIT);
   }
 
   const period = parseReportPeriod(readPeriodParam(request));
 
+  const supabase = await createClient();
+
   const result = await getPatientReportPdfData(
     supabase,
-    session.userId,
+    caller.userId,
     period,
     new Date()
   );
