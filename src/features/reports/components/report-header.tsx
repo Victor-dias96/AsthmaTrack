@@ -18,6 +18,12 @@ export type ReportHeaderProps = {
   displayEnd: CalendarDate;
   generatedAtIso: string;
   generatedAtLabel: string;
+  /**
+   * When false, the document title is omitted because the surrounding page
+   * already rendered it as the single h1. Defaults to true so the patient
+   * report markup stays unchanged.
+   */
+  showTitle?: boolean;
 };
 
 /**
@@ -32,6 +38,7 @@ export function ReportHeader({
   displayEnd,
   generatedAtIso,
   generatedAtLabel,
+  showTitle = true,
 }: ReportHeaderProps) {
   const start = formatReportCalendarDate(displayStart);
   const end = formatReportCalendarDate(displayEnd);
@@ -40,18 +47,23 @@ export function ReportHeader({
 
   return (
     <section
-      aria-labelledby={REPORT_DOCUMENT_HEADING_ID}
+      aria-labelledby={showTitle ? REPORT_DOCUMENT_HEADING_ID : undefined}
+      aria-label={showTitle ? undefined : "Dados do relatório"}
       className="report-print-section min-w-0"
     >
       <AppCard className="min-w-0">
-        <h2
-          id={REPORT_DOCUMENT_HEADING_ID}
-          className="text-lg font-semibold text-[var(--at-text-primary)]"
-        >
-          {REPORT_DOCUMENT_TITLE}
-        </h2>
+        {showTitle ? (
+          <h2
+            id={REPORT_DOCUMENT_HEADING_ID}
+            className="text-lg font-semibold text-[var(--at-text-primary)]"
+          >
+            {REPORT_DOCUMENT_TITLE}
+          </h2>
+        ) : null}
 
-        <dl className="mt-4 grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-3">
+        <dl
+          className={`grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-3${showTitle ? " mt-4" : ""}`}
+        >
           <div className="min-w-0">
             <dt className="text-xs font-medium uppercase tracking-wide text-[var(--at-text-secondary)]">
               Paciente
