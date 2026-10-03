@@ -5,6 +5,7 @@ import { PatientShell } from "@/components/layout/patient-shell";
 import { AppAlert } from "@/components/ui/app-alert";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
 import { LogoutButton } from "@/features/auth/components/logout-button";
+import { PwaInstallCard } from "@/features/pwa/components/pwa-install-card";
 import { ProfileSettingsForm } from "@/features/profile/components/profile-settings-form";
 import { loadPatientProfile } from "@/features/profile/lib/load-patient-profile";
 import { getRoleLabel } from "@/features/profile/lib/role-label";
@@ -77,6 +78,8 @@ export default async function ConfiguracoesPage() {
             Gerenciar acessos
           </Link>
         </AppCard>
+
+        <PwaInstallCard />
 
         <AppCard>
           <AppCardHeader title="Sessão" />

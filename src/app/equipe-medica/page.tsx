@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AppCard, AppCardHeader } from "@/components/ui/app-card";
+import { PwaInstallCard } from "@/features/pwa/components/pwa-install-card";
 
 export const metadata: Metadata = {
   title: "Área da equipe médica",
@@ -39,6 +40,8 @@ export default function EquipeMedicaPage() {
           </Link>
         </div>
       </AppCard>
+
+      <PwaInstallCard />
     </div>
   );
 }
