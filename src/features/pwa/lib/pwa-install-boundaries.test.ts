@@ -136,7 +136,7 @@ describe("PWA installation boundaries", () => {
     assert.doesNotMatch(feature, /clientsClaim/);
   });
 
-  test("does not add a service worker, offline page, or second manifest", () => {
+  test("does not add a service worker or a second manifest", () => {
     assert.equal(existsSync(join(repoRoot, "public/sw.js")), false);
     assert.equal(existsSync(join(repoRoot, "src/sw.js")), false);
     assert.equal(existsSync(join(repoRoot, "public/manifest.json")), false);
@@ -144,8 +144,6 @@ describe("PWA installation boundaries", () => {
       existsSync(join(repoRoot, "public/manifest.webmanifest")),
       false
     );
-    assert.equal(existsSync(join(repoRoot, "src/app/offline")), false);
-    assert.equal(existsSync(join(repoRoot, "src/app/offline/page.tsx")), false);
 
     const appSources = listSourceFiles("src")
       .filter((path) => !path.endsWith(".test.ts"))

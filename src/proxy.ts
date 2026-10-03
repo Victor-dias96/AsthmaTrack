@@ -9,7 +9,8 @@ import { updateSupabaseSession } from "@/lib/supabase/proxy";
  * Next.js 16 Proxy — session synchronisation and auth routing.
  *
  * Responsibilities:
- *   - Refresh Supabase auth cookies on every application request.
+ *   - Refresh Supabase auth cookies on application requests, except the
+ *     exact public path /offline.
  *   - Protect /paciente and /equipe-medica routes by redirecting
  *     unauthenticated users to /login.
  *   - Redirect authenticated users away from /login, /cadastro, and (when
@@ -22,9 +23,15 @@ import { updateSupabaseSession } from "@/lib/supabase/proxy";
  * requests away from both subtrees.
  */
 export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Exact public path: no session refresh, profile query, or redirect.
+  if (pathname === "/offline") {
+    return NextResponse.next({ request });
+  }
+
   const { supabaseResponse, isAuthenticated, supabase } =
     await updateSupabaseSession(request);
-  const pathname = request.nextUrl.pathname;
 
   // Protect private patient and medical-team routes
   if (
