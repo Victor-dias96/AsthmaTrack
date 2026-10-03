@@ -14,7 +14,9 @@ import {
   RECOVERY_NOTICE_BODY,
   RECOVERY_NOTICE_TITLE,
   connectionNoticeKind,
+  connectionNoticePriority,
   dismissConnectionRecovery,
+  publishConnectionNoticeKind,
   reduceConnectionNotice,
   type ConnectionNoticeKind,
   type ConnectionNoticeState,
@@ -51,11 +53,22 @@ export function ConnectionStatusIndicator() {
     };
   }, [notice.recoveryVisible]);
 
+  const kind = connectionNoticeKind(notice, pathname);
+  const priority = connectionNoticePriority(notice, pathname);
+
+  useEffect(() => {
+    publishConnectionNoticeKind(priority);
+  }, [priority]);
+
+  useEffect(() => {
+    return () => {
+      publishConnectionNoticeKind("none");
+    };
+  }, []);
+
   if (pathname === "/offline") {
     return null;
   }
-
-  const kind = connectionNoticeKind(notice, pathname);
 
   return (
     <div

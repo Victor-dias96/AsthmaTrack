@@ -39,6 +39,8 @@ type WorkerHarness = {
   install: () => Promise<void>;
   activate: () => Promise<void>;
   fetch: (request: FakeRequest) => Promise<FetchEventResult>;
+  dispatchMessage: (data: unknown) => void;
+  skipWaitingCalls: () => number;
   cachedKeys: () => string[];
   cacheNames: () => string[];
   stores: Map<string, Map<string, Response>>;
@@ -95,10 +97,14 @@ function loadWorker(
 ): WorkerHarness {
   const memory = createMemoryCaches();
   const listeners = new Map<string, (event: unknown) => void>();
+  let skipWaitingCalls = 0;
   const scope = {
     location: { origin: "http://localhost:3000" },
     addEventListener(type: string, listener: (event: unknown) => void) {
       listeners.set(type, listener);
+    },
+    skipWaiting() {
+      skipWaitingCalls += 1;
     },
   };
 
@@ -135,6 +141,12 @@ function loadWorker(
         responded,
         response: responded && responsePromise ? await responsePromise : null,
       };
+    },
+    dispatchMessage(data: unknown) {
+      listeners.get("message")?.({ data });
+    },
+    skipWaitingCalls() {
+      return skipWaitingCalls;
     },
     cachedKeys() {
       return [...memory.stores.values()].flatMap((store) => [...store.keys()]);
@@ -308,7 +320,7 @@ describe("service worker boundaries", () => {
     const assets = worker.match(/const PRECACHE_ASSETS = \[([\s\S]*?)\];/)?.[1];
 
     assert.ok(assets);
-    assert.match(worker, /const CACHE_VERSION = "v1"/);
+    assert.match(worker, /const CACHE_VERSION = "v2"/);
     assert.match(worker, /asthmatrack-static-\$\{CACHE_VERSION\}/);
     assert.match(worker, /asthmatrack-offline-\$\{CACHE_VERSION\}/);
     assert.match(worker, /const OFFLINE_URL = "\/offline"/);
@@ -321,7 +333,10 @@ describe("service worker boundaries", () => {
     assert.match(assets, /\/icons\/icon-maskable-192x192\.png/);
     assert.match(assets, /\/icons\/icon-maskable-512x512\.png/);
     assert.doesNotMatch(worker, /Date\.now|importScripts|indexedDB|supabase/);
-    assert.doesNotMatch(worker, /skipWaiting\s*\(|clients\.claim\s*\(/);
+    assert.doesNotMatch(worker, /clients\.claim\s*\(/);
+    assert.doesNotMatch(worker, /eval\s*\(/);
+    assert.equal(worker.match(/\.skipWaiting\s*\(/g)?.length, 1);
+    assert.match(worker, /data\.type === "SKIP_WAITING"/);
     assert.doesNotMatch(
       worker,
       /background sync|sync\.register|navigator\.onLine/i
@@ -560,9 +575,34 @@ describe("service worker fetch handling", () => {
     await worker.activate();
 
     assert.deepEqual(worker.cacheNames().sort(), [
-      "asthmatrack-offline-v1",
-      "asthmatrack-static-v1",
+      "asthmatrack-offline-v2",
+      "asthmatrack-static-v2",
       "unrelated-cache",
     ]);
+    assert.equal(worker.skipWaitingCalls(), 0);
+  });
+
+  test("skips waiting only for the exact user-approved message", () => {
+    const { fetchImpl } = createFetch();
+    const worker = loadWorker(fetchImpl);
+    const ignored = [
+      null,
+      "SKIP_WAITING",
+      { type: "skipWaiting" },
+      { type: "CLEAR_CACHE" },
+      { type: "SKIP_WAITING", cache: "asthmatrack-static-v1" },
+      { type: "SKIP_WAITING", url: "/paciente/dashboard" },
+      ["SKIP_WAITING"],
+    ];
+
+    for (const message of ignored) {
+      worker.dispatchMessage(message);
+    }
+
+    assert.equal(worker.skipWaitingCalls(), 0);
+    worker.dispatchMessage({ type: "SKIP_WAITING" });
+    assert.equal(worker.skipWaitingCalls(), 1);
+    worker.dispatchMessage({ type: "SKIP_WAITING" });
+    assert.equal(worker.skipWaitingCalls(), 2);
   });
 });

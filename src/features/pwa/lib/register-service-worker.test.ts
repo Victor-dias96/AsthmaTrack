@@ -104,4 +104,51 @@ describe("service worker registration", () => {
     assert.equal(host.calls.length, 0);
     assert.equal(host.listenerCount("load"), 0);
   });
+
+  test("delivers one registration and ignores it after cleanup", async () => {
+    const registration = {
+      installing: null,
+      waiting: null,
+      addEventListener() {},
+      removeEventListener() {},
+    };
+    const host = createHost({
+      register: () => Promise.resolve(registration),
+    });
+    const delivered: unknown[] = [];
+    const stop = startServiceWorkerRegistration(host, true, (value) => {
+      delivered.push(value);
+    });
+
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(delivered, [registration]);
+    stop();
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(delivered.length, 1);
+    assert.equal(host.calls.length, 1);
+  });
+
+  test("does not deliver a registration resolved after cleanup", async () => {
+    let resolveRegister: (value: unknown) => void = () => {};
+    const host = createHost({
+      register: () =>
+        new Promise((resolve) => {
+          resolveRegister = resolve;
+        }),
+    });
+    const delivered: unknown[] = [];
+    const stop = startServiceWorkerRegistration(host, true, (value) => {
+      delivered.push(value);
+    });
+
+    stop();
+    resolveRegister({
+      installing: null,
+      waiting: null,
+      addEventListener() {},
+      removeEventListener() {},
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(delivered, []);
+  });
 });

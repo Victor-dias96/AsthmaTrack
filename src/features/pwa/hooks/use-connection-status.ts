@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import {
   isOnlineFromStatus,
   startConnectionStatus,
+  subscribeConnectionNoticeKind,
+  type ConnectionNoticeKind,
   type ConnectionStatus,
   type UseConnectionStatusResult,
 } from "../lib/connection-status";
@@ -21,4 +23,14 @@ export function useConnectionStatus(): UseConnectionStatusResult {
     status,
     isOnline: isOnlineFromStatus(status),
   };
+}
+
+export function useConnectionNoticeKind(): ConnectionNoticeKind {
+  const [kind, setKind] = useState<ConnectionNoticeKind>("none");
+
+  useEffect(() => {
+    return subscribeConnectionNoticeKind(setKind);
+  }, []);
+
+  return kind;
 }

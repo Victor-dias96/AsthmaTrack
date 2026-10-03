@@ -1,13 +1,17 @@
 /**
- * AsthmaTrack service worker (cache version v1).
+ * AsthmaTrack service worker (cache version v2).
  *
  * Stores only the public offline page and same-origin public static assets.
  * Authenticated documents, health data, Supabase, and auth responses stay on
  * the network and are never written to Cache Storage.
  *
  * Caches:
- * - asthmatrack-offline-v1
- * - asthmatrack-static-v1
+ * - asthmatrack-offline-v2
+ * - asthmatrack-static-v2
+ *
+ * v2 is the worker that accepts { type: "SKIP_WAITING" } from an explicit
+ * user action. Activation still deletes only obsolete asthmatrack-* caches,
+ * including v1, and leaves unrelated origin caches alone.
  *
  * Local check: npm run build && npm run start, then open http://localhost:3000.
  * next dev does not register this worker. If a previous localhost worker is
@@ -16,13 +20,13 @@
  * Then delete only Cache Storage names that start with "asthmatrack-".
  * Do not delete unrelated origin caches.
  *
- * The first install activates on its own. Later updates wait until open pages
- * close. This file does not call skipWaiting or clients.claim. Issue 120 can
- * watch registration.waiting and updatefound, then activate an update by
- * posting { type: "SKIP_WAITING" } after it adds that listener.
+ * The first install activates on its own and does not claim open pages.
+ * Later updates remain waiting. self.skipWaiting() runs only after an open
+ * page posts the exact message { type: "SKIP_WAITING" }. This file does not
+ * call clients.claim.
  */
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_PREFIX = "asthmatrack-";
 const STATIC_CACHE = `asthmatrack-static-${CACHE_VERSION}`;
 const OFFLINE_CACHE = `asthmatrack-offline-${CACHE_VERSION}`;
@@ -73,6 +77,14 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(deleteObsoleteCaches());
+});
+
+self.addEventListener("message", (event) => {
+  if (!isSkipWaitingMessage(event.data)) {
+    return;
+  }
+
+  self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -338,6 +350,22 @@ function isStorableResponse(response) {
 
 function contentTypeOf(response) {
   return (response.headers.get("content-type") || "").toLowerCase();
+}
+
+function isSkipWaitingMessage(data) {
+  try {
+    if (typeof data !== "object" || data === null || Array.isArray(data)) {
+      return false;
+    }
+
+    const keys = Object.keys(data);
+
+    return (
+      keys.length === 1 && keys[0] === "type" && data.type === "SKIP_WAITING"
+    );
+  } catch {
+    return false;
+  }
 }
 
 function createEmergencyOfflineResponse() {

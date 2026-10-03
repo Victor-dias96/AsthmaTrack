@@ -201,3 +201,42 @@ export function connectionNoticeKind(
 
   return "none";
 }
+
+/**
+ * Priority for other global notices. Offline still wins on the public
+ * offline page, where the connection banner itself stays hidden.
+ */
+export function connectionNoticePriority(
+  state: ConnectionNoticeState,
+  pathname: string
+): ConnectionNoticeKind {
+  if (state.status === "offline") {
+    return "offline";
+  }
+
+  return connectionNoticeKind(state, pathname);
+}
+
+let publishedConnectionNoticeKind: ConnectionNoticeKind = "none";
+const connectionNoticeListeners = new Set<
+  (kind: ConnectionNoticeKind) => void
+>();
+
+export function publishConnectionNoticeKind(kind: ConnectionNoticeKind): void {
+  publishedConnectionNoticeKind = kind;
+
+  for (const listener of [...connectionNoticeListeners]) {
+    listener(kind);
+  }
+}
+
+export function subscribeConnectionNoticeKind(
+  listener: (kind: ConnectionNoticeKind) => void
+): () => void {
+  connectionNoticeListeners.add(listener);
+  listener(publishedConnectionNoticeKind);
+
+  return () => {
+    connectionNoticeListeners.delete(listener);
+  };
+}

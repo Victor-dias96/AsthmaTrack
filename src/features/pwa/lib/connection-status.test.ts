@@ -9,7 +9,10 @@ import {
   RECOVERY_NOTICE_BODY,
   RECOVERY_NOTICE_TITLE,
   connectionNoticeKind,
+  connectionNoticePriority,
   dismissConnectionRecovery,
+  publishConnectionNoticeKind,
+  subscribeConnectionNoticeKind,
   isOnlineFromStatus,
   readBrowserConnectionStatus,
   reduceConnectionNotice,
@@ -226,5 +229,40 @@ describe("connection status", () => {
       ),
       "none"
     );
+    assert.equal(
+      connectionNoticePriority(
+        { status: "offline", recoveryVisible: false },
+        "/offline"
+      ),
+      "offline"
+    );
+    assert.equal(
+      connectionNoticePriority(
+        { status: "online", recoveryVisible: true },
+        "/paciente/dashboard"
+      ),
+      "recovered"
+    );
+    assert.equal(
+      connectionNoticePriority(
+        { status: "online", recoveryVisible: false },
+        "/equipe-medica"
+      ),
+      "none"
+    );
+  });
+
+  test("publishes the notice kind in memory and removes the subscriber", () => {
+    const kinds: string[] = [];
+    publishConnectionNoticeKind("offline");
+    const stop = subscribeConnectionNoticeKind((kind) => {
+      kinds.push(kind);
+    });
+
+    publishConnectionNoticeKind("recovered");
+    stop();
+    publishConnectionNoticeKind("none");
+
+    assert.deepEqual(kinds, ["offline", "recovered"]);
   });
 });

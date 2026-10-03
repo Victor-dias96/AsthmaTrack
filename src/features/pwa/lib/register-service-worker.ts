@@ -25,7 +25,8 @@ export type ServiceWorkerRegistrationEnvironment = {
  */
 export function startServiceWorkerRegistration(
   environment: ServiceWorkerRegistrationEnvironment,
-  isProduction: boolean
+  isProduction: boolean,
+  onRegistered?: (registration: unknown) => void
 ): () => void {
   if (!isProduction || !("serviceWorker" in environment.navigator)) {
     return () => {};
@@ -45,10 +46,23 @@ export function startServiceWorkerRegistration(
     }
 
     try {
-      void serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
-        // Keep the failure inside the registration promise. Do not log
-        // the URL, the session, or anything else from the page.
-      });
+      void serviceWorker
+        .register("/sw.js", { scope: "/" })
+        .then((registration) => {
+          if (!active || !onRegistered) {
+            return;
+          }
+
+          try {
+            onRegistered(registration);
+          } catch {
+            // Update detection must not surface a registration failure.
+          }
+        })
+        .catch(() => {
+          // Keep the failure inside the registration promise. Do not log
+          // the URL, the session, or anything else from the page.
+        });
     } catch {
       // A browser can expose serviceWorker and still reject the call.
     }
