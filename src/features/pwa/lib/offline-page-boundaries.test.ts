@@ -81,7 +81,6 @@ describe("offline fallback page", () => {
     assert.ok(sessionCall > offlineCheck);
     assert.match(proxy, /pathname\.startsWith\("\/paciente"\)/);
     assert.match(proxy, /pathname\.startsWith\("\/equipe-medica"\)/);
-    assert.equal(existsSync(join(repoRoot, "public/sw.js")), false);
     assert.equal(existsSync(join(repoRoot, "public/service-worker.js")), false);
   });
 });

@@ -86,8 +86,12 @@ describe("PWA installation boundaries", () => {
   test("keeps the root layout as a server component", () => {
     const layout = readRepoFile("src/app/layout.tsx");
 
-    assert.match(layout, /PwaInstallationProvider/);
+    assert.match(layout, /PwaClientFeatures/);
     assert.doesNotMatch(layout, /["']use client["']/);
+    assert.match(
+      readRepoFile("src/features/pwa/components/pwa-client-features.tsx"),
+      /PwaInstallationProvider/
+    );
     assert.doesNotMatch(
       readRepoFile("src/app/paciente/layout.tsx"),
       /["']use client["']/
@@ -95,6 +99,14 @@ describe("PWA installation boundaries", () => {
     assert.doesNotMatch(
       readRepoFile("src/app/equipe-medica/layout.tsx"),
       /["']use client["']/
+    );
+    assert.doesNotMatch(
+      readRepoFile("src/app/paciente/layout.tsx"),
+      /ServiceWorkerRegistration/
+    );
+    assert.doesNotMatch(
+      readRepoFile("src/app/equipe-medica/layout.tsx"),
+      /ServiceWorkerRegistration/
     );
   });
 
@@ -127,17 +139,27 @@ describe("PWA installation boundaries", () => {
     assert.match(card, /aria-live="polite"/);
     assert.doesNotMatch(card, /role="alert"/);
     assert.equal(card.match(/<AppButton/g)?.length, 1);
+    const installation = [
+      "src/features/pwa/hooks/use-pwa-installation.ts",
+      "src/features/pwa/lib/pwa-installation-session.ts",
+      "src/features/pwa/lib/create-browser-pwa-installation-host.ts",
+      "src/features/pwa/lib/get-pwa-install-card-model.ts",
+      "src/features/pwa/components/pwa-install-card.tsx",
+      "src/features/pwa/components/pwa-installation-provider.tsx",
+    ]
+      .map((path) => stripComments(readRepoFile(path)))
+      .join("\n");
+
     assert.doesNotMatch(feature, /localStorage/);
     assert.doesNotMatch(feature, /sessionStorage/);
     assert.doesNotMatch(feature, /userAgent/);
-    assert.doesNotMatch(feature, /serviceWorker/);
     assert.doesNotMatch(feature, /navigator\.onLine/);
     assert.doesNotMatch(feature, /skipWaiting/);
     assert.doesNotMatch(feature, /clientsClaim/);
+    assert.doesNotMatch(installation, /serviceWorker/);
   });
 
-  test("does not add a service worker or a second manifest", () => {
-    assert.equal(existsSync(join(repoRoot, "public/sw.js")), false);
+  test("does not add a second manifest or a PWA library", () => {
     assert.equal(existsSync(join(repoRoot, "src/sw.js")), false);
     assert.equal(existsSync(join(repoRoot, "public/manifest.json")), false);
     assert.equal(
@@ -149,7 +171,6 @@ describe("PWA installation boundaries", () => {
       .filter((path) => !path.endsWith(".test.ts"))
       .map((path) => stripComments(readRepoFile(path)));
     for (const code of appSources) {
-      assert.doesNotMatch(code, /serviceWorker\.register/);
       assert.doesNotMatch(code, /from ["']workbox/);
       assert.doesNotMatch(code, /from ["']serwist/);
       assert.doesNotMatch(code, /from ["']next-pwa/);

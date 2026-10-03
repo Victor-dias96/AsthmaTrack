@@ -11,6 +11,8 @@ import { updateSupabaseSession } from "@/lib/supabase/proxy";
  * Responsibilities:
  *   - Refresh Supabase auth cookies on application requests, except the
  *     exact public path /offline.
+ *   - Leave /sw.js and /manifest.webmanifest unmatched so those public
+ *     files are served without a session refresh or Set-Cookie.
  *   - Protect /paciente and /equipe-medica routes by redirecting
  *     unauthenticated users to /login.
  *   - Redirect authenticated users away from /login, /cadastro, and (when
@@ -91,11 +93,12 @@ export const config = {
      *   - _next/static  (bundled JS/CSS assets)
      *   - _next/image   (image optimisation pipeline)
      *   - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     *   - manifest.webmanifest and sw.js (public, no session cookies)
      *   - common static image extensions (.png, .jpg, .jpeg, .gif, .svg, .webp, .ico)
      *
      * This keeps every application route (/, /login, /cadastro, /paciente/*)
      * covered without accidentally blocking asset delivery.
      */
-    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|manifest\\.webmanifest|sw\\.js|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico)$).*)",
   ],
 };
