@@ -153,9 +153,9 @@ describe("PWA installation boundaries", () => {
     assert.doesNotMatch(feature, /localStorage/);
     assert.doesNotMatch(feature, /sessionStorage/);
     assert.doesNotMatch(feature, /userAgent/);
-    assert.doesNotMatch(feature, /navigator\.onLine/);
     assert.doesNotMatch(feature, /skipWaiting/);
     assert.doesNotMatch(feature, /clientsClaim/);
+    assert.doesNotMatch(installation, /navigator\.onLine/);
     assert.doesNotMatch(installation, /serviceWorker/);
   });
 
