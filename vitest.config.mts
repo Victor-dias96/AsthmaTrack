@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url";
 
+import react from "@vitejs/plugin-react";
 import { configDefaults, defineConfig } from "vitest/config";
 
 const srcDirectory = fileURLToPath(new URL("./src", import.meta.url));
@@ -32,13 +33,17 @@ const nodeTestFiles = [
 ];
 
 export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
       "@": srcDirectory,
     },
   },
   test: {
-    environment: "node",
+    // The pure unit test does not use Node-only APIs, so one jsdom
+    // environment covers it and synchronous component tests.
+    environment: "jsdom",
+    setupFiles: ["./vitest.setup.ts"],
     exclude: [
       ...configDefaults.exclude,
       "**/.next/**",
