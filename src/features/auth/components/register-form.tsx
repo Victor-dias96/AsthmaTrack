@@ -9,15 +9,13 @@ import { AppCheckbox } from "@/components/ui/app-checkbox";
 import { FormField } from "@/components/ui/form-field";
 import { AppAlert } from "@/components/ui/app-alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import {
+  parseRegistration,
+  toRegistrationSignUpPayload,
+  type RegistrationFieldErrors,
+} from "@/features/auth/lib/registration-schema";
+import { validateRegistrationAction } from "@/features/auth/server/validate-registration";
 import { createClient } from "@/lib/supabase/client";
-
-type FormErrors = {
-  name?: string;
-  email?: string;
-  password?: string;
-  passwordConfirm?: string;
-  terms?: string;
-};
 
 export function RegisterForm() {
   const router = useRouter();
@@ -28,43 +26,10 @@ export function RegisterForm() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<RegistrationFieldErrors>({});
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [requireEmailConfirmation, setRequireEmailConfirmation] = useState(false);
-
-  function validate() {
-    const newErrors: FormErrors = {};
-
-    if (!name.trim()) {
-      newErrors.name = "Informe seu nome completo";
-    }
-
-    if (!email.trim()) {
-      newErrors.email = "Informe seu e-mail";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      newErrors.email = "Informe um e-mail válido";
-    }
-
-    if (!password) {
-      newErrors.password = "Crie uma senha";
-    } else if (password.length < 6) {
-      newErrors.password = "A senha deve ter pelo menos 6 caracteres";
-    }
-
-    if (!passwordConfirm) {
-      newErrors.passwordConfirm = "Confirme sua senha";
-    } else if (password !== passwordConfirm) {
-      newErrors.passwordConfirm = "As senhas não coincidem";
-    }
-
-    if (!acceptedTerms) {
-      newErrors.terms = "Você precisa aceitar os termos de uso para continuar";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -73,22 +38,45 @@ export function RegisterForm() {
     setAuthError(null);
     setRequireEmailConfirmation(false);
 
-    const isValid = validate();
-    if (!isValid) return;
+    const rawInput = {
+      name,
+      email,
+      password,
+      passwordConfirm,
+      acceptedTerms,
+    };
+    const clientResult = parseRegistration(rawInput);
+    if (!clientResult.success) {
+      setErrors(clientResult.fieldErrors);
+      return;
+    }
 
+    setErrors({});
     setLoading(true);
 
     try {
+      const serverResult = await validateRegistrationAction(rawInput);
+      if (!serverResult.success) {
+        const { fieldErrors } = serverResult;
+        if (
+          fieldErrors.name ||
+          fieldErrors.email ||
+          fieldErrors.password ||
+          fieldErrors.passwordConfirm ||
+          fieldErrors.terms
+        ) {
+          setErrors(fieldErrors);
+        } else {
+          setAuthError("Erro inesperado. Tente novamente mais tarde.");
+        }
+        setLoading(false);
+        return;
+      }
+
       const supabase = createClient();
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            full_name: name.trim(),
-          },
-        },
-      });
+      const { data, error } = await supabase.auth.signUp(
+        toRegistrationSignUpPayload(serverResult.data),
+      );
 
       if (error) {
         // Map Supabase errors to concise PT-BR messages
