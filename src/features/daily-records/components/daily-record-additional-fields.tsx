@@ -2,6 +2,7 @@
 
 import { AppTextarea } from "@/components/ui/app-textarea";
 import { FormField } from "@/components/ui/form-field";
+import { DAILY_RECORD_NOTES_MAX_LENGTH } from "@/schemas/daily-record";
 
 import { BooleanChoiceSelector } from "./boolean-choice-selector";
 import {
@@ -25,8 +26,6 @@ const USED_RESCUE_MEDICATION_OPTIONS = [
   { value: false, label: "Não", id: USED_RESCUE_MEDICATION_OPTION_FALSE_ID },
   { value: true, label: "Sim", id: USED_RESCUE_MEDICATION_OPTION_TRUE_ID },
 ] as const;
-
-const NOTES_MAX_LENGTH = 1000;
 
 type DailyRecordAdditionalFieldsProps = {
   hadAttack: boolean;
@@ -96,7 +95,7 @@ export function DailyRecordAdditionalFields({
           onChange={onNotesChange}
           onBlur={onNotesBlur}
           rows={4}
-          maxLength={NOTES_MAX_LENGTH}
+          maxLength={DAILY_RECORD_NOTES_MAX_LENGTH}
           hasError={!!notesError}
           aria-invalid={!!notesError}
           aria-describedby={notesDescribedBy}
@@ -107,7 +106,7 @@ export function DailyRecordAdditionalFields({
           aria-live="polite"
           className="text-right text-xs text-[var(--at-text-secondary)]"
         >
-          {notes.length}/{NOTES_MAX_LENGTH}
+          {notes.length}/{DAILY_RECORD_NOTES_MAX_LENGTH}
         </p>
       </FormField>
     </div>

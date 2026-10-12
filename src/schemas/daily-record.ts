@@ -49,14 +49,63 @@ function isNotFutureDatetimeLocal(value: string): boolean {
   return selected.getTime() <= now.getTime();
 }
 
-const symptomSeveritySchema = z.coerce
-  .number({ error: "Selecione uma intensidade válida" })
-  .int({ error: "Selecione uma intensidade válida" })
-  .min(0, { error: "A intensidade deve ser entre 0 e 3" })
-  .max(3, { error: "A intensidade deve ser entre 0 e 3" })
-  .refine((value): value is SymptomSeverity => [0, 1, 2, 3].includes(value), {
-    error: "A intensidade deve ser entre 0 e 3",
+const SYMPTOM_SEVERITY_INVALID = "Selecione uma intensidade válida";
+const SYMPTOM_SEVERITY_RANGE = "A intensidade deve ser entre 0 e 3";
+
+/**
+ * Accepts the numeric state the form submits and the numeric strings a
+ * control can send. Blank text, null and booleans are not severities:
+ * `z.coerce.number()` would turn them into 0 or 1.
+ */
+function isSymptomSeverity(value: number): value is SymptomSeverity {
+  return value === 0 || value === 1 || value === 2 || value === 3;
+}
+
+const symptomSeveritySchema = z
+  .union([z.number(), z.string()], { error: SYMPTOM_SEVERITY_INVALID })
+  .transform((value) => {
+    if (typeof value === "number") {
+      return value;
+    }
+
+    const trimmed = value.trim();
+    if (trimmed.length === 0) {
+      return Number.NaN;
+    }
+
+    return Number(trimmed);
+  })
+  .superRefine((value, ctx) => {
+    if (!Number.isFinite(value) || !Number.isInteger(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: SYMPTOM_SEVERITY_INVALID,
+      });
+      return;
+    }
+
+    if (!isSymptomSeverity(value)) {
+      ctx.addIssue({
+        code: "custom",
+        message: SYMPTOM_SEVERITY_RANGE,
+      });
+    }
+  })
+  .transform((value): SymptomSeverity => {
+    if (isSymptomSeverity(value)) {
+      return value;
+    }
+
+    // Unreachable on success: superRefine already rejected this value.
+    return value as SymptomSeverity;
   });
+
+export const DAILY_RECORD_NOTES_MAX_LENGTH = 1000;
+
+const PEF_REQUIRED = "Informe o valor de PEF";
+const PEF_INVALID = "Informe um valor numérico válido";
+const PEF_INTEGER = "O PEF deve ser um número inteiro";
+const PEF_POSITIVE = "O PEF deve ser maior que zero";
 
 export const dailyRecordFormSchema = z.object({
   recordedAt: z
@@ -73,19 +122,34 @@ export const dailyRecordFormSchema = z.object({
       error: "A data e hora não podem ser no futuro",
     }),
   pefValue: z
-    .union([z.string(), z.number()])
-    .refine((value) => value !== "" && value !== null && value !== undefined, {
-      error: "Informe o valor de PEF",
-    })
-    .transform((value) => (typeof value === "number" ? value : Number(value)))
-    .refine((value) => !Number.isNaN(value), {
-      error: "Informe um valor numérico válido",
-    })
-    .refine(Number.isInteger, {
-      error: "O PEF deve ser um número inteiro",
-    })
-    .refine((value) => value > 0, {
-      error: "O PEF deve ser maior que zero",
+    .union([z.string(), z.number()], { error: PEF_REQUIRED })
+    .refine(
+      (value) => {
+        if (typeof value === "string") {
+          return value.trim().length > 0;
+        }
+
+        return value !== null && value !== undefined;
+      },
+      { error: PEF_REQUIRED }
+    )
+    .transform((value) =>
+      typeof value === "number" ? value : Number(value.trim())
+    )
+    .superRefine((value, ctx) => {
+      if (!Number.isFinite(value)) {
+        ctx.addIssue({ code: "custom", message: PEF_INVALID });
+        return;
+      }
+
+      if (!Number.isInteger(value)) {
+        ctx.addIssue({ code: "custom", message: PEF_INTEGER });
+        return;
+      }
+
+      if (value <= 0) {
+        ctx.addIssue({ code: "custom", message: PEF_POSITIVE });
+      }
     }),
   coughSeverity: symptomSeveritySchema,
   wheezingSeverity: symptomSeveritySchema,
@@ -111,8 +175,8 @@ export const dailyRecordFormSchema = z.object({
     .pipe(
       z.union([
         z.null(),
-        z.string().max(1000, {
-          error: "As observações devem ter no máximo 1000 caracteres",
+        z.string().max(DAILY_RECORD_NOTES_MAX_LENGTH, {
+          error: `As observações devem ter no máximo ${DAILY_RECORD_NOTES_MAX_LENGTH} caracteres`,
         }),
       ]),
     ),
