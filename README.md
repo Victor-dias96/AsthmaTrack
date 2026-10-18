@@ -24,7 +24,9 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 Unit and component tests use Vitest. Component behavior uses React Testing Library.
 
-Run the suite once:
+Prefer semantic accessible queries such as `getByRole`. Async Server Components belong to end-to-end tests.
+
+Unit and component tests:
 
 ```bash
 npm run test:run
@@ -36,7 +38,37 @@ Watch for changes:
 npm test
 ```
 
-Prefer semantic accessible queries such as `getByRole`. Async Server Components belong to end-to-end tests.
+Playwright E2E covers public routes in Chromium. Authenticated patient and medical-team browser sessions are not part of this suite, and CI is not configured here.
+
+Playwright E2E:
+
+```bash
+npm run test:e2e
+```
+
+Visible browser:
+
+```bash
+npm run test:e2e:headed
+```
+
+Playwright UI:
+
+```bash
+npm run test:e2e:ui
+```
+
+Local report:
+
+```bash
+npm run test:e2e:report
+```
+
+Chromium installation when required:
+
+```bash
+npx playwright install chromium
+```
 
 ## Learn More
 

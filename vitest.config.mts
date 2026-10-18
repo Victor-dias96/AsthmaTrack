@@ -48,6 +48,8 @@ export default defineConfig({
       ...configDefaults.exclude,
       "**/.next/**",
       "**/public/**",
+      // Playwright owns e2e/*.spec.ts. Vitest's default include would collect it.
+      "e2e/**",
       ...nodeTestFiles,
     ],
   },

@@ -13,6 +13,13 @@
 # testing
 /coverage
 
+# Playwright generated output.
+# playwright/.auth contains local authentication state when later introduced.
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.auth/
+
 # next.js
 /.next/
 /out/
