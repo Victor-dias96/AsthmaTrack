@@ -1,17 +1,29 @@
 import { defineConfig, devices } from "@playwright/test";
 
+declare module "./scripts/load-e2e-env.cjs" {
+  export function applyE2eEnvironment(): void;
+}
+
+import { applyE2eEnvironment } from "./scripts/load-e2e-env.cjs";
+
+// Give Next.js the local E2E Supabase settings before workers or the
+// web server start. The loader never prints variable values.
+applyE2eEnvironment();
+
+const desktopChrome = { ...devices["Desktop Chrome"] };
+
 /**
- * Public Chromium smoke tests only.
- *
- * Authenticated projects, storageState, and database seeding stay out of
- * this file until fictional browser accounts exist outside Git.
+ * Public smoke stays unauthenticated. Patient isolation uses storage
+ * states created by the setup project from the real login form.
  */
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // One worker keeps the local Next server and browser inside a small
+  // memory budget. Authenticated tests stay isolated by browser context.
+  workers: 1,
   timeout: 60_000,
   expect: {
     timeout: 10_000,
@@ -25,16 +37,45 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "setup-patient-a",
+      testMatch: /auth\.setup\.ts/,
+      grep: /patient A/,
+    },
+    {
+      name: "setup-patient-b",
+      testMatch: /auth\.setup\.ts/,
+      grep: /patient B/,
+    },
+    {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      testMatch: /public-smoke\.spec\.ts/,
+      use: desktopChrome,
+    },
+    {
+      name: "patient-a",
+      dependencies: ["setup-patient-a"],
+      testMatch: /patient-isolation\.spec\.ts/,
+      grep: /@patient-a/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      name: "patient-b",
+      dependencies: ["setup-patient-b"],
+      testMatch: /patient-isolation\.spec\.ts/,
+      grep: /@patient-b/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-b.json",
+      },
     },
   ],
   webServer: {
-    // Next.js 16 allows dev assets from localhost, not from 127.0.0.1.
-    // Bind the dev server to the same host as baseURL so client code loads.
-    command: "npm run dev -- --hostname 127.0.0.1",
+    command: "node scripts/run-e2e-server.mjs",
     url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    reuseExistingServer: false,
+    timeout: 300_000,
   },
 });
