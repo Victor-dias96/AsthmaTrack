@@ -133,6 +133,9 @@ describe("isolamento entre pacientes: consultas da aplicação", () => {
 
 describe("isolamento entre pacientes: políticas de daily_records", () => {
   const OWNER = "patient_id = (select auth.uid())";
+  // Issue 131: every command also requires the persisted patient role, so a
+  // medical-team profile can never create or change a self-owned record.
+  const OWNER_PATIENT = `${OWNER} and private.profile_has_role((select auth.uid()), 'patient'::public.user_role)`;
 
   const dailyRecordStatements = migrations.flatMap(({ path, sql }) =>
     sql
@@ -142,15 +145,44 @@ describe("isolamento entre pacientes: políticas de daily_records", () => {
       .map((statement) => ({ path, statement }))
   );
 
-  const policies = dailyRecordStatements
-    .filter(({ statement }) => /^create policy/i.test(statement))
-    .map(({ statement }) => {
-      const [, name, command] =
-        /^create policy "([^"]+)" on public\.daily_records for (\w+)/i.exec(statement) ?? [];
-      const using = /\busing \((.*?)\)(?: with check|$)/i.exec(statement)?.[1];
-      const withCheck = /\bwith check \((.*)\)$/i.exec(statement)?.[1];
-      return { name, command, to: /\bto (\w+)/i.exec(statement)?.[1], using, withCheck };
-    });
+  // Replays create/drop policy statements in migration order so the test
+  // asserts the policy set that is active after every migration has run.
+  const policies = (() => {
+    type Policy = {
+      name: string;
+      command: string;
+      to: string | undefined;
+      using: string | undefined;
+      withCheck: string | undefined;
+    };
+    const active = new Map<string, Policy>();
+
+    for (const { statement } of dailyRecordStatements) {
+      const dropped = /^drop policy (?:if exists )?"([^"]+)" on public\.daily_records/i.exec(
+        statement
+      );
+      if (dropped) {
+        active.delete(dropped[1]);
+        continue;
+      }
+
+      const created = /^create policy "([^"]+)" on public\.daily_records for (\w+)/i.exec(
+        statement
+      );
+      if (created) {
+        const [, name, command] = created;
+        active.set(name, {
+          name,
+          command,
+          to: /\bto (\w+)/i.exec(statement)?.[1],
+          using: /\busing \((.*?)\)(?: with check|$)/i.exec(statement)?.[1]?.trim(),
+          withCheck: /\bwith check \((.*)\)$/i.exec(statement)?.[1]?.trim(),
+        });
+      }
+    }
+
+    return [...active.values()];
+  })();
 
   test("RLS habilitada e nunca desabilitada", () => {
     const rlsStatements = dailyRecordStatements
@@ -162,12 +194,12 @@ describe("isolamento entre pacientes: políticas de daily_records", () => {
     ]);
   });
 
-  test("exatamente uma política por operação, todas presas ao dono", () => {
+  test("exatamente uma política por operação, todas presas ao dono e ao papel de paciente", () => {
     expect(policies).toEqual([
-      { name: "Users can select own daily records", command: "select", to: "authenticated", using: OWNER, withCheck: undefined },
-      { name: "Users can insert own daily records", command: "insert", to: "authenticated", using: undefined, withCheck: OWNER },
-      { name: "Users can update own daily records", command: "update", to: "authenticated", using: OWNER, withCheck: OWNER },
-      { name: "Users can delete own daily records", command: "delete", to: "authenticated", using: OWNER, withCheck: undefined },
+      { name: "Users can select own daily records", command: "select", to: "authenticated", using: OWNER_PATIENT, withCheck: undefined },
+      { name: "Users can insert own daily records", command: "insert", to: "authenticated", using: undefined, withCheck: OWNER_PATIENT },
+      { name: "Users can update own daily records", command: "update", to: "authenticated", using: OWNER_PATIENT, withCheck: OWNER_PATIENT },
+      { name: "Users can delete own daily records", command: "delete", to: "authenticated", using: OWNER_PATIENT, withCheck: undefined },
     ]);
   });
 

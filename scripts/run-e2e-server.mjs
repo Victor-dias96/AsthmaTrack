@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const { applyE2eEnvironment, childEnvironment } = require("./load-e2e-env.cjs");

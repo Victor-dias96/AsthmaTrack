@@ -1,4 +1,8 @@
+// This file stays CommonJS because playwright.config.ts and run-e2e-server.mjs
+// both load it by its .cjs path. Only Node built-ins are required here.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { existsSync, readFileSync } = require("node:fs");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path");
 
 const repoRoot = path.resolve(__dirname, "..");
