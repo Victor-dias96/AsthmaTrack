@@ -13,8 +13,10 @@ applyE2eEnvironment();
 const desktopChrome = { ...devices["Desktop Chrome"] };
 
 /**
- * Public smoke stays unauthenticated. Patient isolation uses storage
- * states created by the setup project from the real login form.
+ * Public smoke stays unauthenticated. Patient and medical projects use
+ * storage states created by setup projects from the real login form.
+ * The revocation project is separate so it can change authorization state
+ * without rerunning the stable read-only suites.
  */
 export default defineConfig({
   testDir: "./e2e",
@@ -45,6 +47,28 @@ export default defineConfig({
       name: "setup-patient-b",
       testMatch: /auth\.setup\.ts/,
       grep: /patient B/,
+    },
+    {
+      name: "setup-medical-a",
+      testMatch: /auth\.setup\.ts/,
+      grep: /medical A/,
+    },
+    {
+      name: "setup-medical-b",
+      testMatch: /auth\.setup\.ts/,
+      grep: /medical B/,
+    },
+    {
+      name: "setup-authorizations",
+      dependencies: ["setup-patient-a", "setup-patient-b"],
+      testMatch: /medical-flow\.spec\.ts/,
+      grep: /@authorization-fixture/,
+      use: {
+        ...desktopChrome,
+        screenshot: "off",
+        trace: "off",
+        video: "off",
+      },
     },
     {
       name: "chromium",
@@ -81,6 +105,50 @@ export default defineConfig({
         ...desktopChrome,
         storageState: "playwright/.auth/patient-a.json",
       },
+    },
+    {
+      name: "medical-a",
+      dependencies: ["setup-medical-a", "setup-authorizations"],
+      testMatch: /medical-flow\.spec\.ts/,
+      grep: /@medical-a/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/medical-a.json",
+      },
+    },
+    {
+      name: "medical-b",
+      dependencies: ["setup-medical-b", "setup-authorizations"],
+      testMatch: /medical-flow\.spec\.ts/,
+      grep: /@medical-b/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/medical-b.json",
+      },
+    },
+    {
+      // Serial revocation changes Patient A's active authorization, then
+      // restores it. It opens its own contexts and must not share a page
+      // with the stable medical projects.
+      name: "medical-flow",
+      dependencies: ["setup-medical-a", "setup-authorizations"],
+      testMatch: /medical-flow\.spec\.ts/,
+      grep: /@medical-revocation/,
+      use: {
+        ...desktopChrome,
+        screenshot: "off",
+        trace: "off",
+        video: "off",
+      },
+    },
+    {
+      // Global sign-out revokes the medical session, so this stays outside
+      // the stable read projects.
+      name: "medical-logout",
+      dependencies: ["setup-medical-a", "setup-medical-b"],
+      testMatch: /medical-flow\.spec\.ts/,
+      grep: /@medical-logout/,
+      use: desktopChrome,
     },
   ],
   webServer: {

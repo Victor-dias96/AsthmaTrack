@@ -8,6 +8,8 @@ setup.setTimeout(120_000);
 
 export const patientAAuthFile = path.join(authDir, "patient-a.json");
 export const patientBAuthFile = path.join(authDir, "patient-b.json");
+export const medicalAAuthFile = path.join(authDir, "medical-a.json");
+export const medicalBAuthFile = path.join(authDir, "medical-b.json");
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -83,21 +85,65 @@ async function authenticate(
   page: Page,
   emailVariable: string,
   passwordVariable: string,
-  storagePath: string
+  storagePath: string,
+  destination: { url: RegExp; heading: string | RegExp }
 ) {
   const email = requireEmail(emailVariable);
   const password = requireEnv(passwordVariable);
   const safety = trackPageSafety(page);
 
-  await page.goto("/login");
+  await page.goto("/login", { waitUntil: "commit", timeout: 60_000 });
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Entrar" })
+  ).toBeVisible({ timeout: 30_000 });
+  await page.waitForFunction(() => {
+    const form = document.querySelector("form");
+
+    if (!form) {
+      return false;
+    }
+
+    return Object.keys(form).some(
+      (key) =>
+        key.startsWith("__reactProps$") || key.startsWith("__reactFiber$")
+    );
+  });
   await page.getByRole("textbox", { name: "E-mail" }).fill(email);
   await page.getByRole("textbox", { name: "Senha" }).fill(password);
   await page.getByRole("button", { name: "Entrar" }).click();
 
-  await expect(page).toHaveURL(/\/paciente\/dashboard$/, { timeout: 45_000 });
-  await expect(
-    page.getByRole("heading", { level: 1, name: /^Olá/ })
-  ).toBeVisible();
+  try {
+    await page.waitForURL(destination.url, {
+      timeout: 45_000,
+      waitUntil: "commit",
+    });
+  } catch (error) {
+    if (/[?&](?:email|password)=/i.test(page.url())) {
+      await page.goto("/login", { waitUntil: "commit" });
+      throw new Error(
+        "Login submitted before the form was ready. Credentials were removed from the address bar and were not printed."
+      );
+    }
+
+    throw error;
+  }
+
+  const heading = page.getByRole("heading", {
+    level: 1,
+    name: destination.heading,
+  });
+
+  try {
+    await expect(heading).toBeVisible({ timeout: 20_000 });
+  } catch {
+    // The dev server can answer the first post-login navigation with the
+    // app 404 while the destination route is still compiling.
+    await page.goto(page.url(), {
+      waitUntil: "commit",
+      timeout: 60_000,
+    });
+    await expect(heading).toBeVisible({ timeout: 30_000 });
+  }
 
   await page.context().storageState({ path: storagePath });
 
@@ -112,7 +158,8 @@ setup("authenticate patient A", async ({ page }) => {
     page,
     "E2E_PATIENT_A_EMAIL",
     "E2E_PATIENT_A_PASSWORD",
-    patientAAuthFile
+    patientAAuthFile,
+    { url: /\/paciente\/dashboard$/, heading: /^Olá/ }
   );
 });
 
@@ -122,6 +169,29 @@ setup("authenticate patient B", async ({ page }) => {
     page,
     "E2E_PATIENT_B_EMAIL",
     "E2E_PATIENT_B_PASSWORD",
-    patientBAuthFile
+    patientBAuthFile,
+    { url: /\/paciente\/dashboard$/, heading: /^Olá/ }
+  );
+});
+
+setup("authenticate medical A", async ({ page }) => {
+  mkdirSync(authDir, { recursive: true });
+  await authenticate(
+    page,
+    "E2E_MEDICAL_A_EMAIL",
+    "E2E_MEDICAL_A_PASSWORD",
+    medicalAAuthFile,
+    { url: /\/equipe-medica$/, heading: "Área da equipe médica" }
+  );
+});
+
+setup("authenticate medical B", async ({ page }) => {
+  mkdirSync(authDir, { recursive: true });
+  await authenticate(
+    page,
+    "E2E_MEDICAL_B_EMAIL",
+    "E2E_MEDICAL_B_PASSWORD",
+    medicalBAuthFile,
+    { url: /\/equipe-medica$/, heading: "Área da equipe médica" }
   );
 });
