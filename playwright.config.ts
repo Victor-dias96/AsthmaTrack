@@ -71,6 +71,17 @@ export default defineConfig({
         storageState: "playwright/.auth/patient-b.json",
       },
     },
+    {
+      // Reuses Patient A's setup storage state. Run this project on its own:
+      // its logout revokes that local session, as does the isolation suite.
+      name: "patient-flow",
+      dependencies: ["setup-patient-a"],
+      testMatch: /patient-flow\.spec\.ts/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
   ],
   webServer: {
     command: "node scripts/run-e2e-server.mjs",
