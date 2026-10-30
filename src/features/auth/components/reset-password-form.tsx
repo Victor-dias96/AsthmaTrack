@@ -282,7 +282,7 @@ export function ResetPasswordForm({
         <p className="text-center text-sm text-[var(--at-text-secondary)]">
           <Link
             href="/recuperar-senha"
-            className="text-[var(--at-blue)] font-medium hover:underline"
+            className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
           >
             Solicitar novo link
           </Link>
@@ -333,7 +333,7 @@ export function ResetPasswordForm({
 
       {authError && <AppAlert variant="warning">{authError}</AppAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <form method="post" onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormField
           label="Nova senha"
           htmlFor="reset-password"
@@ -389,7 +389,7 @@ export function ResetPasswordForm({
       <p className="text-center text-sm text-[var(--at-text-secondary)]">
         <Link
           href="/login"
-          className="text-[var(--at-blue)] font-medium hover:underline"
+          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
         >
           Voltar ao login
         </Link>

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { RestoreFocusOnPathnameChange } from "@/components/layout/restore-focus-on-pathname-change";
+import { SkipToContentLink } from "@/components/layout/skip-to-content-link";
 import { PwaClientFeatures } from "@/features/pwa/components/pwa-client-features";
 import "./globals.css";
 
@@ -41,6 +43,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--at-bg-app)] text-[var(--at-text-primary)]">
+        <SkipToContentLink />
+        <RestoreFocusOnPathnameChange />
         <PwaClientFeatures>{children}</PwaClientFeatures>
       </body>
     </html>

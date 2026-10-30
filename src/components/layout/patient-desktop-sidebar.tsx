@@ -70,6 +70,7 @@ export function PatientDesktopSidebar() {
               href={item.href}
               className={cn(
                 "flex items-center gap-3 rounded-[var(--at-radius-md)] px-3 py-2.5 text-sm font-medium transition-colors duration-150",
+                "outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--at-navy)]",
                 isActive
                   ? "bg-[var(--at-blue)] text-white"
                   : "text-[var(--at-navy-muted)] hover:bg-white/10 hover:text-white"

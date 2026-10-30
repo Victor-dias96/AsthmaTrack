@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Activity, Gauge, Share2 } from "lucide-react";
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { AppLogo } from "@/components/ui/app-logo";
 import { AppAlert } from "@/components/ui/app-alert";
 import { OnboardingForm } from "@/features/onboarding/components/onboarding-form";
@@ -45,7 +46,11 @@ export default function OnboardingPage() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 px-6 py-8 space-y-6 max-w-lg mx-auto w-full">
+      <main
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
+        className="flex-1 px-6 py-8 space-y-6 max-w-lg mx-auto w-full"
+      >
         {steps.map((step, i) => (
           <div key={step.title} className="flex gap-4">
             <div

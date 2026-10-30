@@ -1,3 +1,4 @@
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { AppLogo } from "@/components/ui/app-logo";
 
 type PublicAuthLayoutProps = {
@@ -42,9 +43,13 @@ export function PublicAuthLayout({
       </div>
 
       {/* ── Right / Bottom: white form panel ── */}
-      <div className="flex flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-5 py-8 sm:px-8 lg:px-12">
+      <main
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
+        className="flex flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-5 py-8 sm:px-8 lg:px-12"
+      >
         <div className="w-full max-w-md">{children}</div>
-      </div>
+      </main>
     </div>
   );
 }

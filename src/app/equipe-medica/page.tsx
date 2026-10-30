@@ -34,7 +34,7 @@ export default function EquipeMedicaPage() {
         <div className="mt-4">
           <Link
             href="/equipe-medica/pacientes"
-            className="text-sm font-medium text-[var(--at-blue)] hover:underline"
+            className="rounded-[var(--at-radius-sm)] text-sm font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
           >
             Ver pacientes
           </Link>

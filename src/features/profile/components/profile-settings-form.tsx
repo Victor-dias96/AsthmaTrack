@@ -101,7 +101,7 @@ export function ProfileSettingsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form method="post" onSubmit={handleSubmit} className="space-y-4" noValidate>
       {successMsg && <AppAlert variant="success">{successMsg}</AppAlert>}
       {errorMsg && <AppAlert variant="warning">{errorMsg}</AppAlert>}
 

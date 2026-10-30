@@ -22,7 +22,8 @@ export function MedicalMobileNavigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors duration-150",
+              "flex flex-1 flex-col items-center justify-center gap-1 rounded-[var(--at-radius-sm)] py-2.5 text-[10px] font-medium transition-colors duration-150",
+              "outline-none focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
               isActive
                 ? "text-[var(--at-blue)]"
                 : "text-[var(--at-text-secondary)] hover:text-[var(--at-text-primary)]"

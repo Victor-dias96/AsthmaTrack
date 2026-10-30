@@ -48,6 +48,40 @@ describe("AppButton", () => {
     expect(onActivate).toHaveBeenCalledOnce();
   });
 
+  test("runs its action once when the user presses Space", async () => {
+    const user = userEvent.setup();
+    const onActivate = vi.fn();
+
+    render(
+      <AppButton type="button" onClick={onActivate}>
+        Continuar
+      </AppButton>
+    );
+
+    const button = screen.getByRole("button", { name: "Continuar" });
+    button.focus();
+    await user.keyboard(" ");
+
+    expect(onActivate).toHaveBeenCalledOnce();
+  });
+
+  test("does not run its action when disabled and the user presses Enter", async () => {
+    const user = userEvent.setup();
+    const onActivate = vi.fn();
+
+    render(
+      <AppButton type="button" disabled onClick={onActivate}>
+        Continuar
+      </AppButton>
+    );
+
+    const button = screen.getByRole("button", { name: "Continuar" });
+    button.focus();
+    await user.keyboard("{Enter}");
+
+    expect(onActivate).not.toHaveBeenCalled();
+  });
+
   test("does not run its action when disabled", async () => {
     const user = userEvent.setup();
     const onActivate = vi.fn();

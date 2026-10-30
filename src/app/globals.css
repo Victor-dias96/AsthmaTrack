@@ -137,6 +137,49 @@
   --color-at-text-secondary: var(--at-text-secondary);
 }
 
+.skip-to-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-to-content:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 70;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip: auto;
+  overflow: visible;
+  white-space: normal;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--at-radius-md);
+  background: var(--at-surface);
+  color: var(--at-text-primary);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  text-decoration: none;
+  box-shadow: var(--at-shadow-md);
+  outline: 2px solid var(--at-blue);
+  outline-offset: 2px;
+}
+
+#conteudo-principal:focus {
+  outline: 2px solid var(--at-blue);
+  outline-offset: -4px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -164,7 +207,8 @@
     min-height: 0;
   }
 
-  .report-print-hidden {
+  .report-print-hidden,
+  .skip-to-content {
     display: none !important;
   }
 

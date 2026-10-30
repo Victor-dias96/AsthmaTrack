@@ -1,4 +1,5 @@
 import { TriangleAlert } from "lucide-react";
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { AppCard } from "@/components/ui/app-card";
 import { HistoryRetryButton } from "@/features/history/components/history-retry-button";
 
@@ -13,7 +14,11 @@ import { HistoryRetryButton } from "@/features/history/components/history-retry-
  */
 export function MedicalTeamUnavailableState() {
   return (
-    <div className="min-h-svh flex flex-col items-center justify-center bg-[var(--at-bg-app)] px-4 py-12">
+    <main
+      id={MAIN_CONTENT_ID}
+      tabIndex={-1}
+      className="min-h-svh flex flex-col items-center justify-center bg-[var(--at-bg-app)] px-4 py-12"
+    >
       <div className="w-full max-w-md">
         <AppCard>
           <div className="flex flex-col items-center text-center">
@@ -43,6 +48,6 @@ export function MedicalTeamUnavailableState() {
           </div>
         </AppCard>
       </div>
-    </div>
+    </main>
   );
 }

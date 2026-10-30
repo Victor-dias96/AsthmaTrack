@@ -75,6 +75,7 @@ describe("RegisterForm", () => {
       const submit = screen.getByRole("button", { name: "Criar conta" });
       expect(submit).toBeEnabled();
       expect(submit).toHaveAttribute("type", "submit");
+      expect(submit.closest("form")).toHaveAttribute("method", "post");
 
       await user.click(submit);
 

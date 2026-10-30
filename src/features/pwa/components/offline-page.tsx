@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { WifiOff } from "lucide-react";
 import { AppCard } from "@/components/ui/app-card";
 import { AppLogo } from "@/components/ui/app-logo";
@@ -18,6 +19,8 @@ const secondaryActionClasses = [
 export function OfflinePage() {
   return (
     <main
+      id={MAIN_CONTENT_ID}
+      tabIndex={-1}
       className="flex min-h-svh w-full max-w-full flex-col overflow-x-hidden bg-[var(--at-bg-app)]"
       style={{
         paddingTop: "max(3rem, env(safe-area-inset-top))",

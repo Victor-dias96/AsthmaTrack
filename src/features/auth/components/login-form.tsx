@@ -132,7 +132,7 @@ export function LoginForm() {
 
       {authError && <AppAlert variant="warning">{authError}</AppAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <form method="post" onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormField label="E-mail" htmlFor="login-email" required error={errors.email}>
           <AppInput
             id="login-email"
@@ -166,7 +166,7 @@ export function LoginForm() {
         <div className="text-right">
           <Link
             href="/recuperar-senha"
-            className="text-sm text-[var(--at-blue)] hover:underline"
+            className="rounded-[var(--at-radius-sm)] text-sm text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
           >
             Esqueci minha senha
           </Link>
@@ -188,7 +188,7 @@ export function LoginForm() {
         Não tem conta?{" "}
         <Link
           href="/cadastro"
-          className="text-[var(--at-blue)] font-medium hover:underline"
+          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
         >
           Criar conta
         </Link>

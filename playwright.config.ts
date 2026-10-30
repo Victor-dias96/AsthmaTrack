@@ -76,6 +76,32 @@ export default defineConfig({
       use: desktopChrome,
     },
     {
+      name: "keyboard-public",
+      testMatch: /keyboard-navigation\.spec\.ts/,
+      grep: /@keyboard-public/,
+      use: desktopChrome,
+    },
+    {
+      name: "keyboard-patient",
+      dependencies: ["setup-patient-a"],
+      testMatch: /keyboard-navigation\.spec\.ts/,
+      grep: /@keyboard-patient/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      name: "keyboard-medical",
+      dependencies: ["setup-medical-a"],
+      testMatch: /keyboard-navigation\.spec\.ts/,
+      grep: /@keyboard-medical/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/medical-a.json",
+      },
+    },
+    {
       name: "patient-a",
       dependencies: ["setup-patient-a"],
       testMatch: /patient-isolation\.spec\.ts/,

@@ -1,3 +1,4 @@
+import { MAIN_CONTENT_ID } from "./main-content";
 import { PatientDesktopSidebar } from "./patient-desktop-sidebar";
 import { PatientMobileNavigation } from "./patient-mobile-navigation";
 
@@ -12,7 +13,11 @@ export function PatientShell({ children }: PatientShellProps) {
       <PatientDesktopSidebar />
 
       {/* Main content area */}
-      <main className="flex-1 flex flex-col min-w-0 bg-[var(--at-bg-app)]">
+      <main
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
+        className="flex-1 flex flex-col min-w-0 bg-[var(--at-bg-app)]"
+      >
         {/* Scrollable content with bottom padding on mobile for the nav bar */}
         <div className="report-print-shell-content flex-1 px-4 py-6 pb-24 lg:px-8 lg:py-8 lg:pb-8">
           {children}

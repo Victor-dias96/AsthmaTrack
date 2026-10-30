@@ -41,7 +41,7 @@ export function AuthorizeMedicalTeamMemberForm() {
   return (
     <div className="space-y-4">
       {form.isLookupFormVisible && (
-        <form onSubmit={form.handleLookupSubmit} noValidate>
+        <form method="post" onSubmit={form.handleLookupSubmit} noValidate>
           <FormField
             label="Código do profissional"
             htmlFor={PROFESSIONAL_CODE_FIELD_ID}

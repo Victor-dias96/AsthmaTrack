@@ -1,3 +1,4 @@
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { AppLogo } from "@/components/ui/app-logo";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { MedicalDesktopSidebar } from "./medical-desktop-sidebar";
@@ -28,7 +29,11 @@ export function MedicalTeamShell({ children, displayName }: MedicalTeamShellProp
       <MedicalDesktopSidebar displayName={displayName} />
 
       {/* Main content area */}
-      <main className="flex-1 flex flex-col min-w-0 bg-[var(--at-bg-app)]">
+      <main
+        id={MAIN_CONTENT_ID}
+        tabIndex={-1}
+        className="flex-1 flex flex-col min-w-0 bg-[var(--at-bg-app)]"
+      >
         {/* Compact brand/logout bar — mobile only. Intentionally does not
             duplicate the desktop sidebar's navigation links. */}
         <div className="lg:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--at-navy)] border-b border-[var(--at-navy-dark)]">

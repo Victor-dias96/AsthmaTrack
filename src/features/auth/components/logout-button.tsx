@@ -49,7 +49,8 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
           disabled={loading}
           className={cn(
             "flex w-full items-center justify-center gap-2 rounded-[var(--at-radius-md)] border border-destructive px-4 py-2.5 text-sm font-medium text-destructive",
-            "hover:bg-destructive/5 transition-colors duration-150",
+            "outline-none hover:bg-destructive/5 transition-colors duration-150",
+            "focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             className
           )}
@@ -75,7 +76,8 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
         disabled={loading}
         className={cn(
           "flex items-center gap-2 rounded-[var(--at-radius-md)] px-3 py-2 text-xs font-medium",
-          "text-[var(--at-navy-muted)] hover:bg-white/10 hover:text-white transition-colors duration-150",
+          "text-[var(--at-navy-muted)] outline-none hover:bg-white/10 hover:text-white transition-colors duration-150",
+          "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--at-navy)]",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           className
         )}

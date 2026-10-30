@@ -148,7 +148,7 @@ export function RegisterForm() {
 
       {authError && <AppAlert variant="warning">{authError}</AppAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <form method="post" onSubmit={handleSubmit} className="space-y-4" noValidate>
         <FormField
           label="Nome completo"
           htmlFor="register-name"
@@ -259,7 +259,7 @@ export function RegisterForm() {
         Já tem conta?{" "}
         <Link
           href="/login"
-          className="text-[var(--at-blue)] font-medium hover:underline"
+          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
         >
           Entrar
         </Link>

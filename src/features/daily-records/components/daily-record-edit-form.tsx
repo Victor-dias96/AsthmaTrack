@@ -100,7 +100,7 @@ export function DailyRecordEditForm({
         </AppAlert>
       )}
 
-      <form onSubmit={form.handleSubmit} noValidate aria-busy={isSubmitting}>
+      <form method="post" onSubmit={form.handleSubmit} noValidate aria-busy={isSubmitting}>
         <AppCard>
           <AppCardHeader
             title="Dados do registro"

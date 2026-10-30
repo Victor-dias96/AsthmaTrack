@@ -36,9 +36,9 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
         {isPassword && (
           <button
             type="button"
-            tabIndex={-1}
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--at-text-secondary)] hover:text-[var(--at-text-primary)] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-[var(--at-radius-sm)] text-[var(--at-text-secondary)] outline-none transition-colors hover:text-[var(--at-text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+            aria-pressed={showPassword}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
