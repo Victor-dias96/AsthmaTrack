@@ -102,6 +102,32 @@ export default defineConfig({
       },
     },
     {
+      name: "visual-public",
+      testMatch: /visual-feedback\.spec\.ts/,
+      grep: /@visual-public/,
+      use: desktopChrome,
+    },
+    {
+      name: "visual-patient",
+      dependencies: ["setup-patient-a"],
+      testMatch: /visual-feedback\.spec\.ts/,
+      grep: /@visual-patient/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      name: "visual-medical",
+      dependencies: ["setup-medical-a"],
+      testMatch: /visual-feedback\.spec\.ts/,
+      grep: /@visual-medical/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/medical-a.json",
+      },
+    },
+    {
       name: "patient-a",
       dependencies: ["setup-patient-a"],
       testMatch: /patient-isolation\.spec\.ts/,

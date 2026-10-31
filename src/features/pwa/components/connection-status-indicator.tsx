@@ -130,14 +130,14 @@ function ConnectionStatusCard({
         "mx-auto flex w-full min-w-0 max-w-xl items-start gap-2.5 rounded-[var(--at-radius-md)] border px-4 py-3 text-sm leading-relaxed shadow-[var(--at-shadow-sm)]",
         offline
           ? "border-[var(--at-alert-border)] bg-[var(--at-alert-bg)] text-[var(--at-alert-text)]"
-          : "border-green-200 bg-green-50 text-green-800"
+          : "border-[var(--at-success-border)] bg-[var(--at-success-bg)] text-[var(--at-success-text)]"
       )}
     >
       <Icon
         aria-hidden="true"
         className={cn(
           "mt-0.5 size-4 shrink-0",
-          offline ? "text-[var(--at-alert-icon)]" : "text-green-600"
+          offline ? "text-[var(--at-alert-icon)]" : "text-[var(--at-success-icon)]"
         )}
         size={16}
       />

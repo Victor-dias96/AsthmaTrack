@@ -21,19 +21,31 @@
 
   /* Alerts */
   --at-alert-bg: #fff8e1;
-  --at-alert-border: #f5a623;
+  --at-alert-border: #7a5800;
   --at-alert-text: #7a5800;
-  --at-alert-icon: #f5a623;
+  --at-alert-icon: #7a5800;
+  --at-success-bg: #f0fdf4;
+  --at-success-border: #166534;
+  --at-success-text: #166534;
+  --at-success-icon: #166534;
+  --at-info-bg: #eff6ff;
+  --at-info-border: #1e40af;
+  --at-info-text: #1e3a8a;
+  --at-info-icon: #1e40af;
 
   /* Text */
   --at-text-primary: #111827;
-  --at-text-secondary: #6b7280;
-  --at-text-placeholder: #9ca3af;
+  --at-text-secondary: #5e6874;
+  --at-text-placeholder: var(--at-text-secondary);
   --at-text-on-navy: #ffffff;
 
-  /* Borders */
+  /* Borders and non-text UI */
   --at-border: #e2e8f0;
-  --at-border-input: #d1d5db;
+  --at-border-input: #778191;
+  --at-chart-grid: #7a8492;
+  --at-skeleton: #b7c2ce;
+  --at-disabled: #d5dbe3;
+  --at-disabled-foreground: #3f4a5a;
 
   /* Radii */
   --at-radius-xs: 4px;
@@ -59,10 +71,10 @@
   --secondary: #eef1f6;
   --secondary-foreground: #111827;
   --muted: #f5f7fa;
-  --muted-foreground: #6b7280;
+  --muted-foreground: #5e6874;
   --accent: #e8eefb;
   --accent-foreground: #1e4ee8;
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #b42318;
   --border: #e2e8f0;
   --input: #eef1f6;
   --ring: #1e4ee8;
@@ -178,6 +190,32 @@
 #conteudo-principal:focus {
   outline: 2px solid var(--at-blue);
   outline-offset: -4px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--at-text-primary);
+  caret-color: var(--at-text-primary);
+}
+
+@media (forced-colors: active) {
+  :focus-visible,
+  .skip-to-content:focus,
+  #conteudo-principal:focus {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    border-color: ButtonText;
+  }
 }
 
 @layer base {
@@ -367,7 +405,7 @@
   }
 
   .report-print-chart .recharts-cartesian-grid line {
-    stroke: #94a3b8;
+    stroke: #7a8492;
   }
 
   .report-print-chart .recharts-line-curve {

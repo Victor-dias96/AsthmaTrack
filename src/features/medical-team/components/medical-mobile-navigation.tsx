@@ -38,7 +38,9 @@ export function MedicalMobileNavigation() {
             >
               <Icon size={22} aria-hidden="true" />
             </span>
-            <span>{item.label}</span>
+            <span className={cn(isActive && "underline underline-offset-4")}>
+              {item.label}
+            </span>
           </Link>
         );
       })}

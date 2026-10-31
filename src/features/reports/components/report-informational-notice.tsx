@@ -15,22 +15,22 @@ export function ReportInformationalNotice() {
   return (
     <aside
       aria-labelledby={REPORT_INFORMATIONAL_NOTICE_TITLE_ID}
-      className="report-print-section min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-blue-light)] px-4 py-3"
+      className="report-print-section min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-info-border)] bg-[var(--at-info-bg)] px-4 py-3"
     >
       <div className="flex items-start gap-2.5">
         <Info
           size={16}
           aria-hidden="true"
-          className="mt-0.5 shrink-0 text-[var(--at-blue)]"
+          className="mt-0.5 shrink-0 text-[var(--at-info-icon)]"
         />
         <div className="min-w-0">
           <h2
             id={REPORT_INFORMATIONAL_NOTICE_TITLE_ID}
-            className="text-sm font-semibold leading-relaxed text-[var(--at-text-primary)]"
+            className="text-sm font-semibold leading-relaxed text-[var(--at-info-text)]"
           >
             {REPORT_INFORMATIONAL_NOTICE_TITLE}
           </h2>
-          <p className="mt-1 text-sm leading-relaxed text-[var(--at-text-secondary)]">
+          <p className="mt-1 text-sm leading-relaxed text-[var(--at-info-text)]">
             {REPORT_INFORMATIONAL_NOTICE_BODY}
           </p>
         </div>

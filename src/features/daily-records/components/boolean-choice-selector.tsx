@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldError } from "@/components/ui/form-field";
 import { cn } from "@/lib/utils";
 
 type BooleanChoiceOption = {
@@ -92,15 +93,7 @@ export function BooleanChoiceSelector({
         </p>
       )}
 
-      {error && (
-        <p
-          id={`${labelId}-error`}
-          role="alert"
-          className="text-xs text-destructive"
-        >
-          {error}
-        </p>
-      )}
+      {error && <FieldError id={`${labelId}-error`}>{error}</FieldError>}
     </div>
   );
 }

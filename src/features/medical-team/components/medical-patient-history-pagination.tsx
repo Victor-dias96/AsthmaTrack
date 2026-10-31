@@ -23,8 +23,8 @@ const paginationLinkClasses = [
 
 const paginationDisabledClasses = [
   paginationControlClasses,
-  "border border-[var(--at-border)] bg-[var(--at-surface-input)]",
-  "text-[var(--at-text-secondary)] cursor-not-allowed",
+  "border border-[var(--at-border-input)] bg-[var(--at-disabled)]",
+  "text-[var(--at-disabled-foreground)] cursor-not-allowed",
 ].join(" ");
 
 type MedicalPatientHistoryPaginationProps = {

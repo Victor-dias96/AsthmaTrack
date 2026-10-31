@@ -282,7 +282,7 @@ export function ResetPasswordForm({
         <p className="text-center text-sm text-[var(--at-text-secondary)]">
           <Link
             href="/recuperar-senha"
-            className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+            className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
           >
             Solicitar novo link
           </Link>
@@ -389,7 +389,7 @@ export function ResetPasswordForm({
       <p className="text-center text-sm text-[var(--at-text-secondary)]">
         <Link
           href="/login"
-          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
         >
           Voltar ao login
         </Link>

@@ -41,11 +41,11 @@ export function ServiceWorkerUpdateNotice() {
         paddingLeft: "max(1rem, env(safe-area-inset-left))",
       }}
     >
-      <div className="mx-auto flex w-full min-w-0 max-w-xl flex-col gap-3 rounded-[var(--at-radius-md)] border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-relaxed text-blue-800 shadow-[var(--at-shadow-sm)]">
+      <div className="mx-auto flex w-full min-w-0 max-w-xl flex-col gap-3 rounded-[var(--at-radius-md)] border border-[var(--at-info-border)] bg-[var(--at-info-bg)] px-4 py-3 text-sm leading-relaxed text-[var(--at-info-text)] shadow-[var(--at-shadow-sm)]">
         <div className="flex min-w-0 items-start gap-2.5">
           <RefreshCw
             aria-hidden="true"
-            className="mt-0.5 size-4 shrink-0 text-blue-600"
+            className="mt-0.5 size-4 shrink-0 text-[var(--at-info-icon)]"
             size={16}
           />
           <div className="min-w-0">

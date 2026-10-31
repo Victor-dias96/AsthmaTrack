@@ -8,7 +8,7 @@
  */
 export function AuthorizedPatientsEmptyState() {
   return (
-    <div className="rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border)] bg-[var(--at-surface-input)] p-4 text-center">
+    <div className="rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border-input)] bg-[var(--at-surface-input)] p-4 text-center">
       <p className="text-sm font-semibold text-[var(--at-text-primary)]">
         Nenhum paciente autorizado
       </p>

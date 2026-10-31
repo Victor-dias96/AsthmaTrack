@@ -419,6 +419,10 @@ test.describe("@keyboard-patient", () => {
   }) => {
     const writes = trackHealthWrites(page);
     await page.goto("/paciente/historico");
+    const period = visible(page, "link", "Últimos 30 dias");
+    await pressTabUntilFocused(page, period, { description: "Últimos 30 dias" });
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/periodo=30/);
     const details = page
       .getByRole("link", { name: /Ver detalhes do registro/ })
       .filter({ visible: true })
@@ -460,6 +464,10 @@ test.describe("@keyboard-patient", () => {
   }) => {
     const writes = trackHealthWrites(page);
     await page.goto("/paciente/historico");
+    const period = visible(page, "link", "Últimos 30 dias");
+    await pressTabUntilFocused(page, period, { description: "Últimos 30 dias" });
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/periodo=30/);
     const details = page
       .getByRole("link", { name: /Ver detalhes do registro/ })
       .filter({ visible: true })

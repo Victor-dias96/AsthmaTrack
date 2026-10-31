@@ -19,7 +19,7 @@ const AppTextarea = forwardRef<HTMLTextAreaElement, AppTextareaProps>(
           "border-[var(--at-border-input)]",
           "transition-colors duration-150",
           "focus:outline-none focus:ring-2 focus:ring-[var(--at-blue)] focus:ring-offset-0 focus:border-[var(--at-blue)]",
-          "disabled:cursor-not-allowed disabled:opacity-50",
+          "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
           "resize-y",
           hasError && "border-destructive focus:ring-destructive",
           className

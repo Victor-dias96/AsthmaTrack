@@ -25,13 +25,20 @@ const variantStyles: Record<
   },
   info: {
     wrapper:
-      "bg-blue-50 border border-blue-200 text-blue-800",
-    icon: <Info size={16} className="shrink-0 text-blue-500" />,
+      "bg-[var(--at-info-bg)] border border-[var(--at-info-border)] text-[var(--at-info-text)]",
+    icon: (
+      <Info size={16} className="shrink-0 text-[var(--at-info-icon)]" />
+    ),
   },
   success: {
     wrapper:
-      "bg-green-50 border border-green-200 text-green-800",
-    icon: <CircleCheck size={16} className="shrink-0 text-green-500" />,
+      "bg-[var(--at-success-bg)] border border-[var(--at-success-border)] text-[var(--at-success-text)]",
+    icon: (
+      <CircleCheck
+        size={16}
+        className="shrink-0 text-[var(--at-success-icon)]"
+      />
+    ),
   },
 };
 

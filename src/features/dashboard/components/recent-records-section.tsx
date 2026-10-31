@@ -25,7 +25,7 @@ export type RecentRecordsSectionProps = {
 const historyLinkClasses = [
   "inline-flex shrink-0 items-center text-sm font-medium text-[var(--at-blue)]",
   "rounded-[var(--at-radius-sm)] underline-offset-4 outline-none",
-  "hover:underline",
+  "underline",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
 ].join(" ");
 

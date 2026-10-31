@@ -1,5 +1,6 @@
 "use client";
 
+import { FieldError } from "@/components/ui/form-field";
 import { cn } from "@/lib/utils";
 import type { SymptomSeverity } from "@/types/daily-record";
 
@@ -86,11 +87,7 @@ export function SymptomSeveritySelector({
         </p>
       )}
 
-      {error && (
-        <p id={`${id}-error`} role="alert" className="text-xs text-destructive">
-          {error}
-        </p>
-      )}
+      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
     </div>
   );
 }

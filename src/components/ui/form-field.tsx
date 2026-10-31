@@ -1,3 +1,4 @@
+import { CircleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type FormFieldProps = {
@@ -45,14 +46,32 @@ export function FormField({
       )}
 
       {error && (
-        <p
-          id={`${htmlFor}-error`}
-          role="alert"
-          className="text-xs text-destructive"
-        >
-          {error}
-        </p>
+        <FieldError id={`${htmlFor}-error`}>{error}</FieldError>
       )}
     </div>
+  );
+}
+
+export function FieldError({
+  id,
+  children,
+  className,
+}: {
+  id?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      id={id}
+      role="alert"
+      className={cn(
+        "flex items-start gap-1.5 text-xs text-destructive",
+        className
+      )}
+    >
+      <CircleAlert aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+      <span>{children}</span>
+    </p>
   );
 }

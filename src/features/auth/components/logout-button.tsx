@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { CircleAlert, LogOut } from "lucide-react";
+import { FieldError } from "@/components/ui/form-field";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +52,7 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
             "flex w-full items-center justify-center gap-2 rounded-[var(--at-radius-md)] border border-destructive px-4 py-2.5 text-sm font-medium text-destructive",
             "outline-none hover:bg-destructive/5 transition-colors duration-150",
             "focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
             className
           )}
           aria-label="Encerrar sessão"
@@ -59,11 +60,7 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
           <LogOut size={16} aria-hidden="true" />
           {loading ? "Saindo..." : "Sair da conta"}
         </button>
-        {error && (
-          <p role="alert" className="text-xs text-destructive text-center">
-            {error}
-          </p>
-        )}
+        {error && <FieldError className="justify-center">{error}</FieldError>}
       </div>
     );
   }
@@ -78,7 +75,7 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
           "flex items-center gap-2 rounded-[var(--at-radius-md)] px-3 py-2 text-xs font-medium",
           "text-[var(--at-navy-muted)] outline-none hover:bg-white/10 hover:text-white transition-colors duration-150",
           "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--at-navy)]",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
           className
         )}
         aria-label="Encerrar sessão"
@@ -87,8 +84,12 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
         {loading ? "Saindo..." : "Sair"}
       </button>
       {error && (
-        <p role="alert" className="text-xs text-red-400 px-3">
-          {error}
+        <p
+          role="alert"
+          className="flex items-start gap-1.5 px-3 text-xs text-red-400"
+        >
+          <CircleAlert aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+          <span>{error}</span>
         </p>
       )}
     </div>

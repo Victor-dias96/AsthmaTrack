@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import { FieldError } from "@/components/ui/form-field";
 import { cn } from "@/lib/utils";
 
 type AppCheckboxProps = Omit<
@@ -36,11 +37,7 @@ const AppCheckbox = forwardRef<HTMLInputElement, AppCheckboxProps>(
             {label}
           </span>
         </label>
-        {error && (
-          <p role="alert" className="text-xs text-destructive">
-            {error}
-          </p>
-        )}
+        {error && <FieldError>{error}</FieldError>}
       </div>
     );
   }

@@ -21,7 +21,7 @@ export function LoadingSpinner({
     <span role="status" aria-label={label} className={cn("inline-flex", className)}>
       <span
         className={cn(
-          "animate-spin rounded-full border-solid border-[var(--at-blue)] border-t-transparent",
+          "animate-spin rounded-full border-solid border-[var(--at-blue)] border-t-transparent motion-reduce:animate-none",
           sizeMap[size]
         )}
       />

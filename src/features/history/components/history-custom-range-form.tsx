@@ -2,7 +2,7 @@ import Form from "next/form";
 import Link from "next/link";
 import { AppButton } from "@/components/ui/app-button";
 import { AppInput } from "@/components/ui/app-input";
-import { FormField } from "@/components/ui/form-field";
+import { FieldError, FormField } from "@/components/ui/form-field";
 
 import {
   HISTORY_CUSTOM_PERIOD_PARAM,
@@ -68,13 +68,9 @@ export function HistoryCustomRangeForm({
       />
 
       {formError ? (
-        <p
-          id={FORM_ERROR_ID}
-          role="alert"
-          className="mb-3 text-xs text-destructive"
-        >
+        <FieldError id={FORM_ERROR_ID} className="mb-3">
           {formError}
-        </p>
+        </FieldError>
       ) : null}
 
       <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">

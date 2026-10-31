@@ -9,7 +9,7 @@ export function Skeleton({ className }: SkeletonProps) {
     <div
       aria-hidden="true"
       className={cn(
-        "rounded-[var(--at-radius-sm)] bg-[var(--at-surface-input)]",
+        "rounded-[var(--at-radius-sm)] bg-[var(--at-skeleton)]",
         "motion-safe:animate-pulse",
         className
       )}

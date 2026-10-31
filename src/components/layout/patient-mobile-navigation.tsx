@@ -76,7 +76,9 @@ export function PatientMobileNavigation() {
             >
               {item.icon}
             </span>
-            <span>{item.label}</span>
+            <span className={cn(isActive && "underline underline-offset-4")}>
+              {item.label}
+            </span>
           </Link>
         );
       })}

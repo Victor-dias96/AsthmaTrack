@@ -259,7 +259,7 @@ export function RegisterForm() {
         Já tem conta?{" "}
         <Link
           href="/login"
-          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+          className="rounded-[var(--at-radius-sm)] font-medium text-[var(--at-blue)] outline-none underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
         >
           Entrar
         </Link>

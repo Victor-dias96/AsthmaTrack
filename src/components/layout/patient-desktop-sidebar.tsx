@@ -72,7 +72,7 @@ export function PatientDesktopSidebar() {
                 "flex items-center gap-3 rounded-[var(--at-radius-md)] px-3 py-2.5 text-sm font-medium transition-colors duration-150",
                 "outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--at-navy)]",
                 isActive
-                  ? "bg-[var(--at-blue)] text-white"
+                  ? "bg-[var(--at-blue)] text-white shadow-[inset_0_0_0_2px_#ffffff]"
                   : "text-[var(--at-navy-muted)] hover:bg-white/10 hover:text-white"
               )}
               aria-current={isActive ? "page" : undefined}

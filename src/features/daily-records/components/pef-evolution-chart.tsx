@@ -72,14 +72,14 @@ const chartRegionClassName = [
 const emptyRegionClassName = [
   chartRegionSizeClassName,
   "flex items-center justify-center px-4",
-  "rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border)]",
+  "rounded-[var(--at-radius-md)] border border-dashed border-[var(--at-border-input)]",
   "bg-[var(--at-surface-input)]/50",
 ].join(" ");
 
 const PEF_CHART_STROKE = "var(--chart-1)";
-const PEF_CHART_GRID_STROKE = "var(--at-border)";
+const PEF_CHART_GRID_STROKE = "var(--at-chart-grid)";
 const PEF_CHART_AXIS_TICK = "var(--at-text-secondary)";
-const PEF_CHART_AXIS_LINE = "var(--at-border)";
+const PEF_CHART_AXIS_LINE = "var(--at-chart-grid)";
 const PEF_CHART_TICK_FONT_SIZE = 12;
 const PEF_CHART_Y_AXIS_WIDTH = 44;
 const PEF_CHART_X_AXIS_HEIGHT = 32;

@@ -44,7 +44,7 @@ const triggerClasses = [
   "hover:bg-[var(--at-alert-bg)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
   "active:translate-y-px transition-all duration-150",
-  "disabled:opacity-50 disabled:cursor-not-allowed",
+  "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
 ].join(" ");
 
 const cancelClasses = [
@@ -54,7 +54,7 @@ const cancelClasses = [
   "hover:bg-[var(--at-surface-input)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
   "active:translate-y-px transition-all duration-150",
-  "disabled:opacity-50 disabled:cursor-not-allowed",
+  "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
 ].join(" ");
 
 type RevokeAccessAuthorizationActionProps = {
@@ -244,7 +244,7 @@ export function RevokeAccessAuthorizationAction({
           <AlertDialog.Popup
             className={cn(
               "w-full max-w-md min-w-0 rounded-[var(--at-radius-lg)]",
-              "border border-[var(--at-border)] bg-[var(--at-surface)]",
+              "border border-[var(--at-border-input)] bg-[var(--at-surface)]",
               "p-5 shadow-[var(--at-shadow-md)] outline-none",
               "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
             )}

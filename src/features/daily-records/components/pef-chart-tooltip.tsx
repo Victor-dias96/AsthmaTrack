@@ -86,7 +86,7 @@ export function PefChartTooltip({ active, payload }: PefChartTooltipProps) {
   }
 
   return (
-    <div className="max-w-64 min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border)] bg-[var(--at-surface)] px-3 py-2 shadow-[var(--at-shadow-sm)]">
+    <div className="max-w-64 min-w-0 rounded-[var(--at-radius-md)] border border-[var(--at-border-input)] bg-[var(--at-surface)] px-3 py-2 shadow-[var(--at-shadow-sm)]">
       <p className="text-xs leading-snug break-words text-[var(--at-text-secondary)]">
         {formatted.date}, {formatted.time}
       </p>
