@@ -155,7 +155,7 @@ export function RecoverPasswordForm() {
         <AppButton type="submit" fullWidth size="lg" disabled={loading}>
           {loading ? (
             <>
-              <LoadingSpinner size="sm" label="Enviando" />
+              <LoadingSpinner size="sm" label="Enviando" decorative />
               <span className="ml-2">Enviando...</span>
             </>
           ) : (

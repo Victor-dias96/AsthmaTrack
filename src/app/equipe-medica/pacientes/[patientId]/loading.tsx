@@ -30,7 +30,7 @@ const PERIOD_OPTION_SKELETON_KEYS = [
 export default function EquipeMedicaPacienteDashboardLoading() {
   return (
     <div className="min-w-0 space-y-6" aria-busy="true">
-      <p className="sr-only">Carregando dashboard do paciente...</p>
+      <h1 className="sr-only">Carregando dashboard do paciente...</h1>
 
       {/* Header placeholder */}
       <div aria-hidden="true">

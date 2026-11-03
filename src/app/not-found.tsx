@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MAIN_CONTENT_ID } from "@/components/layout/main-content";
 import { AppLogo } from "@/components/ui/app-logo";
 import { AppButton } from "@/components/ui/app-button";
 import { BackButton } from "@/components/ui/back-button";
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="min-h-svh flex flex-col items-center justify-center bg-[var(--at-bg-app)] px-4 py-12">
+    <main
+      id={MAIN_CONTENT_ID}
+      tabIndex={-1}
+      className="min-h-svh flex flex-col items-center justify-center bg-[var(--at-bg-app)] px-4 py-12"
+    >
       <div className="w-full max-w-md bg-[var(--at-surface)] rounded-[var(--at-radius-lg)] border border-[var(--at-border)] p-6 sm:p-8 text-center space-y-6 shadow-sm">
         <div className="flex justify-center">
           <AppLogo size="md" />
@@ -39,6 +44,6 @@ export default function NotFound() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

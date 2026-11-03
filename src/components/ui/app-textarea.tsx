@@ -1,6 +1,10 @@
 "use client";
 
 import { forwardRef } from "react";
+import {
+  joinAriaDescribedBy,
+  useFormFieldDescription,
+} from "@/components/ui/form-field";
 import { cn } from "@/lib/utils";
 
 type AppTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -8,7 +12,21 @@ type AppTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 };
 
 const AppTextarea = forwardRef<HTMLTextAreaElement, AppTextareaProps>(
-  ({ className, hasError, ...props }, ref) => {
+  (
+    {
+      className,
+      hasError,
+      "aria-describedby": ariaDescribedBy,
+      "aria-invalid": ariaInvalid,
+      ...props
+    },
+    ref
+  ) => {
+    const fieldDescription = useFormFieldDescription();
+    const describedBy = joinAriaDescribedBy(ariaDescribedBy, fieldDescription);
+    const invalid =
+      ariaInvalid !== undefined ? ariaInvalid : hasError ? true : undefined;
+
     return (
       <textarea
         ref={ref}
@@ -25,6 +43,8 @@ const AppTextarea = forwardRef<HTMLTextAreaElement, AppTextareaProps>(
           className
         )}
         {...props}
+        aria-describedby={describedBy}
+        aria-invalid={invalid}
       />
     );
   }

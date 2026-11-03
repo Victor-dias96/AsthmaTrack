@@ -63,6 +63,7 @@ export function AuthorizeMedicalTeamMemberForm() {
               hasError={!!form.fieldError}
               disabled={form.isLookingUp}
               maxLength={64}
+              required
             />
           </FormField>
 
@@ -75,7 +76,7 @@ export function AuthorizeMedicalTeamMemberForm() {
             >
               {form.isLookingUp ? (
                 <>
-                  <LoadingSpinner size="sm" label="Buscando" />
+                  <LoadingSpinner size="sm" label="Buscando" decorative />
                   <span className="ml-2">Buscando...</span>
                 </>
               ) : (
@@ -84,7 +85,7 @@ export function AuthorizeMedicalTeamMemberForm() {
             </AppButton>
           </div>
 
-          <div className="mt-3" aria-live="polite">
+          <div className="mt-3">
             {flowState.kind === "not-found" && (
               <p
                 role="status"
@@ -234,7 +235,7 @@ export function AuthorizeMedicalTeamMemberForm() {
                   >
                     {form.isAuthorizing ? (
                       <>
-                        <LoadingSpinner size="sm" label="Autorizando" />
+                        <LoadingSpinner size="sm" label="Autorizando" decorative />
                         <span className="ml-2">Autorizando...</span>
                       </>
                     ) : (

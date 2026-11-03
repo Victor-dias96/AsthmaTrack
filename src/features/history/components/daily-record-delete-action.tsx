@@ -218,7 +218,7 @@ export function DailyRecordDeleteAction({
               >
                 {isDeleting ? (
                   <>
-                    <LoadingSpinner size="sm" label="Excluindo" />
+                    <LoadingSpinner size="sm" label="Excluindo" decorative />
                     <span className="ml-2">Excluindo...</span>
                   </>
                 ) : (

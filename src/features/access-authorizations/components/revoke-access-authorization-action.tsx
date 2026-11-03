@@ -291,7 +291,7 @@ export function RevokeAccessAuthorizationAction({
               >
                 {isRevoking ? (
                   <>
-                    <LoadingSpinner size="sm" label="Revogando" />
+                    <LoadingSpinner size="sm" label="Revogando" decorative />
                     <span className="ml-2">Revogando...</span>
                   </>
                 ) : (

@@ -128,6 +128,32 @@ export default defineConfig({
       },
     },
     {
+      name: "semantics-public",
+      testMatch: /screen-reader-semantics\.spec\.ts/,
+      grep: /@semantics-public/,
+      use: desktopChrome,
+    },
+    {
+      name: "semantics-patient",
+      dependencies: ["setup-patient-a"],
+      testMatch: /screen-reader-semantics\.spec\.ts/,
+      grep: /@semantics-patient/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      name: "semantics-medical",
+      dependencies: ["setup-medical-a"],
+      testMatch: /screen-reader-semantics\.spec\.ts/,
+      grep: /@semantics-medical/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/medical-a.json",
+      },
+    },
+    {
       name: "patient-a",
       dependencies: ["setup-patient-a"],
       testMatch: /patient-isolation\.spec\.ts/,

@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 };
 
 const features = [
-  { icon: <Activity size={16} />, text: "Registre PEF e sintomas diários" },
-  { icon: <TrendingUp size={16} />, text: "Veja gráficos de evolução" },
-  { icon: <Share2 size={16} />, text: "Compartilhe dados com seu médico" },
+  { icon: <Activity size={16} aria-hidden="true" />, text: "Registre PEF e sintomas diários" },
+  { icon: <TrendingUp size={16} aria-hidden="true" />, text: "Veja gráficos de evolução" },
+  { icon: <Share2 size={16} aria-hidden="true" />, text: "Compartilhe dados com seu médico" },
 ];
 
 export default function CadastroPage() {

@@ -14,7 +14,7 @@ export function BackButton() {
       size="md"
       onClick={() => router.back()}
     >
-      <ArrowLeft size={16} />
+      <ArrowLeft size={16} aria-hidden="true" />
       Voltar
     </AppButton>
   );

@@ -147,7 +147,7 @@ export function DailyRecordFormShell() {
               >
                 {isSubmitting ? (
                   <>
-                    <LoadingSpinner size="sm" label="Salvando" />
+                    <LoadingSpinner size="sm" label="Salvando" decorative />
                     <span className="ml-2">Salvando...</span>
                   </>
                 ) : (

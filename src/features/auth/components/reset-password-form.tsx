@@ -337,6 +337,7 @@ export function ResetPasswordForm({
         <FormField
           label="Nova senha"
           htmlFor="reset-password"
+          hint="Mínimo de 6 caracteres."
           required
           error={errors.password}
         >
@@ -344,6 +345,7 @@ export function ResetPasswordForm({
             id="reset-password"
             name="password"
             type="password"
+            passwordToggleName="nova senha"
             placeholder="Digite a nova senha"
             autoComplete="new-password"
             value={password}
@@ -364,6 +366,7 @@ export function ResetPasswordForm({
             id="reset-password-confirm"
             name="passwordConfirm"
             type="password"
+            passwordToggleName="confirmação da nova senha"
             placeholder="Repita a nova senha"
             autoComplete="new-password"
             value={passwordConfirm}
@@ -377,7 +380,7 @@ export function ResetPasswordForm({
         <AppButton type="submit" fullWidth size="lg" disabled={loading}>
           {loading ? (
             <>
-              <LoadingSpinner size="sm" label="Atualizando senha" />
+              <LoadingSpinner size="sm" label="Atualizando senha" decorative />
               <span className="ml-2">Atualizando...</span>
             </>
           ) : (

@@ -15,7 +15,7 @@ const SKELETON_ITEM_COUNT = 3;
 export default function EquipeMedicaPacientesLoading() {
   return (
     <div className="space-y-6" aria-busy="true">
-      <p className="sr-only">Carregando pacientes...</p>
+      <h1 className="sr-only">Carregando pacientes...</h1>
 
       <div aria-hidden="true">
         <Skeleton className="h-7 w-40 max-w-full" />

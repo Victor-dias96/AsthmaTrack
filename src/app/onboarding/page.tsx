@@ -11,19 +11,19 @@ export const metadata: Metadata = {
 
 const steps = [
   {
-    icon: <Activity size={22} />,
+    icon: <Activity size={22} aria-hidden="true" />,
     title: "Registre seus sintomas diários",
     description:
       "Todo dia, em poucos segundos, anote como você se sentiu: tosse, chiado, falta de ar e aperto no peito.",
   },
   {
-    icon: <Gauge size={22} />,
+    icon: <Gauge size={22} aria-hidden="true" />,
     title: "Meça seu PEF",
     description:
       "Insira os valores do seu peak flow meter (medidor de pico de fluxo). Acompanhe sua evolução em gráficos claros.",
   },
   {
-    icon: <Share2 size={22} />,
+    icon: <Share2 size={22} aria-hidden="true" />,
     title: "Compartilhe com seu médico",
     description:
       "Gere relatórios e autorize seu médico a visualizar seus dados de forma segura.",
@@ -69,7 +69,7 @@ export default function OnboardingPage() {
           </div>
         ))}
 
-        <AppAlert variant="warning">
+        <AppAlert variant="warning" announcement="off">
           O AsthmaTrack não substitui consultas médicas, não emite diagnósticos
           e não prescreve medicamentos.
         </AppAlert>

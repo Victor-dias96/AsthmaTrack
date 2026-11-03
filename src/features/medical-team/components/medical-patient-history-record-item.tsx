@@ -68,7 +68,8 @@ export function MedicalPatientHistoryRecordItem({
               {record.pefValue}
             </span>
             <span className="ml-1 text-sm font-normal text-[var(--at-text-secondary)]">
-              L/min
+              <span aria-hidden="true">L/min</span>
+              <span className="sr-only">litros por minuto</span>
             </span>
           </p>
         </div>

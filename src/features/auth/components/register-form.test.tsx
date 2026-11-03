@@ -135,7 +135,7 @@ describe("RegisterForm", () => {
       expect(
         await screen.findByRole("heading", { name: "Verifique seu e-mail" })
       ).toBeVisible();
-      expect(screen.getByRole("alert")).toHaveTextContent(
+      expect(screen.getByRole("status")).toHaveTextContent(
         "paciente.teste@example.com"
       );
       expect(createSupabaseClient).toHaveBeenCalledOnce();

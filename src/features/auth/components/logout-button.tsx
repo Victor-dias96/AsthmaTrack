@@ -55,7 +55,6 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
             "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
             className
           )}
-          aria-label="Encerrar sessão"
         >
           <LogOut size={16} aria-hidden="true" />
           {loading ? "Saindo..." : "Sair da conta"}
@@ -78,7 +77,6 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
           "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
           className
         )}
-        aria-label="Encerrar sessão"
       >
         <LogOut size={14} aria-hidden="true" />
         {loading ? "Saindo..." : "Sair"}

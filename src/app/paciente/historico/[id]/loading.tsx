@@ -6,7 +6,7 @@ export default function DailyRecordDetailsLoading() {
   return (
     <PatientShell>
       <div className="min-w-0 space-y-6" aria-busy="true">
-        <p className="sr-only">Carregando registro...</p>
+        <h1 className="sr-only">Carregando registro...</h1>
 
         <div
           aria-hidden="true"

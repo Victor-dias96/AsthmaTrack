@@ -66,8 +66,8 @@ test.describe("@visual-public", () => {
     await expectContrast(forgot, 4.5, "recovery link");
     await expectContrast(createAccount, 4.5, "registration link");
     const privacy = page
-      .getByRole("alert")
-      .filter({ hasText: "Seus dados são armazenados com segurança" });
+      .getByText("Seus dados são armazenados com segurança", { exact: false })
+      .locator("..");
     await expect(privacy.locator("svg")).toHaveCount(1);
     await expectContrast(privacy, 4.5, "login notice");
 
@@ -310,8 +310,8 @@ test.describe("@visual-patient", () => {
     const writes = trackHealthWrites(page);
     await page.goto("/paciente/configuracoes/acessos");
     const accessNotice = page
-      .getByRole("alert")
-      .filter({ hasText: "Este acesso será somente para consulta." });
+      .getByText("Este acesso será somente para consulta.", { exact: false })
+      .locator("..");
     await expect(accessNotice).toBeVisible();
     await expect(accessNotice.locator("svg")).toHaveCount(1);
     await expectContrast(accessNotice, 4.5, "access notice");

@@ -81,16 +81,16 @@ export function PwaInstallCard() {
             {PWA_INSTALL_BROWSER_MENU_NOTE}
           </p>
         ) : null}
-        <div aria-live="polite">
-          {model.statusMessage ? (
-            <p
-              role="status"
-              className="max-w-full text-sm leading-relaxed text-[var(--at-text-secondary)]"
-            >
-              {model.statusMessage}
-            </p>
-          ) : null}
-        </div>
+        {model.statusMessage ? (
+          <p
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="max-w-full text-sm leading-relaxed text-[var(--at-text-secondary)]"
+          >
+            {model.statusMessage}
+          </p>
+        ) : null}
       </div>
     </AppCard>
   );

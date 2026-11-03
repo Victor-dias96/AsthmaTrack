@@ -20,7 +20,7 @@ const PERIOD_OPTION_SKELETON_KEYS = [
 export default function EquipeMedicaPacienteHistoricoLoading() {
   return (
     <div className="min-w-0 space-y-6" aria-busy="true">
-      <p className="sr-only">Carregando histórico do paciente...</p>
+      <h1 className="sr-only">Carregando histórico do paciente...</h1>
 
       <div aria-hidden="true">
         <Skeleton className="h-7 w-56 max-w-full" />

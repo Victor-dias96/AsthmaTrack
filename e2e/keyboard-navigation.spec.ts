@@ -133,7 +133,7 @@ test.describe("@keyboard-public", () => {
       visible(page, "textbox", "Senha"),
       visible(page, "button", "Mostrar senha").first(),
       visible(page, "textbox", "Confirmar senha"),
-      visible(page, "button", "Mostrar senha").nth(1),
+      visible(page, "button", "Mostrar confirmação da senha"),
       page.getByRole("checkbox", {
         name: "Li e aceito os Termos de Uso e a Política de Privacidade",
       }),
@@ -274,7 +274,7 @@ test.describe("@keyboard-patient", () => {
       visible(page, "link", "Histórico"),
       visible(page, "link", "Relatório"),
       visible(page, "link", "Configurações"),
-      visible(page, "button", "Encerrar sessão"),
+      visible(page, "button", "Sair"),
     ];
 
     for (const control of sidebar) {
@@ -731,8 +731,8 @@ test.describe("@keyboard-medical", () => {
   test("logout is reachable and is not activated", async ({ page }) => {
     const writes = trackHealthWrites(page);
     await page.goto("/equipe-medica/pacientes");
-    await pressTabUntilFocused(page, visible(page, "button", "Encerrar sessão"), {
-      description: "Encerrar sessão",
+    await pressTabUntilFocused(page, visible(page, "button", "Sair"), {
+      description: "Sair",
     });
     await expectFocusIndicator(page);
     await expect(page).toHaveURL(/\/equipe-medica\/pacientes/);

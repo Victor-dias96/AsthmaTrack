@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InaccessibleDocumentTitle } from "@/components/layout/inaccessible-document-title";
 import { AppCard } from "@/components/ui/app-card";
 import { HISTORY_PATH } from "@/features/history/constants";
 
@@ -14,6 +15,7 @@ const backLinkClasses = [
 export function DailyRecordNotFoundState() {
   return (
     <div className="min-w-0 space-y-6">
+      <InaccessibleDocumentTitle title="Registro não encontrado" />
       <div>
         <h1 className="text-xl font-bold text-[var(--at-text-primary)]">
           Registro não encontrado

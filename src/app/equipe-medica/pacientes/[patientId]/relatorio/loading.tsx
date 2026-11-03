@@ -40,7 +40,7 @@ const ATTACK_DATE_SKELETON_KEYS = [
 export default function EquipeMedicaPacienteRelatorioLoading() {
   return (
     <div className="min-w-0 space-y-6" aria-busy="true">
-      <p className="sr-only">Carregando relatório do paciente...</p>
+      <h1 className="sr-only">Carregando relatório do paciente...</h1>
 
       <div aria-hidden="true">
         <Skeleton className="h-7 w-72 max-w-full" />

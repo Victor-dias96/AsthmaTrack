@@ -37,7 +37,7 @@ export default function RelatorioLoading() {
   return (
     <PatientShell>
       <div className="min-w-0 space-y-6" aria-busy="true">
-        <p className="sr-only">Carregando relatório...</p>
+        <h1 className="sr-only">Carregando relatório...</h1>
 
         <div aria-hidden="true">
           <Skeleton className="h-7 w-32 max-w-full" />

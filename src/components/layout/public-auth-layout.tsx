@@ -23,9 +23,9 @@ export function PublicAuthLayout({
 
         {/* Hero text — visible on desktop, hidden on mobile */}
         <div className="hidden lg:flex flex-1 flex-col justify-center px-10 pb-12">
-          <h1 className="text-3xl font-bold text-white leading-tight">
+          <p className="text-3xl font-bold text-white leading-tight">
             {panelHeading}
-          </h1>
+          </p>
           <div className="mt-5 text-[var(--at-navy-muted)] text-base leading-relaxed">
             {panelBody}
           </div>

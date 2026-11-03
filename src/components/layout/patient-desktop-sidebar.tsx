@@ -23,27 +23,27 @@ const navItems: NavItem[] = [
   {
     href: "/paciente/dashboard",
     label: "Início",
-    icon: <LayoutDashboard size={18} />,
+    icon: <LayoutDashboard size={18} aria-hidden="true" />,
   },
   {
     href: "/paciente/novo-registro",
     label: "Novo registro",
-    icon: <PlusCircle size={18} />,
+    icon: <PlusCircle size={18} aria-hidden="true" />,
   },
   {
     href: "/paciente/historico",
     label: "Histórico",
-    icon: <History size={18} />,
+    icon: <History size={18} aria-hidden="true" />,
   },
   {
     href: "/paciente/relatorio",
     label: "Relatório",
-    icon: <FileText size={18} />,
+    icon: <FileText size={18} aria-hidden="true" />,
   },
   {
     href: "/paciente/configuracoes",
     label: "Configurações",
-    icon: <Settings size={18} />,
+    icon: <Settings size={18} aria-hidden="true" />,
   },
 ];
 
@@ -61,7 +61,7 @@ export function PatientDesktopSidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 space-y-0.5">
+      <nav aria-label="Navegação do paciente" className="flex-1 px-3 space-y-0.5">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (

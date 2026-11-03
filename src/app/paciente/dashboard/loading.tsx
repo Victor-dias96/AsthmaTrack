@@ -21,7 +21,7 @@ export default function DashboardLoading() {
   return (
     <PatientShell>
       <div className="min-w-0 space-y-6" aria-busy="true">
-        <p className="sr-only">Carregando dashboard...</p>
+        <h1 className="sr-only">Carregando dashboard...</h1>
 
         {/* Greeting / header placeholder */}
         <div aria-hidden="true">

@@ -18,16 +18,19 @@ describe("visual feedback", () => {
     expect(warning.querySelector("svg")).not.toBeNull();
 
     rerender(<AppAlert variant="info">Este acesso será somente para consulta.</AppAlert>);
-    const information = screen.getByRole("alert");
-    expect(information).toHaveTextContent("Este acesso será somente para consulta.");
-    expect(information.querySelector("svg")).not.toBeNull();
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.queryByRole("status")).toBeNull();
+    const information = screen.getByText("Este acesso será somente para consulta.");
+    expect(information).toBeVisible();
+    expect(information.parentElement?.querySelector("svg")).not.toBeNull();
     expect(information).not.toHaveTextContent("Falha na conexão");
 
     rerender(<AppAlert variant="success">Registro salvo.</AppAlert>);
-    const success = screen.getByRole("alert");
+    const success = screen.getByRole("status");
     expect(success).toHaveTextContent("Registro salvo.");
     expect(success.querySelector("svg")).not.toBeNull();
     expect(success).not.toHaveTextContent("Falha na conexão");
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
   test("a field error shows the message and an icon", () => {

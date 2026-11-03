@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function EquipeMedicaLoading() {
   return (
     <div className="space-y-6" aria-busy="true">
-      <p className="sr-only">Carregando área da equipe médica...</p>
+      <h1 className="sr-only">Carregando área da equipe médica...</h1>
 
       <div aria-hidden="true">
         <Skeleton className="h-7 w-56 max-w-full" />

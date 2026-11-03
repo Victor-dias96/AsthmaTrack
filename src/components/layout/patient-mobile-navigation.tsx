@@ -21,27 +21,27 @@ const navItems: NavItem[] = [
   {
     href: "/paciente/dashboard",
     label: "Início",
-    icon: <LayoutDashboard size={22} />,
+    icon: <LayoutDashboard size={22} aria-hidden="true" />,
   },
   {
     href: "/paciente/novo-registro",
     label: "Registrar",
-    icon: <PlusCircle size={22} />,
+    icon: <PlusCircle size={22} aria-hidden="true" />,
   },
   {
     href: "/paciente/historico",
     label: "Histórico",
-    icon: <History size={22} />,
+    icon: <History size={22} aria-hidden="true" />,
   },
   {
     href: "/paciente/relatorio",
     label: "Relatório",
-    icon: <FileText size={22} />,
+    icon: <FileText size={22} aria-hidden="true" />,
   },
   {
     href: "/paciente/configuracoes",
     label: "Config.",
-    icon: <Settings size={22} />,
+    icon: <Settings size={22} aria-hidden="true" />,
   },
 ];
 

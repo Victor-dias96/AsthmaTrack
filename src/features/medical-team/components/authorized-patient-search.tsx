@@ -42,6 +42,8 @@ export function AuthorizedPatientSearch({
 
   return (
     <form
+      role="search"
+      aria-label="Buscar paciente"
       action={AUTHORIZED_PATIENTS_PATH}
       method="get"
       className="min-w-0"

@@ -192,6 +192,7 @@ export function RegisterForm() {
         <FormField
           label="Senha"
           htmlFor="register-password"
+          hint="Mínimo de 6 caracteres."
           required
           error={errors.password}
         >
@@ -219,6 +220,7 @@ export function RegisterForm() {
             id="register-password-confirm"
             name="passwordConfirm"
             type="password"
+            passwordToggleName="confirmação da senha"
             placeholder="Repita a senha"
             autoComplete="new-password"
             value={passwordConfirm}
@@ -232,6 +234,7 @@ export function RegisterForm() {
         <AppCheckbox
           id="register-terms"
           name="terms"
+          required
           checked={acceptedTerms}
           onChange={(e) => setAcceptedTerms(e.target.checked)}
           error={errors.terms}
@@ -246,7 +249,7 @@ export function RegisterForm() {
         <AppButton type="submit" fullWidth size="lg" disabled={loading}>
           {loading ? (
             <>
-              <LoadingSpinner size="sm" label="Criando conta" />
+              <LoadingSpinner size="sm" label="Criando conta" decorative />
               <span className="ml-2">Criando conta...</span>
             </>
           ) : (

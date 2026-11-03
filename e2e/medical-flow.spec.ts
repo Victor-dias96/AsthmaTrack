@@ -1034,7 +1034,7 @@ async function expectLogoutBlocksMedicalArea(page: Page) {
     page.getByRole("heading", { level: 1, name: "Área da equipe médica" })
   ).toBeVisible();
 
-  const logout = page.getByRole("button", { name: "Encerrar sessão" });
+  const logout = page.getByRole("button", { name: "Sair", exact: true });
   await expect(logout).toHaveCount(1);
   await logout.click();
 
@@ -1067,7 +1067,7 @@ async function expectLogoutBlocksMedicalArea(page: Page) {
   await expect(medicalHeading).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Pacientes" })).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "Encerrar sessão" })
+    page.getByRole("button", { name: "Sair", exact: true })
   ).toHaveCount(0);
   await expect(
     page.getByRole("complementary", { name: "Menu lateral" })

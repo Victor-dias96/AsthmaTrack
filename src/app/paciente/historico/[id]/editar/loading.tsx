@@ -5,7 +5,7 @@ export default function EditDailyRecordLoading() {
   return (
     <PatientShell>
       <div aria-busy="true">
-        <p className="sr-only">Carregando registro...</p>
+        <h1 className="sr-only">Carregando registro...</h1>
         <div aria-hidden="true">
           <DailyRecordEditFormSkeleton />
         </div>

@@ -175,7 +175,7 @@ export function LoginForm() {
         <AppButton type="submit" fullWidth size="lg" disabled={loading}>
           {loading ? (
             <>
-              <LoadingSpinner size="sm" label="Entrando" />
+              <LoadingSpinner size="sm" label="Entrando" decorative />
               <span className="ml-2">Entrando...</span>
             </>
           ) : (
@@ -194,7 +194,7 @@ export function LoginForm() {
         </Link>
       </p>
 
-      <AppAlert variant="warning">
+      <AppAlert variant="warning" announcement="off">
         Seus dados são armazenados com segurança e nunca são compartilhados
         sem sua autorização.
       </AppAlert>

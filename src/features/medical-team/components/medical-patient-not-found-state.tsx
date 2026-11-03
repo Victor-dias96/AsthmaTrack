@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { UserRoundX } from "lucide-react";
 
+import { InaccessibleDocumentTitle } from "@/components/layout/inaccessible-document-title";
 import { AppCard } from "@/components/ui/app-card";
 import { AUTHORIZED_PATIENTS_PATH } from "../constants/authorized-patients";
 
@@ -30,6 +31,7 @@ const backLinkClasses = [
 export function MedicalPatientNotFoundState() {
   return (
     <div className="min-w-0 space-y-6">
+      <InaccessibleDocumentTitle title="Paciente não encontrado" />
       <div>
         <h1 className="text-xl font-bold text-[var(--at-text-primary)]">
           Paciente não encontrado

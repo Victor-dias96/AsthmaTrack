@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import { MedicalPatientNotFoundState } from "@/features/medical-team";
+
+export const metadata: Metadata = {
+  title: "Paciente não encontrado",
+};
 
 /**
  * Route-level not-found boundary for /equipe-medica/pacientes/[patientId]

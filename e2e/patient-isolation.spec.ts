@@ -498,7 +498,7 @@ test.describe("patient A logout", { tag: "@patient-a" }, () => {
       page.getByRole("heading", { level: 1, name: /^Olá/ })
     ).toBeVisible();
 
-    const logout = page.getByRole("button", { name: "Encerrar sessão" });
+    const logout = page.getByRole("button", { name: "Sair", exact: true });
     await expect(logout).toHaveCount(1);
     await logout.click();
 
@@ -532,7 +532,7 @@ test.describe("patient A logout", { tag: "@patient-a" }, () => {
       page.getByRole("heading", { level: 1, name: /^Olá/ })
     ).toHaveCount(0);
     await expect(
-      page.getByRole("button", { name: "Encerrar sessão" })
+      page.getByRole("button", { name: "Sair", exact: true })
     ).toHaveCount(0);
     await expect(
       page.getByRole("complementary", { name: "Menu lateral" })

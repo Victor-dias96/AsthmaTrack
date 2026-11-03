@@ -74,6 +74,7 @@ export function ConnectionStatusIndicator() {
     <div
       role="status"
       aria-live="polite"
+      aria-atomic="true"
       className={cn(
         "report-print-hidden",
         kind === "none"

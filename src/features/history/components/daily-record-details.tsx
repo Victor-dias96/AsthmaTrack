@@ -39,7 +39,8 @@ export function DailyRecordDetails({ record }: DailyRecordDetailsProps) {
               {record.pefValue}
             </span>
             <span className="ml-1.5 text-base font-normal text-[var(--at-text-secondary)]">
-              L/min
+              <span aria-hidden="true">L/min</span>
+              <span className="sr-only">litros por minuto</span>
             </span>
           </p>
         </AppCard>

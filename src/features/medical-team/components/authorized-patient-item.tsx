@@ -22,7 +22,9 @@ type AuthorizedPatientItemProps = {
 function LatestPefValue({ pefValue }: { pefValue: number }) {
   return (
     <span className="whitespace-nowrap tabular-nums">
-      {pefValue} L/min
+      {pefValue}
+      <span aria-hidden="true"> L/min</span>
+      <span className="sr-only"> litros por minuto</span>
     </span>
   );
 }

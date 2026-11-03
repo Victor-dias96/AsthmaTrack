@@ -1015,7 +1015,7 @@ test.describe.serial("fluxo completo do paciente", () => {
         );
       }
 
-      const logout = page.getByRole("button", { name: "Encerrar sessão" });
+      const logout = page.getByRole("button", { name: "Sair", exact: true });
       await expect(logout).toHaveCount(1);
       await logout.click();
       await expect(page).toHaveURL(/\/login$/, { timeout: 20_000 });
@@ -1047,7 +1047,7 @@ test.describe.serial("fluxo completo do paciente", () => {
         page.getByRole("heading", { level: 1, name: /^Olá/ })
       ).toHaveCount(0);
       await expect(
-        page.getByRole("button", { name: "Encerrar sessão" })
+        page.getByRole("button", { name: "Sair", exact: true })
       ).toHaveCount(0);
       await expect(
         page.getByRole("complementary", { name: "Menu lateral" })

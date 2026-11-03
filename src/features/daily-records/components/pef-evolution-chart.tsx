@@ -107,6 +107,7 @@ function ChartStatusRegion({
 }) {
   return (
     <div
+      role="group"
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       className="min-w-0"
@@ -381,6 +382,7 @@ export function PefEvolutionChart({
 
   return (
     <div
+      role="group"
       aria-labelledby={titleId}
       aria-describedby={joinDescribedBy([
         descriptionId,

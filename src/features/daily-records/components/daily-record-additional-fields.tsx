@@ -103,7 +103,6 @@ export function DailyRecordAdditionalFields({
         />
         <p
           id={`${NOTES_FIELD_ID}-counter`}
-          aria-live="polite"
           className="text-right text-xs text-[var(--at-text-secondary)]"
         >
           {notes.length}/{DAILY_RECORD_NOTES_MAX_LENGTH}

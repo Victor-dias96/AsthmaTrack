@@ -153,7 +153,7 @@ export function ProfileSettingsForm({
       <AppButton type="submit" disabled={isPending} aria-disabled={isPending}>
         {isPending ? (
           <>
-            <LoadingSpinner size="sm" label="Salvando" />
+            <LoadingSpinner size="sm" label="Salvando" decorative />
             <span className="ml-2">Salvando…</span>
           </>
         ) : (

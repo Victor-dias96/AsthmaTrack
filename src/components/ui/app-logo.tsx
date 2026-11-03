@@ -22,7 +22,7 @@ export function AppLogo({ size = "md", className }: AppLogoProps) {
           s.container
         )}
       >
-        <Wind size={s.icon} className="text-white" strokeWidth={2} />
+        <Wind size={s.icon} className="text-white" strokeWidth={2} aria-hidden="true" />
       </div>
       <span
         className={cn("font-semibold text-[var(--at-text-on-navy)]", s.text)}

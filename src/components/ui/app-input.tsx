@@ -2,17 +2,39 @@
 
 import { forwardRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  joinAriaDescribedBy,
+  useFormFieldDescription,
+} from "@/components/ui/form-field";
 import { cn } from "@/lib/utils";
 
 type AppInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
+  /** Distinguishes repeated password buttons, for example "confirmação da senha". */
+  passwordToggleName?: string;
 };
 
 const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
-  ({ className, type, hasError, ...props }, ref) => {
+  (
+    {
+      className,
+      type,
+      hasError,
+      passwordToggleName,
+      "aria-describedby": ariaDescribedBy,
+      "aria-invalid": ariaInvalid,
+      ...props
+    },
+    ref
+  ) => {
     const [showPassword, setShowPassword] = useState(false);
+    const fieldDescription = useFormFieldDescription();
     const isPassword = type === "password";
     const resolvedType = isPassword && showPassword ? "text" : type;
+    const describedBy = joinAriaDescribedBy(ariaDescribedBy, fieldDescription);
+    const invalid =
+      ariaInvalid !== undefined ? ariaInvalid : hasError ? true : undefined;
+    const toggleSubject = passwordToggleName ?? "senha";
 
     return (
       <div className="relative w-full">
@@ -32,6 +54,8 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
             className
           )}
           {...props}
+          aria-describedby={describedBy}
+          aria-invalid={invalid}
         />
         {isPassword && (
           <button
@@ -39,9 +63,15 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
             onClick={() => setShowPassword((v) => !v)}
             className="absolute right-3 top-1/2 -translate-y-1/2 rounded-[var(--at-radius-sm)] text-[var(--at-text-secondary)] outline-none transition-colors hover:text-[var(--at-text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
             aria-pressed={showPassword}
-            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            aria-label={
+              showPassword ? `Ocultar ${toggleSubject}` : `Mostrar ${toggleSubject}`
+            }
           >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            {showPassword ? (
+              <EyeOff size={16} aria-hidden="true" />
+            ) : (
+              <Eye size={16} aria-hidden="true" />
+            )}
           </button>
         )}
       </div>

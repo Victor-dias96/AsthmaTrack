@@ -13,7 +13,10 @@ type AppCheckboxProps = Omit<
 };
 
 const AppCheckbox = forwardRef<HTMLInputElement, AppCheckboxProps>(
-  ({ className, label, id, error, ...props }, ref) => {
+  ({ className, label, id, error, "aria-describedby": ariaDescribedBy, ...props }, ref) => {
+    const errorId = error && id ? `${id}-error` : undefined;
+    const describedBy = [ariaDescribedBy, errorId].filter(Boolean).join(" ") || undefined;
+
     return (
       <div className="flex flex-col gap-1">
         <label
@@ -32,12 +35,14 @@ const AppCheckbox = forwardRef<HTMLInputElement, AppCheckboxProps>(
               "accent-[var(--at-blue)] cursor-pointer focus:ring-2 focus:ring-[var(--at-blue)]"
             )}
             {...props}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={describedBy}
           />
           <span className="leading-snug text-xs sm:text-sm text-[var(--at-text-secondary)]">
             {label}
           </span>
         </label>
-        {error && <FieldError>{error}</FieldError>}
+        {error && <FieldError id={errorId}>{error}</FieldError>}
       </div>
     );
   }

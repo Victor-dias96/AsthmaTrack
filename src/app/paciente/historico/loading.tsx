@@ -12,7 +12,7 @@ export default function HistoricoLoading() {
   return (
     <PatientShell>
       <div className="space-y-6" aria-busy="true">
-        <p className="sr-only">Carregando histórico...</p>
+        <h1 className="sr-only">Carregando histórico...</h1>
 
         <div aria-hidden="true">
           <Skeleton className="h-7 w-32" />

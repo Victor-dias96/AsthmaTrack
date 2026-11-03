@@ -32,6 +32,7 @@ export function ServiceWorkerUpdateNotice() {
     <div
       role="status"
       aria-live="polite"
+      aria-atomic="true"
       aria-busy={update.isActivating}
       className="report-print-hidden sticky top-0 z-30 w-full min-w-0 max-w-full bg-[var(--at-bg-app)]"
       style={{
