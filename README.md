@@ -32,13 +32,25 @@ Unit and component tests:
 npm run test:run
 ```
 
+The same suite on one worker, which CI uses when the machine is short on memory:
+
+```bash
+npm run test:run -- --maxWorkers=1 --fileParallelism=false
+```
+
 Watch for changes:
 
 ```bash
 npm test
 ```
 
-Playwright E2E covers public routes in Chromium. Authenticated patient and medical-team browser sessions are not part of this suite, and CI is not configured here.
+Database tests use pgTAP against local Supabase. Start Docker, then `npx supabase start`. Do not point these tests at a hosted project.
+
+```bash
+npx supabase test db
+```
+
+Playwright covers public smoke tests, authenticated patient and medical-team flows, keyboard navigation, visual feedback, screen-reader semantics, and responsive layout in Chromium. Authenticated tests sign in through the local login form using gitignored `.env.e2e.local`. The E2E loader rejects any non-loopback Supabase URL.
 
 Playwright E2E:
 
@@ -70,6 +82,22 @@ Chromium installation when required:
 npx playwright install chromium
 ```
 
+GitHub Actions workflow `AsthmaTrack CI` (`.github/workflows/ci.yml`) runs on pull requests, pushes to `main`, and manual dispatch. It checks lint, the Next.js build, Vitest, a clean local migration with pgTAP, and Chromium Playwright. CI starts Supabase on the runner and creates disposable local fixtures. It does not deploy the application or connect to hosted Supabase.
+
+These branch-protection settings are recommended and are not changed by the workflow:
+
+- Require a pull request before merging
+- Require branches to be up to date
+- Require `AsthmaTrack CI / quality`, `AsthmaTrack CI / unit-tests`, `AsthmaTrack CI / database-tests`, and `AsthmaTrack CI / e2e-tests`
+- Require conversation resolution
+- Prevent force pushes to `main`
+
+Troubleshooting:
+
+- Docker has to be running for local Supabase, pgTAP, and authenticated browser tests. Start Docker, then `npx supabase start`. Ports 54321–54327 need to be free.
+- If Playwright cannot find Chromium, run `npx playwright install chromium`. CI installs Chromium with `npx playwright install --with-deps chromium`.
+- If the machine runs out of memory, keep Vitest on `--maxWorkers=1 --fileParallelism=false` and Playwright on `--workers=1`.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -77,10 +105,4 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome.

@@ -1,0 +1,207 @@
+name: AsthmaTrack CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show Node and npm versions
+        run: |
+          set -euo pipefail
+          node -p "process.version"
+          npm -v
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: local-ci-publishable-placeholder
+
+      - name: Check whitespace
+        run: git diff --check
+
+  unit-tests:
+    name: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show Node and npm versions
+        run: |
+          set -euo pipefail
+          node -p "process.version"
+          npm -v
+
+      - name: Run unit and component tests
+        run: npm run test:run -- --maxWorkers=1 --fileParallelism=false
+
+  database-tests:
+    name: database-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show Node and npm versions
+        run: |
+          set -euo pipefail
+          node -p "process.version"
+          npm -v
+
+      - name: Use the pinned Supabase CLI
+        run: |
+          set -euo pipefail
+          version="$(node node_modules/supabase/dist/supabase.js --version)"
+          printf '%s\n' "$version"
+          test "$version" = "2.114.0"
+
+      - name: Start local Supabase
+        run: node scripts/supabase-local.mjs start
+
+      - name: Run pgTAP
+        run: node node_modules/supabase/dist/supabase.js test db
+
+      - name: Stop local Supabase
+        if: always()
+        run: node scripts/supabase-local.mjs stop
+
+  e2e-tests:
+    name: e2e-tests
+    needs:
+      - quality
+      - unit-tests
+      - database-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show Node and npm versions
+        run: |
+          set -euo pipefail
+          node -p "process.version"
+          npm -v
+
+      - name: Use the pinned Supabase CLI
+        run: |
+          set -euo pipefail
+          version="$(node node_modules/supabase/dist/supabase.js --version)"
+          printf '%s\n' "$version"
+          test "$version" = "2.114.0"
+
+      - name: Install Playwright Chromium
+        run: npx --no-install playwright install --with-deps chromium
+
+      - name: Confirm Chromium is installed
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import { chromium } from "@playwright/test";
+          import { accessSync } from "node:fs";
+          accessSync(chromium.executablePath());
+          process.stdout.write("Chromium executable is installed.\n");
+          EOF
+
+      - name: Start local Supabase
+        run: node scripts/supabase-local.mjs start
+
+      - name: Create disposable local fixtures
+        run: node scripts/setup-e2e-fixtures.mjs --output .env.e2e.local
+
+      - name: Run Playwright
+        run: npx --no-install playwright test --workers=1
+
+      - name: Upload Playwright failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure
+          retention-days: 7
+          if-no-files-found: ignore
+          # Zip traces can include Authorization headers and cookies.
+          # Screenshots and the HTML report stay; trace archives do not.
+          path: |
+            playwright-report/
+            test-results/
+            !**/*.zip
+            !**/trace.zip
+            !playwright/.auth/**
+            !.env*
+
+      - name: Stop Supabase and remove generated E2E state
+        if: always()
+        run: |
+          set -euo pipefail
+          status=0
+          node scripts/supabase-local.mjs stop || status=$?
+          rm -rf playwright/.auth
+          rm -f .env.e2e.local .env.e2e.local.partial .env.e2e.ci .env.e2e.ci.partial
+          exit "$status"
