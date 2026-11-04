@@ -21,6 +21,7 @@ const PASSWORD_MISMATCH = "As senhas não coincidem";
 const TERMS_REQUIRED = "Você precisa aceitar os termos de uso para continuar";
 
 const FIXTURE_PASSWORD = "SenhaFicticia123!";
+const CONFIRMATION_REDIRECT = "http://127.0.0.1:3000/login";
 
 const validRegistration = {
   name: "Paciente Teste",
@@ -325,13 +326,15 @@ describe("registrationSchema", () => {
           name: "",
           email: "",
           password: "",
-        }
+        },
+        CONFIRMATION_REDIRECT
       );
 
       expect(payload).toEqual({
         email: "paciente.teste@example.com",
         password: FIXTURE_PASSWORD,
         options: {
+          emailRedirectTo: CONFIRMATION_REDIRECT,
           data: {
             full_name: "Paciente Teste",
           },
@@ -346,7 +349,8 @@ describe("registrationSchema", () => {
       expect(data).not.toHaveProperty("role");
       expect(
         toRegistrationSignUpPayload(
-          data ?? { name: "", email: "", password: "" }
+          data ?? { name: "", email: "", password: "" },
+          CONFIRMATION_REDIRECT
         ).options.data
       ).toEqual({ full_name: "Paciente Teste" });
     });
@@ -462,7 +466,8 @@ describe("registrationSchema", () => {
         password: FIXTURE_PASSWORD,
       });
       expect(
-        toRegistrationSignUpPayload(result.data).options.data
+        toRegistrationSignUpPayload(result.data, CONFIRMATION_REDIRECT).options
+          .data
       ).not.toHaveProperty("role");
     });
   });

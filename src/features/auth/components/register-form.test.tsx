@@ -144,6 +144,7 @@ describe("RegisterForm", () => {
         email: "paciente.teste@example.com",
         password: FIXTURE_PASSWORD,
         options: {
+          emailRedirectTo: `${window.location.origin}/login`,
           data: {
             full_name: "Paciente Teste",
           },

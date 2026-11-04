@@ -149,12 +149,17 @@ export function parseRegistration(input: unknown): RegistrationParseResult {
 /**
  * Payload passed to Supabase Auth. Built only from validated fields so a
  * supplied role, admin flag, or other extra key cannot be forwarded.
+ * `emailRedirectTo` is a same-origin confirmation URL chosen by the caller.
  */
-export function toRegistrationSignUpPayload(data: RegistrationData) {
+export function toRegistrationSignUpPayload(
+  data: RegistrationData,
+  emailRedirectTo: string
+) {
   return {
     email: data.email,
     password: data.password,
     options: {
+      emailRedirectTo,
       data: {
         full_name: data.name,
       },

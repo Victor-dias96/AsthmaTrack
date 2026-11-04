@@ -1,0 +1,3 @@
+-- Intentionally empty.
+-- Local resets and Supabase Preview Branches stay data-less.
+-- Do not insert accounts, passwords, patient records, or health values.

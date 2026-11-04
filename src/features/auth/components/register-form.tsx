@@ -9,6 +9,7 @@ import { AppCheckbox } from "@/components/ui/app-checkbox";
 import { FormField } from "@/components/ui/form-field";
 import { AppAlert } from "@/components/ui/app-alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { registrationConfirmationRedirect } from "@/features/auth/lib/registration-redirect";
 import {
   parseRegistration,
   toRegistrationSignUpPayload,
@@ -73,9 +74,18 @@ export function RegisterForm() {
         return;
       }
 
+      const emailRedirectTo = registrationConfirmationRedirect(
+        window.location.origin
+      );
+      if (!emailRedirectTo) {
+        setAuthError("Erro de configuração do servidor.");
+        setLoading(false);
+        return;
+      }
+
       const supabase = createClient();
       const { data, error } = await supabase.auth.signUp(
-        toRegistrationSignUpPayload(serverResult.data),
+        toRegistrationSignUpPayload(serverResult.data, emailRedirectTo),
       );
 
       if (error) {
