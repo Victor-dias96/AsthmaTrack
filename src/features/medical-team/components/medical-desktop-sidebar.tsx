@@ -19,7 +19,7 @@ export function MedicalDesktopSidebar({ displayName }: MedicalDesktopSidebarProp
   return (
     <aside
       aria-label="Menu lateral"
-      className="hidden lg:flex flex-col w-60 shrink-0 min-h-svh bg-[var(--at-navy)] border-r border-[var(--at-navy-dark)]"
+      className="report-print-hidden hidden lg:flex flex-col w-60 shrink-0 min-h-svh bg-[var(--at-navy)] border-r border-[var(--at-navy-dark)]"
     >
       {/* Logo */}
       <div className="px-5 pt-7 pb-1">
@@ -32,7 +32,7 @@ export function MedicalDesktopSidebar({ displayName }: MedicalDesktopSidebarProp
           Equipe médica
         </p>
         {displayName && (
-          <p className="mt-1 text-sm font-medium text-white truncate">
+          <p className="mt-1 min-w-0 break-words text-sm font-medium text-white">
             {displayName}
           </p>
         )}

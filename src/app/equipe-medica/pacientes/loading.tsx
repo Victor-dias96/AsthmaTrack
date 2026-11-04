@@ -25,7 +25,7 @@ export default function EquipeMedicaPacientesLoading() {
 
       <div aria-hidden="true" className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-end">
         <Skeleton className="h-11 w-full min-w-0 max-w-full" />
-        <Skeleton className="h-10 w-full sm:w-24" />
+        <Skeleton className="h-11 w-full sm:w-24" />
       </div>
 
       <div

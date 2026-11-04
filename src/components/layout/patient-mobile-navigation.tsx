@@ -60,8 +60,8 @@ export function PatientMobileNavigation() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex flex-1 flex-col items-center justify-center gap-1 rounded-[var(--at-radius-sm)] py-2.5 text-[10px] font-medium transition-colors duration-150",
-              "outline-none focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
+              "flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--at-radius-sm)] px-0.5 py-2.5 text-[10px] font-medium transition-colors duration-150",
+              "outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--at-blue)]",
               isActive
                 ? "text-[var(--at-blue)]"
                 : "text-[var(--at-text-secondary)] hover:text-[var(--at-text-primary)]"
@@ -76,7 +76,7 @@ export function PatientMobileNavigation() {
             >
               {item.icon}
             </span>
-            <span className={cn(isActive && "underline underline-offset-4")}>
+            <span className={cn("max-w-full text-center leading-tight break-words", isActive && "underline underline-offset-4")}>
               {item.label}
             </span>
           </Link>

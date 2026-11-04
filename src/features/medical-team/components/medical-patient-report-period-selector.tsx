@@ -9,7 +9,7 @@ import {
 import { getMedicalPatientReportHref } from "../lib/get-medical-patient-report-href";
 
 const periodOptionClasses = [
-  "inline-flex min-h-10 w-full min-w-0 items-center justify-center",
+  "inline-flex min-h-11 w-full min-w-0 items-center justify-center",
   "whitespace-nowrap rounded-[var(--at-radius-md)] px-2 py-2 text-sm outline-none sm:w-auto sm:px-3",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
 ] as const;

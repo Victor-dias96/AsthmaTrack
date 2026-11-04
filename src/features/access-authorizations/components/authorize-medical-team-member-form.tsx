@@ -18,7 +18,7 @@ import {
 
 const cancelClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
-  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "h-11 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
   "border border-[var(--at-border-input)] bg-[var(--at-surface)] text-[var(--at-text-primary)] font-medium",
   "hover:bg-[var(--at-surface-input)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
@@ -174,10 +174,10 @@ export function AuthorizeMedicalTeamMemberForm() {
       >
         <AlertDialog.Portal>
           <AlertDialog.Backdrop className="fixed inset-0 z-50 bg-black/40" />
-          <AlertDialog.Viewport className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
+          <AlertDialog.Viewport className="alert-dialog-viewport fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
             <AlertDialog.Popup
               className={cn(
-                "w-full max-w-md min-w-0 rounded-[var(--at-radius-lg)]",
+                "alert-dialog-popup w-full max-w-md min-w-0 rounded-[var(--at-radius-lg)]",
                 "border border-[var(--at-border-input)] bg-[var(--at-surface)]",
                 "p-5 shadow-[var(--at-shadow-md)] outline-none",
                 "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"

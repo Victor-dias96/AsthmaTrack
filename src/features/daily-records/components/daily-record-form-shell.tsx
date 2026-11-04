@@ -17,7 +17,7 @@ import { DailyRecordFormFields } from "./daily-record-form-fields";
 
 const outlineActionClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
-  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "h-11 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
   "border border-[var(--at-border-input)] bg-[var(--at-surface)] text-[var(--at-text-primary)] font-medium",
   "hover:bg-[var(--at-surface-input)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",

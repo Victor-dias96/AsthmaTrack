@@ -63,7 +63,7 @@ export function SymptomSeveritySelector({
               <label
                 htmlFor={optionId}
                 className={cn(
-                  "flex h-11 min-w-0 cursor-pointer items-center justify-center rounded-[var(--at-radius-md)] border px-2 text-center text-sm font-medium transition-colors duration-150",
+                  "flex min-h-11 min-w-0 cursor-pointer items-center justify-center rounded-[var(--at-radius-md)] border px-2 text-center text-sm font-medium break-words transition-colors duration-150",
                   "border-[var(--at-border-input)] bg-[var(--at-surface-input)] text-[var(--at-text-primary)]",
                   "hover:bg-[var(--at-surface)]",
                   "peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--at-blue)] peer-focus-visible:ring-offset-2",

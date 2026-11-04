@@ -49,7 +49,7 @@ export function LogoutButton({ className, fullWidth }: LogoutButtonProps) {
           onClick={handleLogout}
           disabled={loading}
           className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-[var(--at-radius-md)] border border-destructive px-4 py-2.5 text-sm font-medium text-destructive",
+            "flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--at-radius-md)] border border-destructive px-4 py-2.5 text-sm font-medium text-destructive",
             "outline-none hover:bg-destructive/5 transition-colors duration-150",
             "focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2",
             "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",

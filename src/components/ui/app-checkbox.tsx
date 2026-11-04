@@ -22,7 +22,7 @@ const AppCheckbox = forwardRef<HTMLInputElement, AppCheckboxProps>(
         <label
           htmlFor={id}
           className={cn(
-            "flex items-start gap-2.5 cursor-pointer text-sm select-none",
+            "flex min-h-11 items-start gap-2.5 cursor-pointer text-sm select-none",
             className
           )}
         >
@@ -38,7 +38,7 @@ const AppCheckbox = forwardRef<HTMLInputElement, AppCheckboxProps>(
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy}
           />
-          <span className="leading-snug text-xs sm:text-sm text-[var(--at-text-secondary)]">
+          <span className="min-w-0 break-words leading-snug text-xs sm:text-sm text-[var(--at-text-secondary)]">
             {label}
           </span>
         </label>

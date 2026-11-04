@@ -87,7 +87,7 @@ export function AppAlert({
       )}
     >
       {icon}
-      <span>{children}</span>
+      <span className="min-w-0 break-words">{children}</span>
     </div>
   );
 }

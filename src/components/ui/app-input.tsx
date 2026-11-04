@@ -37,7 +37,7 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
     const toggleSubject = passwordToggleName ?? "senha";
 
     return (
-      <div className="relative w-full">
+      <div className="relative w-full min-w-0">
         <input
           ref={ref}
           type={resolvedType}
@@ -50,7 +50,7 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
             "focus:outline-none focus:ring-2 focus:ring-[var(--at-blue)] focus:ring-offset-0 focus:border-[var(--at-blue)]",
             "disabled:cursor-not-allowed disabled:bg-[var(--at-disabled)] disabled:text-[var(--at-disabled-foreground)] disabled:opacity-100",
             hasError && "border-destructive focus:ring-destructive",
-            isPassword && "pr-10",
+            isPassword && "pr-12",
             className
           )}
           {...props}
@@ -61,7 +61,7 @@ const AppInput = forwardRef<HTMLInputElement, AppInputProps>(
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-[var(--at-radius-sm)] text-[var(--at-text-secondary)] outline-none transition-colors hover:text-[var(--at-text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-[var(--at-radius-sm)] text-[var(--at-text-secondary)] outline-none transition-colors hover:text-[var(--at-text-primary)] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--at-blue)]"
             aria-pressed={showPassword}
             aria-label={
               showPassword ? `Ocultar ${toggleSubject}` : `Mostrar ${toggleSubject}`

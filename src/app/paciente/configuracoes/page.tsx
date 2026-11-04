@@ -73,7 +73,7 @@ export default async function ConfiguracoesPage() {
           />
           <Link
             href="/paciente/configuracoes/acessos"
-            className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--at-radius-md)] border border-[var(--at-border-input)] bg-[var(--at-surface)] px-4 text-sm font-medium text-[var(--at-text-primary)] transition-colors duration-150 hover:bg-[var(--at-surface-input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
+            className="inline-flex h-11 items-center justify-center gap-2 whitespace-normal rounded-[var(--at-radius-md)] border border-[var(--at-border-input)] bg-[var(--at-surface)] px-4 text-center text-sm font-medium text-[var(--at-text-primary)] transition-colors duration-150 hover:bg-[var(--at-surface-input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2"
           >
             Gerenciar acessos
           </Link>

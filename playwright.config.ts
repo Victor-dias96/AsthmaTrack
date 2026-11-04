@@ -154,6 +154,43 @@ export default defineConfig({
       },
     },
     {
+      name: "responsive-public",
+      testMatch: /responsive-layout\.spec\.ts/,
+      grep: /@responsive-public/,
+      use: {
+        ...desktopChrome,
+        screenshot: "off",
+        trace: "off",
+        video: "off",
+      },
+    },
+    {
+      name: "responsive-patient",
+      dependencies: ["setup-patient-a"],
+      testMatch: /responsive-layout\.spec\.ts/,
+      grep: /@responsive-patient/,
+      use: {
+        ...desktopChrome,
+        screenshot: "off",
+        trace: "off",
+        video: "off",
+        storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      name: "responsive-medical",
+      dependencies: ["setup-medical-a", "setup-authorizations"],
+      testMatch: /responsive-layout\.spec\.ts/,
+      grep: /@responsive-medical/,
+      use: {
+        ...desktopChrome,
+        screenshot: "off",
+        trace: "off",
+        video: "off",
+        storageState: "playwright/.auth/medical-a.json",
+      },
+    },
+    {
       name: "patient-a",
       dependencies: ["setup-patient-a"],
       testMatch: /patient-isolation\.spec\.ts/,

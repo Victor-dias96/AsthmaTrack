@@ -36,13 +36,13 @@ export function MedicalTeamShell({ children, displayName }: MedicalTeamShellProp
       >
         {/* Compact brand/logout bar — mobile only. Intentionally does not
             duplicate the desktop sidebar's navigation links. */}
-        <div className="lg:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--at-navy)] border-b border-[var(--at-navy-dark)]">
+        <div className="report-print-hidden lg:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--at-navy)] border-b border-[var(--at-navy-dark)]">
           <AppLogo size="sm" />
-          <LogoutButton />
+          <LogoutButton className="min-h-11" />
         </div>
 
         {/* Scrollable content with bottom padding on mobile for the nav bar */}
-        <div className="flex-1 min-w-0 px-4 py-6 pb-24 lg:px-8 lg:py-8 lg:pb-8">
+        <div className="shell-content-padding flex-1 min-w-0 px-4 py-6 lg:px-8 lg:py-8">
           {children}
         </div>
       </main>

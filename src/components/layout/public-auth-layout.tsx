@@ -46,7 +46,7 @@ export function PublicAuthLayout({
       <main
         id={MAIN_CONTENT_ID}
         tabIndex={-1}
-        className="flex flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-5 py-8 sm:px-8 lg:px-12"
+        className="flex w-full min-w-0 flex-1 flex-col items-center justify-center bg-[var(--at-surface)] px-5 py-8 sm:px-8 lg:px-12"
       >
         <div className="w-full max-w-md">{children}</div>
       </main>

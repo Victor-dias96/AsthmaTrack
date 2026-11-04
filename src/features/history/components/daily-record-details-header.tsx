@@ -4,7 +4,7 @@ import { DailyRecordDeleteAction } from "./daily-record-delete-action";
 
 const backLinkClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
-  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "h-11 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
   "border border-[var(--at-border-input)] bg-[var(--at-surface)] text-[var(--at-text-primary)] font-medium",
   "hover:bg-[var(--at-surface-input)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
@@ -14,7 +14,7 @@ const backLinkClasses = [
 
 const editLinkClasses = [
   "inline-flex items-center justify-center gap-2 whitespace-nowrap select-none outline-none",
-  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "h-11 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
   "bg-[var(--at-blue)] text-white font-semibold",
   "hover:bg-[var(--at-blue-hover)]",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",

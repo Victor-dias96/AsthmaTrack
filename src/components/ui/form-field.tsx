@@ -67,7 +67,7 @@ export function FormField({
         <label
           id={labelId}
           htmlFor={htmlFor}
-          className="text-sm font-medium text-[var(--at-text-primary)]"
+          className="break-words text-sm font-medium text-[var(--at-text-primary)]"
         >
           {label}
           {required && (
@@ -115,7 +115,7 @@ export function FieldError({
       )}
     >
       <CircleAlert aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
-      <span>{children}</span>
+      <span className="min-w-0 break-words">{children}</span>
     </p>
   );
 }

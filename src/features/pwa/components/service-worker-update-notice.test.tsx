@@ -4,16 +4,17 @@ import { describe, expect, test, vi } from "vitest";
 
 import { ServiceWorkerUpdateNotice } from "@/features/pwa/components/service-worker-update-notice";
 
-const { applyUpdate, dismissUpdate } = vi.hoisted(() => ({
+const { applyUpdate, dismissUpdate, noticeState } = vi.hoisted(() => ({
   applyUpdate: vi.fn(async () => {}),
   dismissUpdate: vi.fn(),
+  noticeState: { errorMessage: null as string | null },
 }));
 
 vi.mock("../hooks/use-service-worker-update", () => ({
   useServiceWorkerUpdate: () => ({
     updateAvailable: true,
     isActivating: false,
-    errorMessage: null,
+    errorMessage: noticeState.errorMessage,
     applyUpdate,
     dismissUpdate,
   }),
@@ -47,5 +48,17 @@ describe("ServiceWorkerUpdateNotice", () => {
     await user.keyboard(" ");
 
     expect(applyUpdate).toHaveBeenCalledOnce();
+  });
+
+  test("keeps a long update-failure message intact", () => {
+    noticeState.errorMessage =
+      "Não foi possível concluir a atualização fictícia deste aplicativo neste momento. Tente novamente mais tarde, quando a conexão estiver estável.";
+
+    render(<ServiceWorkerUpdateNotice />);
+
+    expect(screen.getByRole("status")).toHaveTextContent(noticeState.errorMessage);
+    expect(screen.getByRole("button", { name: "Atualizar agora" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Depois" })).toBeVisible();
+    noticeState.errorMessage = null;
   });
 });

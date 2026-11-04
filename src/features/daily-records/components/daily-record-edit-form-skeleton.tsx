@@ -29,11 +29,11 @@ export function DailyRecordEditFormSkeleton() {
             <div className="mt-4 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="min-w-0 space-y-2">
                 <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-11 w-full" />
               </div>
               <div className="min-w-0 space-y-2">
                 <Skeleton className="h-4 w-40" />
-                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-11 w-full" />
               </div>
             </div>
           </div>
@@ -63,8 +63,8 @@ export function DailyRecordEditFormSkeleton() {
         </div>
 
         <div className="mt-8 flex flex-col-reverse gap-3 border-t border-[var(--at-border)] pt-6 sm:flex-row sm:justify-end">
-          <Skeleton className="h-10 w-full sm:w-28" />
-          <Skeleton className="h-10 w-full sm:w-40" />
+          <Skeleton className="h-11 w-full sm:w-28" />
+          <Skeleton className="h-11 w-full sm:w-40" />
         </div>
       </AppCard>
     </div>

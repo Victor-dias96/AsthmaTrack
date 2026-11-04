@@ -60,7 +60,7 @@ export default function DashboardLoading() {
           <Skeleton className="h-3 w-16" />
           <div className="mt-2 grid min-w-0 grid-cols-3 gap-2 sm:flex sm:flex-wrap">
             {PERIOD_OPTION_SKELETON_KEYS.map((key) => (
-              <Skeleton key={key} className="h-10 w-full sm:w-20" />
+              <Skeleton key={key} className="h-11 w-full sm:w-20" />
             ))}
           </div>
         </div>

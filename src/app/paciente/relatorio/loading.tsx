@@ -48,7 +48,7 @@ export default function RelatorioLoading() {
           <Skeleton className="h-3 w-40 max-w-full" />
           <div className="mt-2 flex min-w-0 flex-wrap gap-2">
             {PERIOD_OPTION_SKELETON_KEYS.map((key) => (
-              <Skeleton key={key} className="h-10 w-36 max-w-full" />
+              <Skeleton key={key} className="h-11 w-36 max-w-full" />
             ))}
           </div>
         </div>

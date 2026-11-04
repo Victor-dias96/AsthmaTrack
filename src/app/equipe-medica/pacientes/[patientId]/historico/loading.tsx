@@ -33,7 +33,7 @@ export default function EquipeMedicaPacienteHistoricoLoading() {
         <Skeleton className="h-3 w-16" />
         <div className="mt-2 grid min-w-0 grid-cols-1 gap-2 sm:flex sm:flex-wrap">
           {PERIOD_OPTION_SKELETON_KEYS.map((key) => (
-            <Skeleton key={key} className="h-10 w-full sm:w-32" />
+            <Skeleton key={key} className="h-11 w-full sm:w-32" />
           ))}
         </div>
       </div>

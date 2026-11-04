@@ -5,9 +5,9 @@ import { getHistoryHref } from "../lib/get-history-href";
 import type { HistoryListFilter } from "../lib/parse-history-filter";
 
 const paginationControlClasses = [
-  "inline-flex min-h-10 items-center justify-center gap-2",
+  "inline-flex min-h-11 items-center justify-center gap-2",
   "whitespace-nowrap select-none outline-none",
-  "h-10 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
+  "h-11 px-4 text-sm rounded-[var(--at-radius-md)] w-full sm:w-auto",
   "font-medium",
 ].join(" ");
 

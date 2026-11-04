@@ -34,7 +34,7 @@ const HISTORY_PERIOD_FILTER_OPTIONS = [
 }>;
 
 const periodOptionClasses = [
-  "inline-flex max-w-full items-center justify-center whitespace-nowrap",
+  "inline-flex min-h-11 max-w-full items-center justify-center whitespace-nowrap",
   "rounded-[var(--at-radius-md)] px-3 py-1.5 text-sm outline-none",
   "focus-visible:ring-2 focus-visible:ring-[var(--at-blue)] focus-visible:ring-offset-2",
 ] as const;
