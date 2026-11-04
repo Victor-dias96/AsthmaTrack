@@ -186,6 +186,19 @@ Run this only after Branching, the Vercel project, Preview variables, and the re
 7. If a signed-in check is required, register only a fictional account.
 8. Close the pull request and confirm the Supabase Preview Branch is deleted.
 
+## Production readiness
+
+Issue 140 prepares Production and does not publish the MVP. The checklist, rollback plan, and Issue 141 gates are in [docs/production-readiness.md](docs/production-readiness.md).
+
+Four environments stay separate:
+
+- Local development uses development configuration and never becomes Vercel Production.
+- Local E2E uses loopback Supabase and fictional accounts. It never runs on Vercel.
+- Preview uses a Supabase Preview Branch or a dedicated non-production project. It never reads Production data.
+- Production uses one dedicated Supabase project and the final HTTPS origin. It contains no E2E fixtures, no local storage state, and no Preview credentials.
+
+There is still no Vercel project. Do not import the repository and do not run `vercel` or `vercel --prod` from this issue. The production domain is not selected, so Auth Site URL and redirect changes stay in the dashboard until Issue 141. Hosted Supabase settings are not changed by `supabase/config.toml`.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
