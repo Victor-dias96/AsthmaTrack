@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const PATIENT_A_STATE = "playwright/.auth/patient-a.json";
 const PATIENT_B_STATE = "playwright/.auth/patient-b.json";
+const PATIENT_A_LOGOUT_STATE = "playwright/.auth/patient-a-logout.json";
 
 const RECORD_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -487,8 +488,11 @@ function registerIsolationSuite(patient: PatientFixture, storageState: string) {
 registerIsolationSuite(patients.patientA, PATIENT_A_STATE);
 registerIsolationSuite(patients.patientB, PATIENT_B_STATE);
 
-test.describe("patient A logout", { tag: "@patient-a" }, () => {
-  test.use({ storageState: PATIENT_A_STATE });
+// Logging out is global: it revokes every session of Patient A. This suite
+// runs in its own project, on a session created for it after every other
+// Patient A suite has finished (see playwright.config.ts).
+test.describe("patient A logout", { tag: "@patient-logout-a" }, () => {
+  test.use({ storageState: PATIENT_A_LOGOUT_STATE });
 
   test("logout blocks fresh access and browser back", async ({ page }) => {
     const safety = trackPageSafety(page);

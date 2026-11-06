@@ -639,6 +639,34 @@ async function revokeProfessional(page: Page, professionalName: string) {
   ).toHaveCount(0, { timeout: 45_000 });
 }
 
+/**
+ * Validates the fixture before the revocation journey changes it. A missing
+ * authorization (or an ended Patient A session) is reported as the fixture
+ * problem it is, instead of surfacing later as a failed revocation step.
+ */
+async function expectAuthorizationFixtureActive(
+  page: Page,
+  professionalName: string
+) {
+  await openAccessManagement(page);
+
+  const active = activeAccessRegion(page).getByText(professionalName, {
+    exact: true,
+  });
+
+  if ((await active.count()) !== 1) {
+    throw new Error(
+      `Fixture precondition failed: Patient A has no single active authorization for ${professionalName}. The setup-authorizations project creates it. Nothing was revoked.`
+    );
+  }
+}
+
+function describeError(error: unknown): string {
+  return redactUnsafeText(
+    error instanceof Error ? error.message : String(error)
+  );
+}
+
 async function expectAuthorizedPatientVisible(
   page: Page,
   actor: MedicalFixture
@@ -898,9 +926,15 @@ test.describe("medical revocation and restoration", () => {
       const patientPage = await patientContext.newPage();
       const patientSafety = trackPageSafety(patientPage);
       const medicalGuards: Array<{ finish: () => void }> = [];
+      // Set just before the first revocation request. Until then the fixture
+      // is untouched, so a failure must not be followed by a restore attempt
+      // that could hide the real cause or alter the fixture.
+      let revocationAttempted = false;
       let restored = false;
 
       try {
+        await expectAuthorizationFixtureActive(patientPage, MEDICAL_A_NAME);
+
         const initialPage = await openFreshMedicalPage(
           medicalContext,
           medicalGuards
@@ -911,6 +945,7 @@ test.describe("medical revocation and restoration", () => {
         );
         await initialPage.close();
 
+        revocationAttempted = true;
         await revokeProfessional(patientPage, MEDICAL_A_NAME);
 
         const revokedList = await openFreshMedicalPage(
@@ -997,7 +1032,10 @@ test.describe("medical revocation and restoration", () => {
         );
         await restoredDashboard.close();
       } catch (error) {
-        if (!restored) {
+        if (revocationAttempted && !restored) {
+          // authorizeProfessional is idempotent: it returns without writing
+          // when Medical A is already active, and otherwise inserts a new
+          // active row. It never deletes or edits a revoked row.
           try {
             await authorizeProfessional(
               patientPage,
@@ -1005,9 +1043,12 @@ test.describe("medical revocation and restoration", () => {
               "E2E_MEDICAL_A_PROFESSIONAL_CODE"
             );
             restored = true;
-          } catch {
+          } catch (restoreError) {
+            // Keep the original failure first: it is the cause. The restore
+            // failure explains why the fixture may still be revoked.
             throw new Error(
-              "Medical A authorization fixture is revoked. Restore it manually: sign in as Patient A, open /paciente/configuracoes/acessos, search the value of E2E_MEDICAL_A_PROFESSIONAL_CODE, confirm Profissional Ficticio Alfa, and choose Autorizar acesso. Do not clear an existing revoked row."
+              `${describeError(error)}\n\nThe authorization could not be restored afterwards, so the Medical A authorization fixture may still be revoked: ${describeError(restoreError)}\nRestore it manually: sign in as Patient A, open /paciente/configuracoes/acessos, search the value of E2E_MEDICAL_A_PROFESSIONAL_CODE, confirm Profissional Ficticio Alfa, and choose Autorizar acesso. Do not clear an existing revoked row.`,
+              { cause: error }
             );
           }
         }

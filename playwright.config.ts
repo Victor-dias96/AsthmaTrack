@@ -17,7 +17,41 @@ const desktopChrome = { ...devices["Desktop Chrome"] };
  * storage states created by setup projects from the real login form.
  * The revocation project is separate so it can change authorization state
  * without rerunning the stable read-only suites.
+ *
+ * Ordering matters for the full suite. Signing out is global in Supabase
+ * Auth: it revokes every session of that account, including the storage
+ * state files the other projects load. Playwright runs a project only after
+ * its dependencies, so each project that signs an account out depends on
+ * every project that still needs that account's session:
+ *
+ * - patient-flow signs Patient A out, so it runs after every other Patient A
+ *   consumer. Patient A's logout check then gets its own, later session
+ *   (setup-patient-a-logout) and is the last Patient A project.
+ * - medical-logout signs Medical A and Medical B out, so it runs after every
+ *   Medical A and Medical B consumer.
+ *
+ * Dependencies also run when a single project is selected. To run one
+ * destructive project alone against an existing storage state, add
+ * `--no-deps` and select `setup-records` with it when fixtures may be old.
  */
+const patientAReaders = [
+  "keyboard-patient",
+  "visual-patient",
+  "semantics-patient",
+  "responsive-patient",
+  "patient-a",
+  "medical-flow",
+];
+
+const medicalReaders = [
+  "keyboard-medical",
+  "visual-medical",
+  "semantics-medical",
+  "responsive-medical",
+  "medical-a",
+  "medical-b",
+  "medical-flow",
+];
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -59,8 +93,15 @@ export default defineConfig({
       grep: /medical B/,
     },
     {
+      // Re-anchors the two fixture measurements inside the default periods.
+      // It signs in with its own in-memory sessions and never signs out
+      // globally, so it cannot revoke any storage state.
+      name: "setup-records",
+      testMatch: /records\.setup\.ts/,
+    },
+    {
       name: "setup-authorizations",
-      dependencies: ["setup-patient-a", "setup-patient-b"],
+      dependencies: ["setup-patient-a", "setup-patient-b", "setup-records"],
       testMatch: /medical-flow\.spec\.ts/,
       grep: /@authorization-fixture/,
       use: {
@@ -83,7 +124,7 @@ export default defineConfig({
     },
     {
       name: "keyboard-patient",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records"],
       testMatch: /keyboard-navigation\.spec\.ts/,
       grep: /@keyboard-patient/,
       use: {
@@ -93,7 +134,7 @@ export default defineConfig({
     },
     {
       name: "keyboard-medical",
-      dependencies: ["setup-medical-a"],
+      dependencies: ["setup-medical-a", "setup-authorizations"],
       testMatch: /keyboard-navigation\.spec\.ts/,
       grep: /@keyboard-medical/,
       use: {
@@ -109,7 +150,7 @@ export default defineConfig({
     },
     {
       name: "visual-patient",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records"],
       testMatch: /visual-feedback\.spec\.ts/,
       grep: /@visual-patient/,
       use: {
@@ -119,7 +160,7 @@ export default defineConfig({
     },
     {
       name: "visual-medical",
-      dependencies: ["setup-medical-a"],
+      dependencies: ["setup-medical-a", "setup-authorizations"],
       testMatch: /visual-feedback\.spec\.ts/,
       grep: /@visual-medical/,
       use: {
@@ -135,7 +176,7 @@ export default defineConfig({
     },
     {
       name: "semantics-patient",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records"],
       testMatch: /screen-reader-semantics\.spec\.ts/,
       grep: /@semantics-patient/,
       use: {
@@ -145,7 +186,7 @@ export default defineConfig({
     },
     {
       name: "semantics-medical",
-      dependencies: ["setup-medical-a"],
+      dependencies: ["setup-medical-a", "setup-authorizations"],
       testMatch: /screen-reader-semantics\.spec\.ts/,
       grep: /@semantics-medical/,
       use: {
@@ -166,7 +207,7 @@ export default defineConfig({
     },
     {
       name: "responsive-patient",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records"],
       testMatch: /responsive-layout\.spec\.ts/,
       grep: /@responsive-patient/,
       use: {
@@ -192,7 +233,7 @@ export default defineConfig({
     },
     {
       name: "patient-a",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records"],
       testMatch: /patient-isolation\.spec\.ts/,
       grep: /@patient-a/,
       use: {
@@ -202,7 +243,7 @@ export default defineConfig({
     },
     {
       name: "patient-b",
-      dependencies: ["setup-patient-b"],
+      dependencies: ["setup-patient-b", "setup-records"],
       testMatch: /patient-isolation\.spec\.ts/,
       grep: /@patient-b/,
       use: {
@@ -211,14 +252,33 @@ export default defineConfig({
       },
     },
     {
-      // Reuses Patient A's setup storage state. Run this project on its own:
-      // its logout revokes that local session, as does the isolation suite.
+      // Reuses Patient A's setup storage state and ends with a logout, which
+      // revokes every Patient A session. It therefore waits for every other
+      // project that reads with that session.
       name: "patient-flow",
-      dependencies: ["setup-patient-a"],
+      dependencies: ["setup-patient-a", "setup-records", ...patientAReaders],
       testMatch: /patient-flow\.spec\.ts/,
       use: {
         ...desktopChrome,
         storageState: "playwright/.auth/patient-a.json",
+      },
+    },
+    {
+      // A session created after patient-flow's logout, for the isolation
+      // suite's own logout check. Nothing else uses it.
+      name: "setup-patient-a-logout",
+      dependencies: ["patient-flow"],
+      testMatch: /auth\.setup\.ts/,
+      grep: /fresh session for patient logout/,
+    },
+    {
+      name: "patient-a-logout",
+      dependencies: ["setup-patient-a-logout"],
+      testMatch: /patient-isolation\.spec\.ts/,
+      grep: /@patient-logout-a/,
+      use: {
+        ...desktopChrome,
+        storageState: "playwright/.auth/patient-a-logout.json",
       },
     },
     {
@@ -260,7 +320,7 @@ export default defineConfig({
       // Global sign-out revokes the medical session, so this stays outside
       // the stable read projects.
       name: "medical-logout",
-      dependencies: ["setup-medical-a", "setup-medical-b"],
+      dependencies: ["setup-medical-a", "setup-medical-b", ...medicalReaders],
       testMatch: /medical-flow\.spec\.ts/,
       grep: /@medical-logout/,
       use: desktopChrome,

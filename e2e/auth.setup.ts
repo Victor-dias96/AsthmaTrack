@@ -10,6 +10,13 @@ export const patientAAuthFile = path.join(authDir, "patient-a.json");
 export const patientBAuthFile = path.join(authDir, "patient-b.json");
 export const medicalAAuthFile = path.join(authDir, "medical-a.json");
 export const medicalBAuthFile = path.join(authDir, "medical-b.json");
+// Signing out is global in Supabase Auth: it revokes every session of the
+// account, including patient-a.json. The patient A logout checks therefore
+// use a session created after the other Patient A suites have finished.
+export const patientALogoutAuthFile = path.join(
+  authDir,
+  "patient-a-logout.json"
+);
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -159,6 +166,19 @@ setup("authenticate patient A", async ({ page }) => {
     "E2E_PATIENT_A_EMAIL",
     "E2E_PATIENT_A_PASSWORD",
     patientAAuthFile,
+    { url: /\/paciente\/dashboard$/, heading: /^Olá/ }
+  );
+});
+
+// The title deliberately avoids "patient A" so the setup-patient-a grep does
+// not select it; the late setup-patient-a-logout project does.
+setup("fresh session for patient logout", async ({ page }) => {
+  mkdirSync(authDir, { recursive: true });
+  await authenticate(
+    page,
+    "E2E_PATIENT_A_EMAIL",
+    "E2E_PATIENT_A_PASSWORD",
+    patientALogoutAuthFile,
     { url: /\/paciente\/dashboard$/, heading: /^Olá/ }
   );
 });

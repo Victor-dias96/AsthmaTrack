@@ -429,7 +429,9 @@ async function submitRecord(
   await armBusyObserver(page);
   await page.getByRole("button", { name: "Salvar registro" }).click();
 
-  const success = page.getByRole("alert").filter({ hasText: successCopy });
+  // Success confirmations are polite live regions (role "status"). Only
+  // failures are assertive alerts, which `failure` below still covers.
+  const success = page.getByRole("status").filter({ hasText: successCopy });
   const failure = page.locator(`#${errorId}`);
   await expect(success.or(failure)).toBeVisible({ timeout: 20_000 });
   await throwIfFormError(page, errorId);
@@ -497,7 +499,7 @@ async function confirmDelete(page: Page) {
   await expect(page).toHaveURL(/\/paciente\/historico\?/, { timeout: 20_000 });
   await expect(page).toHaveURL(/(?:^|[?&])excluido=1(?:&|$)/);
   await expect(
-    page.getByRole("alert").filter({ hasText: DELETED_SUCCESS })
+    page.getByRole("status").filter({ hasText: DELETED_SUCCESS })
   ).toBeVisible();
 }
 
@@ -617,6 +619,10 @@ test.describe.serial("fluxo completo do paciente", () => {
       state.pef = pair.created;
 
       await fillNewRecord(page, pair.created, INITIAL_NOTE);
+      // The insert can complete before the confirmation is observed, so the
+      // record counts as created from the moment it is submitted. Cleanup
+      // already treats "no matching card" as nothing left to delete.
+      state.created = true;
       await submitRecord(
         page,
         CREATED_SUCCESS,
